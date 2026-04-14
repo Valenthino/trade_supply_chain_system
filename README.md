@@ -1,193 +1,265 @@
-# Trade & Supply Chain Management System
+# CommodityFlow
 
-This is a web-based **trading and inventory management system** for a cashew commodity negoce business in Côte d'Ivoire.  
-It helps manage contracts, stock, warehouse movements, and basic logistics across the supply chain.
+A web-based commodity trading and operations platform built for a cashew business in Cote d'Ivoire.
 
-The project is built with **PHP** and **MySQL** and is designed to run on standard shared hosting (e.g. Hostinger).
+CommodityFlow centralizes the full operational cycle: buying from suppliers, managing stock and lots, delivering to customers, tracking financing and payments, monitoring profitability, and running logistics with fleet and document controls.
+
+The application is implemented in plain PHP + MySQL and is optimized for shared-hosting deployments.
 
 ---
 
-## Features
+## What This Project Solves
 
-- Contract management for purchases and sales
-- Inventory tracking (warehouses, lots, stock movements)
-- Basic logistics & documentation
-- User authentication and role-based access (if implemented)
-- Operational reports and dashboards
+Commodity trading operations often run across disconnected spreadsheets (procurement, inventory, logistics, finance, and account management). This project brings those flows into one system with:
 
-*(Adjust this list to match your actual code.)*
+- End-to-end transaction traceability (purchase to delivery to sale)
+- Financial visibility (advances, debts, payments, expenses, margins)
+- Role-based operational control
+- Live dashboards and trend monitoring
+- AI-assisted business reporting and document extraction
+
+---
+
+## Core Features
+
+### Operations
+
+- **Purchases:** supplier purchases with quality and pricing metrics
+- **Sales:** customer sales with cost breakdown, margin, and net profit
+- **Deliveries Out:** outbound deliveries and delivery-item tracking
+- **Payments:** incoming/outgoing cash movement tracking by counterparty
+
+### Master Data
+
+- **Supplier Master:** supplier profiles and lifecycle data
+- **Customer Master:** customer records and financing references
+- **Pricing Master:** customer/supplier pricing agreement management
+- **Bank Master:** financial counterparties for debt and financing flows
+- **Supplier Ranking:** score snapshots to support financing decisions
+
+### Finance
+
+- **Financing:** supports bank debt, customer advances, and supplier balances
+- **Expenses:** categorized expense management
+- **Profit Analysis:** Profit & Loss, Cash Flow, and Simulation tabs
+- **Financial KPIs:** debt exposure, remaining financed volume, coverage ratios
+
+### Logistics and Inventory
+
+- **Inventory Ledger:** lot-level stock logic and stock movement calculations
+- **Fleet & Drivers:** vehicle and driver administration
+- **Fleet Paperwork Tracking:** expiry monitoring for logistics documents
+- **Bags Log:** operational bag movement/register workflows
+
+### AI and Analytics
+
+- **AI Reports:** generated reports for monthly summary, profit analysis, supplier performance, customer risk, and price trends
+- **Receipt/Document AI Reader:** extracts structured data from uploaded images/PDFs
+- **Gemini Integration:** configurable AI model and API key through system settings
+
+### Security and Administration
+
+- **Authentication:** secure login flow with session hardening
+- **Role-Based Access Control:** menu/module access by role
+- **Rate Limiting:** lockout logic for repeated failed logins
+- **CSRF Protection:** token validation for sensitive form actions
+- **Activity Logs:** user action logging and audit trail
+- **Theme/UX Controls:** dark mode + personalized UI preferences
+- **Notifications:** unread center + role/user targeted system alerts
+
+---
+
+## Roles Implemented
+
+The system defines these roles:
+
+- `Admin`
+- `Manager`
+- `Procurement Officer`
+- `Sales Officer`
+- `Finance Officer`
+- `Fleet Manager`
+- `Warehouse Clerk`
+
+Each role sees only the modules relevant to their responsibilities.
+
+---
+
+## How the System Works (Business Flow)
+
+Typical flow across modules:
+
+1. Set up reference data (locations, contract types, warehouses, seasons, etc.).
+2. Register suppliers/customers and pricing agreements.
+3. Record purchases (volume, quality, and procurement cost).
+4. Manage inventory and lot balances.
+5. Create deliveries to customers.
+6. Confirm sales and compute profitability.
+7. Track financing commitments (banks/customers/suppliers).
+8. Register payments and expenses.
+9. Monitor KPIs in dashboard and profit-analysis views.
+10. Use AI reports for executive summaries and risk insights.
 
 ---
 
 ## Tech Stack
 
-- PHP (version X.Y – update this to your real version)
-- MySQL / MariaDB
-- Web server: Apache or Nginx (Hostinger shared hosting)
-- Git + GitHub for version control and collaboration
+- **Backend:** PHP (procedural, multi-page app)
+- **Database:** MySQL/MariaDB
+- **Frontend:** HTML/CSS/JavaScript + jQuery + SweetAlert2 + Charting components
+- **AI:** Google Gemini API (text + vision use cases)
+- **Deployment target:** shared hosting (Apache/Nginx compatible)
 
 ---
 
-## Environments
+## Project Structure (High-Level)
 
-- **Production (live)**  
-  - Branch: `main`  
-  - Host: https://app.cooplagloire.com/  
-
-- **Staging (test)**  
-  - Branch: `staging`  
-  - Host: https://salmon-lion-321390.hostingersite.com/  
-
-All development happens on short-lived `feature-*` branches, which are merged into `staging` first, tested on the staging site, and then promoted to `main` for production.
+- `login.php` - authentication entry point
+- `dashboard.php` - KPI dashboard and analytics endpoints
+- `setup.php` - database bootstrap and schema creation
+- `config.php` - environment loading, security helpers, DB connection, common utilities
+- `sidebar.php` - role-aware navigation + notifications
+- Operational modules: `purchases.php`, `sales.php`, `deliveries.php`, `inventory.php`, `payments.php`, `expenses.php`, `financing.php`
+- Master data modules: `suppliers.php`, `customers.php`, `banks.php`, `pricing.php`, `settings-data.php`
+- AI modules: `ai-reports.php`, `ai-helper.php`
 
 ---
 
-## Getting Started (Local Development)
+## Database Coverage
 
-### 1. Prerequisites
+`setup.php` provisions major tables including:
 
-You need:
+- Core security/admin (`users`, `activity_logs`, `login_attempts`, `system_settings`)
+- Master data settings (`settings_*` tables)
+- Operations (`purchases`, `deliveries`, `delivery_items`, `sales`, `lots`)
+- Finance (`payments`, `financing`, `expenses`, `banks`)
+- Logistics (`fleet_vehicles`, `fleet_paperworks`, `bags_log`)
+- Commercial (`customers`, `suppliers`, pricing agreements, supplier ranking snapshots)
+- System support (`notifications`, seasons/currencies, salary payments)
 
-- PHP (version X.Y or higher)
-- MySQL or MariaDB
+---
+
+## Local Setup
+
+### 1) Prerequisites
+
+- PHP 8.1+ (recommended)
+- MySQL/MariaDB
+- Apache/Nginx or local stack (XAMPP/WAMP/MAMP)
 - Git
-- A local web server stack:
-  - XAMPP / WAMP / MAMP **or**
-  - PHP built-in server
 
-### 2. Clone the Repository
+### 2) Clone Repository
 
 ```bash
-git clone https://github.com/CommoditySystem/Trade-Supply-Chain-Management-System.git
-cd Trade-Supply-Chain-Management-System
-
-```markdown
-### 3. Configure the Database
-
-Create a new MySQL database locally (e.g. `trade_supply_chain_local`).
-
-Import the initial schema:
-
-If there is a `/database` or `/sql` folder with a `.sql` file, import it with phpMyAdmin or:
-
-```bash
-mysql -u username -p database_name < path/to/database.sql
+git clone https://github.com/Valenthino/trade_supply_chain_system.git
+cd trade_supply_chain_system
 ```
 
-Otherwise, run the initial setup script as described in the project (for example `setup.php` on your local environment).
+### 3) Configure Environment
 
-Update the DB configuration file (for example `config.php` or `.env`):
+Create a local `.env` file from `.env.example` and set database credentials:
 
-```php
-// Example config.php structure – adjust to your real file
-$db_host = 'localhost';
-$db_name = 'trade_supply_chain_local';
-$db_user = 'root';
-$db_pass = '';
+```env
+DB_HOST=localhost
+DB_NAME=your_local_database
+DB_USER=your_db_user
+DB_PASS=your_db_password
+```
+
+### 4) Create Database
+
+Create an empty MySQL database (example: `commodityflow_local`).
+
+### 5) Run Initial Setup
+
+Open in browser:
+
+```text
+http://localhost/trade_supply_chain_system/setup.php
+```
+
+This creates required tables and seed records.
+
+### 6) Launch App
+
+Use your local web server and open:
+
+```text
+http://localhost/trade_supply_chain_system/login.php
 ```
 
 ---
 
-### 4. Run the Application Locally
+## Environment and Deployment
 
-Depending on your setup:
+### Branch Strategy
 
-- If using a local stack (XAMPP/WAMP/MAMP), put the project folder in `htdocs/www` and open in your browser:
+- `main` -> production
+- `staging` -> pre-production testing
+- `feature-*` -> short-lived implementation branches
 
-  ```
-  http://localhost/Trade-Supply-Chain-Management-System
-  ```
+### Live Environments
 
-- Or use PHP built-in server (if applicable):
+- Production: <https://app.cooplagloire.com/>
+- Staging: <https://staging.cooplagloire.com/>
 
-```bash
-php -S localhost:8000 -t public
-```
+### Safe Deployment Checklist
 
-Then visit:
-
-```
-http://localhost:8000
-```
-
-*(Update this section with the real entry point: `index.php`, `public/index.php`, etc.)*
+1. Back up production database.
+2. Deploy latest branch code (`staging` or `main`).
+3. Apply only additive schema updates.
+4. Validate login, purchases, sales, deliveries, and payment flows.
+5. Validate dashboard and key finance KPIs.
 
 ---
 
-## Deployment (Hostinger / Shared Hosting)
+## Security Notes
 
-> **Important:** Never run destructive setup scripts on the production database.  
-> Always back up the DB before deploying.
-
-### 1. Production Deployment
-
-Production is deployed from the `main` branch.
-
-Deploy options:
-
-- Git integration/Webhook from GitHub to Hostinger, or  
-- Manual upload (FTP/SFTP) of the project files from the `main` branch.
-
-Basic process:
-
-1. Backup the production database via phpMyAdmin.  
-2. Pull latest `main` or upload files.  
-3. If DB structure changed, run only **additive** migrations/setup steps (no drop/truncate).  
-4. Test core flows on the live site.
-
-### 2. Staging Deployment
-
-Staging is deployed from the `staging` branch to a separate folder and database.
-
-You can:
-
-- Use another Hostinger site/subdomain (e.g. `staging.example.com`).  
-- Connect that folder to the `staging` branch via Git or manual upload.
-
-Use staging to test new features and bug fixes with a **copy** of production-like data before pushing changes to `main`.
-
-
-
-## Database & `setup.php` Safety
-
-To avoid data loss:
-
-- `setup.php` or any install script must **never** drop or recreate tables in production.
-
-They should only:
-
-- Create tables if they do not exist.  
-- Add new columns if they do not exist.  
-- Insert default data only when needed.
-
-All schema changes must be:
-
-- Tested on the staging database first.  
-- Used in a way that is safe to run multiple times (idempotent).
-
-Always back up the database before deploying to production.
+- Keep `.env` out of version control.
+- Use strong credentials and rotate production secrets regularly.
+- Restrict access to `setup.php` on production once initialization is complete.
+- Keep role permissions aligned with business responsibilities.
 
 ---
 
-## Git Workflow Summary
+## Roadmap Ideas
 
-- `main`  
-  Production code (what runs on live site).
+- Automated recurring jobs for alerts and document expiry checks
+- Export-ready reports (PDF/Excel)
+- Additional audit trails on critical finance edits
+- Deeper forecasting models for seasonality and price risk
 
-- `staging`  
-  Pre-production code (tested on staging environment).
+---
 
-- `feature-*` branches  
-  Temporary branches for each bug fix or feature.
+## Contributing
 
-**Basic flow:**
+1. Branch from `staging` into `feature-*`.
+2. Open PR into `staging`.
+3. Validate on staging environment.
+4. Promote tested changes from `staging` to `main`.
 
-1. Create `feature-*` branch from `staging`.  
-2. Code and commit changes.  
-3. Open Pull Request from `feature-*` to `staging`.  
-4. Deploy `staging` to staging environment and test.  
-5. When OK, open Pull Request from `staging` to `main`.  
-6. Deploy `main` to production environment.
+---
 
-See `CONTRIBUTING.md` for detailed rules.
-```
+## License
+
+MIT License
+
+Copyright (c) 2026 Sawadogo Valentin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
