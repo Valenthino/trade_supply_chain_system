@@ -16,7 +16,7 @@ $error = '';
 $csrf_token = generateCSRFToken();
 
 // get login logo from settings
-$defaultLogo = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiGXxCe0WNNedmFqSWeF761f7Kshhc-NP5ChRQKz9fr97cO8VaarvD0KlCwqHojJVBWv-RAxfOqMI5rD4H78KnARyOc6QgwL1nRRFWf5xNQ1d9F9HfAoLPPGlTyP0GwNl4n-INMEsWLQ4Y7zJtz5bOdAnc2ePH9-uCRgshlo6BsS6gJEz6fhrxL-5U5O3sX/s160/channels4_profile.jpg";
+$defaultLogo = "app_logo_login.png";
 $loginLogo = getSetting('login_logo_url', '');
 $loginLogo = !empty($loginLogo) ? $loginLogo : $defaultLogo;
 
