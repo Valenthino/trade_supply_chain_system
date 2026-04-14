@@ -2,6 +2,9 @@
 /**
  * Database Configuration File
  */
+require_once __DIR__ . '/load_env.php';
+loadDotEnv(__DIR__ . '/.env');
+
 
 // Error handling - disable display_errors in production
 error_reporting(E_ALL);
@@ -9,11 +12,11 @@ ini_set('display_errors', 0);  // Changed to 0 for production security
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error_log.txt');
 
-// Database credentials
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'u247530633_Valenthino');
-define('DB_USER', 'u247530633_Valenthino');
-define('DB_PASS', 'U247530633_Valenthino');
+// Database credentials (set in .env — see .env.example)
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: '');
+define('DB_USER', getenv('DB_USER') ?: '');
+define('DB_PASS', getenv('DB_PASS') ?: '');
 
 // Security constants
 define('SESSION_TIMEOUT', 1800); // 30 minutes
@@ -411,7 +414,7 @@ function getCompanyInfo() {
     $keys = ['company_name', 'company_subtitle', 'company_address', 'company_phone', 'company_email', 'default_currency_symbol', 'receipt_logo_url'];
     $settings = getSettingsBatch($keys);
     return [
-        'company_name' => $settings['company_name'] ?? '7503 Canada',
+        'company_name' => $settings['company_name'] ?? 'SCNV Cooperative Nouvelle de Vavoua',
         'company_subtitle' => $settings['company_subtitle'] ?? 'Negoce de Noix de Cajou Brutes',
         'company_address' => $settings['company_address'] ?? 'Daloa, Cote d\'Ivoire',
         'company_phone' => $settings['company_phone'] ?? '',
