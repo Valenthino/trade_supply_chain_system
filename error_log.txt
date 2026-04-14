@@ -1,0 +1,222 @@
+[24-Dec-2025 16:49:57 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'u247530633_dashboard.users' doesn't exist in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php:37
+Stack trace:
+#0 /home/u247530633/domains/dashbord.astoe.org/public_html/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php on line 37
+[24-Dec-2025 16:50:23 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'u247530633_dashboard.users' doesn't exist in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php:37
+Stack trace:
+#0 /home/u247530633/domains/dashbord.astoe.org/public_html/login.php(37): mysqli->prepare()
+#1 {main}
+  thrown in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php on line 37
+[24-Dec-2025 17:00:27 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'role' in 'SELECT' in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php:42
+Stack trace:
+#0 /home/u247530633/domains/dashbord.astoe.org/public_html/login.php(42): mysqli->prepare()
+#1 {main}
+  thrown in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php on line 42
+[24-Dec-2025 17:00:30 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'role' in 'SELECT' in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php:42
+Stack trace:
+#0 /home/u247530633/domains/dashbord.astoe.org/public_html/login.php(42): mysqli->prepare()
+#1 {main}
+  thrown in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php on line 42
+[24-Dec-2025 17:02:12 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'role' in 'SELECT' in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php:42
+Stack trace:
+#0 /home/u247530633/domains/dashbord.astoe.org/public_html/login.php(42): mysqli->prepare()
+#1 {main}
+  thrown in /home/u247530633/domains/dashbord.astoe.org/public_html/login.php on line 42
+[13-Mar-2026 16:04:57 Europe/Berlin] Get profile image error: Table 'cashew.users' doesn't exist
+[13-Mar-2026 16:04:57 Europe/Berlin] Get user theme error: Table 'cashew.users' doesn't exist
+[13-Mar-2026 16:04:57 Europe/Berlin] Get user theme error: Table 'cashew.users' doesn't exist
+[13-Mar-2026 16:04:57 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Table 'cashew.users' doesn't exist in C:\xampp\htdocs\7503 Canada\dashboard.php:33
+Stack trace:
+#0 C:\xampp\htdocs\7503 Canada\dashboard.php(33): mysqli->query('SELECT COUNT(*)...')
+#1 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\dashboard.php on line 33
+[13-Mar-2026 17:21:06 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 17:36:10 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 17:36:12 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 17:58:28 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 17:58:30 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 17:58:31 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 20:03:36 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 20:03:44 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 20:03:44 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 20:15:28 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 20:15:30 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:24:01 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:24:45 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:36:23 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:36:24 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:36:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:36:30 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:48:02 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:48:54 Europe/Berlin] Purchases.php error: Unknown column 'status' in 'where clause'
+[13-Mar-2026 21:52:34 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:53:02 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:53:30 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:55:11 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:55:14 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:55:22 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:55:23 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:55:44 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:56:21 Europe/Berlin] deliveries.php error: Unknown column 'w.status' in 'where clause'
+[13-Mar-2026 21:56:31 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 21:56:59 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:57:43 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 21:59:20 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 21:59:40 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 22:00:00 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 22:01:12 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 22:01:32 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:02:54 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:04:18 Europe/Berlin] PHP Fatal error:  Uncaught Error: mysqli_stmt::bind_param(): Argument #16 cannot be passed by reference in C:\xampp\htdocs\7503 Canada\deliveries.php:426
+Stack trace:
+#0 {main}
+  thrown in C:\xampp\htdocs\7503 Canada\deliveries.php on line 426
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:24:55 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 22:25:13 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:03:25 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:03:40 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:41 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:41 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:41 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:42 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:42 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:48 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:03:48 Europe/Berlin] ai-reports.php error: Unknown column 'spa.agreement_id' in 'field list'
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:06:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[13-Mar-2026 23:16:51 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "interest_rate" in C:\xampp\htdocs\7503 Canada\financing.php on line 67
+[15-Mar-2026 07:33:33 Europe/Berlin] PHP Warning:  Undefined array key "reference_number" in C:\xampp\htdocs\7503 Canada\financing.php on line 70
+[15-Mar-2026 21:44:16 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'u247530633_Valenthino'@'localhost' (using password: YES) in C:\xampp\htdocs\Trade & Supply Chain Management System\setup.php:41
+Stack trace:
+#0 C:\xampp\htdocs\Trade & Supply Chain Management System\setup.php(41): mysqli->__construct('localhost', 'u247530633_Vale...', Object(SensitiveParameterValue), 'u247530633_Vale...')
+#1 {main}
+  thrown in C:\xampp\htdocs\Trade & Supply Chain Management System\setup.php on line 41
+[01-Apr-2026 07:47:07 Europe/Berlin] Database error: Access denied for user 'u247530633_Valenthino'@'localhost' (using password: YES)
