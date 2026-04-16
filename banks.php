@@ -281,19 +281,39 @@ if (isset($_GET['action'])) {
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Bank Master - Dashboard System</title>
+    <title>Commodity Flow — Banks</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#f0f9f9',100:'#d9f2f0',200:'#b5e6e3',300:'#82d3cf',400:'#4db8b4',500:'#2d9d99',600:'#247f7c',700:'#1d6462',800:'#185150',900:'#164342' },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: { 'card':'0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)', 'card-hover':'0 4px 12px 0 rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -305,51 +325,109 @@ if (isset($_GET['action'])) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+    <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 400px 100%; animation: shimmer 1.4s ease infinite; border-radius: 6px; }
+    .dark .skeleton { background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%); background-size: 400px 100%; }
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .nav-link.active::before { content:''; position:absolute; left:0; top:15%; bottom:15%; width:3px; background:#2d9d99; border-radius:0 3px 3px 0; }
+    .dataTables_wrapper { font-size: 13px; }
+    table.dataTable thead th { background: transparent; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; }
+    table.dataTable tbody tr:hover { background: #f8fafc; }
+    .dark table.dataTable tbody tr:hover { background: #1e293b; }
+    table.dataTable tbody td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b; }
+
+    .report-tabs { display:flex; border-bottom:2px solid #e2e8f0; background:white; padding:0 20px; gap:0; overflow-x:auto; }
+    .dark .report-tabs { border-bottom-color:#334155; background:#1e293b; }
+    .report-tab { padding:12px 20px; border:none; background:transparent; color:#64748b; font-size:13px; font-weight:600; cursor:pointer; border-bottom:3px solid transparent; transition:all .3s; font-family:inherit; display:flex; align-items:center; gap:6px; white-space:nowrap; }
+    .report-tab:hover { color:#2d9d99; background:rgba(45,157,153,.05); }
+    .report-tab.active { color:#2d9d99; border-bottom-color:#2d9d99; }
+    .report-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:16px; }
+    .report-summary-card { background:#f8fafc; border-radius:8px; padding:14px; text-align:center; }
+    .dark .report-summary-card { background:#1e293b; }
+    .report-summary-card .val { font-size:22px; font-weight:700; color:#2d9d99; }
+    .report-summary-card .lbl { font-size:11px; color:#64748b; text-transform:uppercase; margin-top:4px; }
+    .report-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .report-table thead th { background:#2d9d99; color:white; padding:8px 10px; text-align:left; font-size:11px; font-weight:600; }
+    .report-table tbody td { padding:8px 10px; border-bottom:1px solid #f1f5f9; }
+    .dark .report-table tbody td { border-bottom-color:#1e293b; color:#e2e8f0; }
+    .report-table tbody tr:hover { background:#f8fafc; }
+    .dark .report-table tbody tr:hover { background:#334155; }
+
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:1000; align-items:center; justify-content:center; }
+    .modal-overlay.active { display:flex; }
+    </style>
 </head>
-<body>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
     <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
+    <div class="flex h-full overflow-hidden" id="appRoot">
         <?php include 'sidebar.php'; ?>
 
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-building-columns"></i> Bank Master</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-landmark text-brand-500 text-sm"></i>
+                    <h1 class="text-base font-bold text-slate-800 dark:text-white">Banks</h1>
+                </div>
+                <div class="ml-auto flex items-center gap-2">
+                    <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadBanks()">
+                        <i class="fas fa-sync mr-1"></i> Refresh
+                    </button>
+                    <?php if ($canCreate): ?>
+                    <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="openAddModal()">
+                        <i class="fas fa-plus mr-1"></i> Add Bank
+                    </button>
+                    <?php endif; ?>
+                </div>
+            </header>
 
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Banks</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="loadBanks()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Bank
-                        </button>
-                        <?php endif; ?>
+            <main class="flex-1 overflow-y-auto p-5">
+                <!-- KPI Strip -->
+                <div id="bankKpiStrip" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 text-center">
+                        <div class="text-2xl font-bold text-brand-500 tabular" id="kpiBankCount">-</div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-1">Total Banks</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 text-center">
+                        <div class="text-2xl font-bold text-emerald-500 tabular" id="kpiBankActive">-</div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-1">Active</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 text-center">
+                        <div class="text-2xl font-bold text-amber-500 tabular" id="kpiTotalDebt">-</div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-1">Total Owed</div>
+                    </div>
+                    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 text-center">
+                        <div class="text-2xl font-bold text-blue-500 tabular" id="kpiActiveLoans">-</div>
+                        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide mt-1">Active Loans</div>
                     </div>
                 </div>
 
-                <!-- KPI strip -->
-                <div id="bankKpiStrip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px;">
-                    <div class="report-summary-card"><div class="val" id="kpiBankCount">-</div><div class="lbl">Total Banks</div></div>
-                    <div class="report-summary-card"><div class="val" id="kpiBankActive" style="color:#27ae60;">-</div><div class="lbl">Active</div></div>
-                    <div class="report-summary-card"><div class="val" id="kpiTotalDebt" style="color:#e0a800;">-</div><div class="lbl">Total Owed</div></div>
-                    <div class="report-summary-card"><div class="val" id="kpiActiveLoans" style="color:#0074D9;">-</div><div class="lbl">Active Loans</div></div>
-                </div>
-
-                <div class="filters-section" id="filtersSection" style="display:none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()"><i class="fas fa-times-circle"></i> Clear All</button>
+                <!-- Filters -->
+                <div id="filtersSection" style="display:none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 mb-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide"><i class="fas fa-filter mr-1"></i> Filters</h3>
+                        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-2.5 py-1.5 rounded-lg transition-colors" onclick="clearFilters()"><i class="fas fa-times-circle mr-1"></i> Clear All</button>
                     </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-toggle-on"></i> Status</label>
-                            <select id="filterStatus" class="filter-input">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-toggle-on mr-1"></i> Status</label>
+                            <select id="filterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                                 <option value="">All</option>
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
@@ -358,88 +436,88 @@ if (isset($_GET['action'])) {
                     </div>
                 </div>
 
+                <!-- Loading skeleton -->
                 <div id="loadingSkeleton">
-                    <div class="skeleton-table">
+                    <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5 space-y-3">
                         <?php for ($i = 0; $i < 6; $i++): ?>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
+                        <div class="flex gap-4">
+                            <div class="skeleton h-4" style="flex:1"></div>
+                            <div class="skeleton h-4" style="flex:2"></div>
+                            <div class="skeleton h-4" style="flex:1"></div>
+                            <div class="skeleton h-4" style="flex:1"></div>
+                            <div class="skeleton h-4" style="flex:1"></div>
                         </div>
                         <?php endfor; ?>
                     </div>
                 </div>
 
-                <div id="tableContainer" style="display:none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+                <!-- DataTable Card -->
+                <div id="tableContainer" style="display:none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+                    <div class="p-5 overflow-x-auto">
                         <table id="banksTable" class="display" style="width:100%"></table>
                     </div>
                 </div>
-            </div>
+            </main>
         </div>
     </div>
 
+    <!-- Bank Add/Edit Modal -->
     <?php if ($canCreate || $canUpdate): ?>
     <div class="modal-overlay" id="bankModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-building-columns"></i> Add Bank</h3>
-                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 id="modalTitle" class="text-sm font-bold text-slate-800 dark:text-white"><i class="fas fa-building-columns mr-1"></i> Add Bank</h3>
+                <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body">
+            <div class="p-5">
                 <form id="bankForm">
                     <input type="hidden" id="bankId" name="bank_id">
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-building-columns"></i> Bank Name *</label>
-                            <input type="text" id="bankName" name="bank_name" required maxlength="200">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-building-columns mr-1"></i> Bank Name *</label>
+                            <input type="text" id="bankName" name="bank_name" required maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group">
-                            <label><i class="fas fa-code-branch"></i> Branch</label>
-                            <input type="text" id="branch" name="branch" maxlength="150">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-code-branch mr-1"></i> Branch</label>
+                            <input type="text" id="branch" name="branch" maxlength="150" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Contact Person</label>
-                            <input type="text" id="contactPerson" name="contact_person" maxlength="150">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-user mr-1"></i> Contact Person</label>
+                            <input type="text" id="contactPerson" name="contact_person" maxlength="150" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="tel" id="phone" name="phone" maxlength="20">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-phone mr-1"></i> Phone</label>
+                            <input type="tel" id="phone" name="phone" maxlength="20" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> Email</label>
-                            <input type="email" id="email" name="email" maxlength="200">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-envelope mr-1"></i> Email</label>
+                            <input type="email" id="email" name="email" maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group">
-                            <label><i class="fas fa-hashtag"></i> Account Number</label>
-                            <input type="text" id="accountNumber" name="account_number" maxlength="50">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-hashtag mr-1"></i> Account Number</label>
+                            <input type="text" id="accountNumber" name="account_number" maxlength="50" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
                         </div>
 
-                        <div class="form-group" style="grid-column:1 / -1;">
-                            <label><i class="fas fa-location-dot"></i> Address</label>
-                            <textarea id="address" name="address" rows="2"></textarea>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-location-dot mr-1"></i> Address</label>
+                            <textarea id="address" name="address" rows="2" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors"></textarea>
                         </div>
 
-                        <div class="form-group" style="grid-column:1 / -1;">
-                            <label><i class="fas fa-note-sticky"></i> Notes</label>
-                            <textarea id="notes" name="notes" rows="2"></textarea>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-note-sticky mr-1"></i> Notes</label>
+                            <textarea id="notes" name="notes" rows="2" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors"></textarea>
                         </div>
                     </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()"><i class="fas fa-times"></i> Cancel</button>
+                    <div class="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
+                        <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="closeModal()"><i class="fas fa-times mr-1"></i> Cancel</button>
+                        <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors"><i class="fas fa-save mr-1"></i> Save</button>
                     </div>
                 </form>
             </div>
@@ -448,37 +526,22 @@ if (isset($_GET['action'])) {
     <?php endif; ?>
 
     <!-- Bank Report Modal -->
-    <style>
-        .report-tabs { display:flex;border-bottom:2px solid var(--border-color);background:var(--bg-card);padding:0 20px;gap:0;overflow-x:auto; }
-        .report-tab { padding:12px 20px;border:none;background:transparent;color:var(--text-muted);font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;transition:all .3s;font-family:inherit;display:flex;align-items:center;gap:6px;white-space:nowrap; }
-        .report-tab:hover { color:var(--navy-accent);background:rgba(0,116,217,.05); }
-        .report-tab.active { color:var(--navy-accent);border-bottom-color:var(--navy-accent); }
-        .report-summary { display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:16px; }
-        .report-summary-card { background:var(--bg-primary);border-radius:8px;padding:14px;text-align:center; }
-        .report-summary-card .val { font-size:22px;font-weight:700;color:var(--navy-accent); }
-        .report-summary-card .lbl { font-size:11px;color:var(--text-muted);text-transform:uppercase;margin-top:4px; }
-        .report-table { width:100%;border-collapse:collapse;font-size:12px; }
-        .report-table thead th { background:var(--navy-primary);color:white;padding:8px 10px;text-align:left;font-size:11px;font-weight:600; }
-        .report-table tbody td { padding:8px 10px;border-bottom:1px solid var(--border-light);color:var(--text-primary); }
-        .report-table tbody tr:hover { background:var(--table-hover); }
-    </style>
-
     <div id="reportModal" class="modal-overlay">
-        <div class="modal" style="max-width:80%;width:80%;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="reportTitle"><i class="fas fa-file-alt"></i> Bank Report</h3>
-                <div style="display:flex;gap:8px;align-items:center;">
-                    <button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fas fa-print"></i> Print</button>
-                    <button class="close-btn" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-xl mx-4 max-h-[90vh] overflow-y-auto" style="max-width:80%;width:80%;" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+                <h3 id="reportTitle" class="text-sm font-bold text-slate-800 dark:text-white"><i class="fas fa-file-alt mr-1"></i> Bank Report</h3>
+                <div class="flex items-center gap-2">
+                    <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="printReport()"><i class="fas fa-print mr-1"></i> Print</button>
+                    <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
                 </div>
             </div>
-            <div class="modal-body" style="padding:0;">
+            <div>
                 <div id="reportTabs" class="report-tabs">
                     <button class="report-tab active" onclick="switchReportTab('overview', this)"><i class="fas fa-circle-info"></i> Overview</button>
                     <button class="report-tab" onclick="switchReportTab('financing', this)"><i class="fas fa-money-bill-transfer"></i> Loans</button>
                     <button class="report-tab" onclick="switchReportTab('payments', this)"><i class="fas fa-credit-card"></i> Repayments</button>
                 </div>
-                <div id="reportContent" style="padding:20px;">
+                <div id="reportContent" class="p-5">
                     <div class="skeleton" style="height:200px;"></div>
                 </div>
             </div>
@@ -564,7 +627,7 @@ if (isset($_GET['action'])) {
                     render: function(d) {
                         var c = parseInt(d) || 0;
                         if (c > 0) return '<span style="background:#0074D9;color:white;padding:2px 8px;border-radius:10px;font-weight:600;">' + c + '</span>';
-                        return '<span style="color:var(--text-muted);">0</span>';
+                        return '<span style="color:#64748b;">0</span>';
                     }
                 },
                 {
@@ -758,13 +821,13 @@ if (isset($_GET['action'])) {
 
             $.getJSON('?action=getBankReport&bank_id=' + encodeURIComponent(bankId) + '&_=' + Date.now(), function(r) {
                 if (!r.success) {
-                    document.getElementById('reportContent').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (r.message || 'Failed') + '</p>';
+                    document.getElementById('reportContent').innerHTML = '<p class="text-red-500 p-5">' + (r.message || 'Failed') + '</p>';
                     return;
                 }
                 reportData = r.data;
                 renderReportTab('overview');
             }).fail(function() {
-                document.getElementById('reportContent').innerHTML = '<p style="color:var(--danger);padding:20px;">Connection error</p>';
+                document.getElementById('reportContent').innerHTML = '<p class="text-red-500 p-5">Connection error</p>';
             });
         }
 
@@ -805,7 +868,7 @@ if (isset($_GET['action'])) {
                 html += '<div class="report-summary-card"><div class="val">' + d.financing.length + '</div><div class="lbl">Loans</div></div>';
                 html += '<div class="report-summary-card"><div class="val">' + activeCount + '</div><div class="lbl">Active</div></div>';
                 html += '<div class="report-summary-card"><div class="val">' + fmtR(totalBorrowed) + ' F</div><div class="lbl">Total Borrowed</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--success);">' + fmtR(totalRepaid) + ' F</div><div class="lbl">Total Repaid</div></div>';
+                html += '<div class="report-summary-card"><div class="val" style="color:#10b981;">' + fmtR(totalRepaid) + ' F</div><div class="lbl">Total Repaid</div></div>';
                 html += '<div class="report-summary-card"><div class="val" style="color:#e0a800;">' + fmtR(totalDue) + ' F</div><div class="lbl">Outstanding</div></div>';
                 html += '</div>';
 
@@ -832,12 +895,12 @@ if (isset($_GET['action'])) {
                 html += '<div class="report-summary">';
                 html += '<div class="report-summary-card"><div class="val">' + d.financing.length + '</div><div class="lbl">Loans</div></div>';
                 html += '<div class="report-summary-card"><div class="val">' + fmtR(totalAmt) + ' F</div><div class="lbl">Borrowed</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--success);">' + fmtR(totalRep) + ' F</div><div class="lbl">Repaid</div></div>';
+                html += '<div class="report-summary-card"><div class="val" style="color:#10b981;">' + fmtR(totalRep) + ' F</div><div class="lbl">Repaid</div></div>';
                 html += '<div class="report-summary-card"><div class="val" style="color:#e0a800;">' + fmtR(totalBal) + ' F</div><div class="lbl">Outstanding</div></div>';
                 html += '</div>';
 
                 html += '<table class="report-table"><thead><tr><th>Loan ID</th><th>Date</th><th>Amount</th><th>Rate %</th><th>Term</th><th>Repaid</th><th>Balance</th><th>Maturity</th><th>Status</th></tr></thead><tbody>';
-                if (d.financing.length === 0) html += '<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--text-muted);">No loans found</td></tr>';
+                if (d.financing.length === 0) html += '<tr><td colspan="9" style="text-align:center;padding:20px;color:#64748b;">No loans found</td></tr>';
                 d.financing.forEach(function(f) {
                     html += '<tr><td>' + f.financing_id + '</td><td>' + fmtDate(f.date) + '</td><td>' + fmtR(f.amount) + ' F</td><td>' + (f.interest_rate_pct || '0') + '%</td><td>' + (f.term_months || '-') + ' mo</td><td>' + fmtR(f.amount_repaid) + ' F</td><td>' + fmtR(f.balance_due) + ' F</td><td>' + fmtDate(f.maturity_date) + '</td><td><span class="status-badge">' + f.status + '</span></td></tr>';
                 });
@@ -853,14 +916,14 @@ if (isset($_GET['action'])) {
 
                 html += '<div class="report-summary">';
                 html += '<div class="report-summary-card"><div class="val">' + d.payments.length + '</div><div class="lbl">Payments</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--success);">' + fmtR(totalIn) + ' F</div><div class="lbl">Received from Bank</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--danger);">' + fmtR(totalOut) + ' F</div><div class="lbl">Paid to Bank</div></div>';
+                html += '<div class="report-summary-card"><div class="val" style="color:#10b981;">' + fmtR(totalIn) + ' F</div><div class="lbl">Received from Bank</div></div>';
+                html += '<div class="report-summary-card"><div class="val" style="color:#ef4444;">' + fmtR(totalOut) + ' F</div><div class="lbl">Paid to Bank</div></div>';
                 html += '</div>';
 
                 html += '<table class="report-table"><thead><tr><th>Payment ID</th><th>Date</th><th>Direction</th><th>Loan ID</th><th>Amount</th><th>Mode</th><th>Reference</th></tr></thead><tbody>';
-                if (d.payments.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No payments found</td></tr>';
+                if (d.payments.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:#64748b;">No payments found</td></tr>';
                 d.payments.forEach(function(p) {
-                    var dirCls = p.direction === 'Incoming' ? 'color:var(--success);' : 'color:var(--danger);';
+                    var dirCls = p.direction === 'Incoming' ? 'color:#10b981;' : 'color:#ef4444;';
                     html += '<tr><td>' + p.payment_id + '</td><td>' + fmtDate(p.date) + '</td><td style="' + dirCls + 'font-weight:600;">' + p.direction + '</td><td>' + (p.linked_financing_id || '-') + '</td><td>' + fmtR(p.amount) + ' F</td><td>' + (p.payment_mode || '-') + '</td><td>' + (p.reference_number || '-') + '</td></tr>';
                 });
                 html += '</tbody></table>';
@@ -889,6 +952,32 @@ if (isset($_GET['action'])) {
             win.document.close();
             win.onload = function() { win.focus(); win.print(); };
         }
+    </script>
+
+    <script>
+    (function(){
+      var t = localStorage.getItem('cp_theme');
+      if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+    </script>
+    <script>
+    window._translations = {};
+    function t(key) { return window._translations[key] || key; }
+    function applyTranslations() {
+      document.querySelectorAll('[data-t]').forEach(function(el) {
+        var key = el.getAttribute('data-t');
+        if (window._translations[key]) el.textContent = window._translations[key];
+      });
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      var lang = localStorage.getItem('cp_lang') || 'en';
+      fetch('lang.php?lang=' + lang)
+        .then(function(r){ return r.json(); })
+        .then(function(data){ window._translations = data; applyTranslations(); })
+        .catch(function(){});
+    });
     </script>
 </body>
 </html>
