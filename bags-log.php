@@ -481,264 +481,574 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!-- Developed by Rameez Scripts — https://www.youtube.com/@rameezimdad -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Bags Log - Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow — Bag Journal</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    <style>
-        .dropdown-with-add {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-        .dropdown-with-add select {
-            flex: 1;
-        }
-        .btn-quick-add {
-            width: 36px;
-            height: 36px;
-            border: 2px solid var(--navy-accent, #0074D9);
-            background: transparent;
-            color: var(--navy-accent, #0074D9);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-        .btn-quick-add:hover {
-            background: var(--navy-accent, #0074D9);
-            color: #fff;
-        }
-    </style>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton loader */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Active nav link */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTable overrides */
+    #bagsLogTable_wrapper .dataTables_filter input {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.8125rem;
+      color: inherit;
+      outline: none;
+    }
+    .dark #bagsLogTable_wrapper .dataTables_filter input {
+      border-color: #475569;
+      color: #e2e8f0;
+    }
+    #bagsLogTable_wrapper .dataTables_filter input:focus {
+      border-color: #2d9d99;
+      box-shadow: 0 0 0 2px rgba(45,157,153,0.2);
+    }
+    #bagsLogTable_wrapper .dataTables_length select {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.375rem 0.5rem;
+      font-size: 0.8125rem;
+      color: inherit;
+    }
+    .dark #bagsLogTable_wrapper .dataTables_length select {
+      border-color: #475569;
+      color: #e2e8f0;
+    }
+    table.dataTable thead th {
+      border-bottom: 2px solid #e2e8f0 !important;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      padding: 0.75rem 1rem !important;
+    }
+    .dark table.dataTable thead th { border-bottom-color: #334155 !important; color: #94a3b8; }
+    table.dataTable tbody td {
+      padding: 0.75rem 1rem !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      font-size: 0.8125rem;
+      vertical-align: middle;
+    }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b !important; }
+    table.dataTable tbody tr:hover { background: #f8fafc !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.05) !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #2d9d99 !important;
+      border-color: #2d9d99 !important;
+      color: white !important;
+      border-radius: 0.5rem;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #f1f5f9 !important;
+      border-color: #e2e8f0 !important;
+      color: #334155 !important;
+      border-radius: 0.5rem;
+    }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    .dataTables_wrapper .dataTables_info { font-size: 0.8125rem; color: #64748b; }
+    .dark .dataTables_wrapper .dataTables_info { color: #94a3b8; }
+    .dt-buttons .dt-button {
+      background: transparent !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0.5rem !important;
+      padding: 0.375rem 0.875rem !important;
+      font-size: 0.75rem !important;
+      font-weight: 500 !important;
+      color: #475569 !important;
+      margin-right: 0.25rem !important;
+      transition: all 150ms;
+    }
+    .dark .dt-buttons .dt-button { border-color: #475569 !important; color: #94a3b8 !important; }
+    .dt-buttons .dt-button:hover { background: #f1f5f9 !important; border-color: #cbd5e1 !important; }
+    .dark .dt-buttons .dt-button:hover { background: #1e293b !important; border-color: #64748b !important; }
+
+    /* Action icon buttons */
+    .action-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 0.375rem;
+      border: none; cursor: pointer; transition: all 150ms;
+      font-size: 12px; position: relative; background: transparent;
+    }
+    .edit-icon { color: #2d9d99; }
+    .edit-icon:hover { background: rgba(45,157,153,0.1); }
+    .delete-icon { color: #ef4444; }
+    .delete-icon:hover { background: rgba(239,68,68,0.1); }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+      z-index: 1000; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white; border-radius: 1rem; width: 100%; max-width: 680px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .dark .modal { background: #1e293b; }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem; border-bottom: 1px solid #e2e8f0;
+    }
+    .dark .modal-header { border-bottom-color: #334155; }
+    .modal-header h3 { font-size: 0.9375rem; font-weight: 700; color: #0f172a; }
+    .dark .modal-header h3 { color: #f1f5f9; }
+    .modal-body { padding: 1.25rem; }
+    .close-btn {
+      width: 32px; height: 32px; border-radius: 0.5rem; border: none;
+      background: #f1f5f9; color: #64748b; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; transition: all 150ms;
+    }
+    .dark .close-btn { background: #334155; color: #94a3b8; }
+    .close-btn:hover { background: #fee2e2; color: #ef4444; }
+
+    /* Form styling */
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-actions { display: flex; gap: 0.5rem; margin-top: 1.25rem; justify-content: flex-end; }
+
+    /* Skeleton table */
+    .skeleton-table { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+    .skeleton-table-row { display: flex; gap: 12px; }
+    .skeleton-table-cell { height: 18px; flex: 1; border-radius: 6px; }
+
+    /* Filters grid */
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+
+    /* Dropdown with add */
+    .dropdown-with-add { display: flex; gap: 6px; align-items: center; }
+    .dropdown-with-add select { flex: 1; }
+    .btn-quick-add {
+      width: 36px; height: 36px;
+      border: 2px solid #2d9d99; background: transparent; color: #2d9d99;
+      border-radius: 0.5rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; transition: all 0.2s ease; flex-shrink: 0;
+    }
+    .btn-quick-add:hover { background: #2d9d99; color: #fff; }
+
+    /* Searchable dropdown styling for modal */
+    .searchable-dropdown { position: relative; }
+    .searchable-dropdown-input {
+      width: 100%;
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+      padding: 0.5rem 2rem 0.5rem 0.75rem; font-size: 0.875rem; color: #1e293b;
+      outline: none; transition: all 150ms;
+    }
+    .dark .searchable-dropdown-input { background: #334155; border-color: #475569; color: #e2e8f0; }
+    .searchable-dropdown-input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.2); }
+    .searchable-dropdown-arrow {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; font-size: 11px; pointer-events: none; transition: transform 200ms;
+    }
+    .searchable-dropdown-arrow.open { transform: translateY(-50%) rotate(180deg); }
+    .searchable-dropdown-list {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      max-height: 200px; overflow-y: auto;
+      background: white; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); margin-top: 4px;
+    }
+    .dark .searchable-dropdown-list { background: #1e293b; border-color: #334155; }
+    .searchable-dropdown-item {
+      padding: 8px 12px; font-size: 0.8125rem; cursor: pointer; transition: background 100ms;
+    }
+    .searchable-dropdown-item:hover { background: #f1f5f9; }
+    .dark .searchable-dropdown-item:hover { background: #334155; }
+    .searchable-dropdown-item.selected { background: rgba(45,157,153,0.1); color: #2d9d99; font-weight: 600; }
+    .searchable-dropdown-item.no-results { color: #94a3b8; cursor: default; }
+
+    /* Counterpart toggle buttons */
+    .cp-toggle-btn {
+      flex: 1; font-size: 12px; padding: 6px 8px; border-radius: 0.375rem;
+      cursor: pointer; transition: all 150ms; font-weight: 600; text-align: center;
+    }
+    .cp-toggle-btn.active { background: #2d9d99; color: #fff; border: 1px solid #2d9d99; }
+    .cp-toggle-btn.inactive {
+      background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0;
+    }
+    .dark .cp-toggle-btn.inactive { background: #334155; color: #94a3b8; border-color: #475569; }
+
+    /* Readonly field */
+    .readonly-field { opacity: 0.7; cursor: not-allowed; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-boxes-packing"></i> Bags Log</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
+<?php include 'mobile-menu.php'; ?>
+
+<div class="flex h-full overflow-hidden" id="appRoot">
+
+  <?php include 'sidebar.php'; ?>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <i class="fas fa-boxes-stacked text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white">Bag Journal</h1>
+      </div>
+
+      <div class="ml-auto flex items-center gap-2">
+        <span class="hidden sm:inline text-xs text-slate-400 dark:text-slate-500">Welcome, <?php echo htmlspecialchars($username); ?></span>
+        <button class="bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-600 transition-colors" onclick="loadBagsLog()" style="touch-action: manipulation;">
+          <i class="fas fa-sync text-xs mr-1"></i> Refresh
+        </button>
+        <?php if ($canCreate): ?>
+        <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors shadow-sm" onclick="openAddModal()" style="touch-action: manipulation;">
+          <i class="fas fa-plus text-xs mr-1"></i> Add Entry
+        </button>
+        <?php endif; ?>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-5">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-5" id="kpiCardsSection">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="h-0.5 bg-brand-500"></div>
+          <div class="p-4 text-center">
+            <div class="w-9 h-9 rounded-xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center mx-auto mb-2">
+              <i class="fas fa-hashtag text-brand-500 text-sm"></i>
             </div>
-
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Bag Inventory Movement</h2>
-                    <div class="section-header-actions">
-                        <button class="btn btn-primary" onclick="loadBagsLog()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Entry
-                        </button>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                            <input type="date" id="filterDateFrom" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                            <input type="date" id="filterDateTo" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-leaf"></i> Season</label>
-                            <select id="filterSeason" class="filter-input">
-                                <option value="">All Seasons</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-handshake"></i> Customer</label>
-                            <select id="filterCustomer" class="filter-input">
-                                <option value="">All Customers</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                    </div>
-                </div>
-
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="bagsLogTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total Entries</p>
+            <p class="mt-1 text-xl font-bold text-slate-800 dark:text-white tabular" id="kpiTotalEntries"><span class="skeleton inline-block h-6 w-16 rounded"></span></p>
+          </div>
         </div>
-    </div>
-
-    <?php if ($canCreate || $canUpdate): ?>
-    <div class="modal-overlay" id="bagLogModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-boxes-packing"></i> Add Entry</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="h-0.5 bg-emerald-500"></div>
+          <div class="p-4 text-center">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mx-auto mb-2">
+              <i class="fas fa-arrow-down text-emerald-500 text-sm"></i>
             </div>
-            <div class="modal-body">
-                <form id="bagLogForm">
-                    <input type="hidden" id="bagLogId" name="bag_log_id">
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-calendar-day"></i> Date *</label>
-                            <input type="date" id="bagLogDate" name="date" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-handshake"></i> Counterpart</label>
-                            <div style="display:flex;gap:6px;margin-bottom:8px;">
-                                <button type="button" class="btn btn-sm" id="cpTypeCustomer" onclick="setCounterpartType('customer')" style="flex:1;font-size:12px;padding:5px 8px;background:var(--navy-accent);color:#fff;border:none;border-radius:4px;cursor:pointer;">Customer</button>
-                                <button type="button" class="btn btn-sm" id="cpTypeSupplier" onclick="setCounterpartType('supplier')" style="flex:1;font-size:12px;padding:5px 8px;background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border-light);border-radius:4px;cursor:pointer;">Supplier</button>
-                            </div>
-                            <div id="customerDropdownGroup">
-                                <div class="searchable-dropdown" id="custDropdownWrapper">
-                                    <input type="text" class="searchable-dropdown-input" id="custSearch" placeholder="Search customer..." autocomplete="off">
-                                    <input type="hidden" id="custCustomerId" name="customer_id">
-                                    <span class="searchable-dropdown-arrow" id="custArrow"><i class="fas fa-chevron-down"></i></span>
-                                    <div class="searchable-dropdown-list" id="custList" style="display:none;"></div>
-                                </div>
-                            </div>
-                            <div id="supplierDropdownGroup" style="display:none;">
-                                <div class="searchable-dropdown" id="suppDropdownWrapper">
-                                    <input type="text" class="searchable-dropdown-input" id="suppSearch" placeholder="Search supplier..." autocomplete="off">
-                                    <input type="hidden" id="suppSupplierId" name="supplier_id">
-                                    <span class="searchable-dropdown-arrow" id="suppArrow"><i class="fas fa-chevron-down"></i></span>
-                                    <div class="searchable-dropdown-list" id="suppList" style="display:none;"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-box"></i> Bag Type</label>
-                            <div class="dropdown-with-add">
-                                <select id="bagTypeId" name="bag_type_id">
-                                    <option value="">Select bag type...</option>
-                                </select>
-                                <button type="button" class="btn-quick-add" onclick="quickAddBagType()" title="Add new bag type">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-align-left"></i> Description</label>
-                            <input type="text" id="bagLogDescription" name="description" maxlength="300" placeholder="Enter description...">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-arrow-down"></i> Qty In</label>
-                            <input type="number" id="bagLogQtyIn" name="qty_in" min="0" value="0" onchange="computeBalance()" oninput="computeBalance()">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-hashtag"></i> Ref Number</label>
-                            <input type="text" id="bagLogRefNumber" name="ref_number" maxlength="50" placeholder="REF-...">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-arrow-up"></i> Qty Out</label>
-                            <input type="number" id="bagLogQtyOut" name="qty_out" min="0" value="0" onchange="computeBalance()" oninput="computeBalance()">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-scale-balanced"></i> Previous Balance</label>
-                            <input type="number" id="bagLogPrevBalance" name="previous_balance" readonly class="readonly-field">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-calculator"></i> Balance</label>
-                            <input type="number" id="bagLogBalance" name="balance" readonly class="readonly-field">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-truck"></i> Truck</label>
-                            <select id="bagLogTruckId" name="truck_id" onchange="onTruckChange()">
-                                <option value="">Select truck...</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Driver Name</label>
-                            <input type="text" id="bagLogDriverName" name="driver_name" readonly class="readonly-field" placeholder="Auto-filled from truck">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-leaf"></i> Season</label>
-                            <?php echo renderSeasonDropdown('bagLogSeason', 'season', null, false); ?>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total In</p>
+            <p class="mt-1 text-xl font-bold text-emerald-600 dark:text-emerald-400 tabular" id="kpiTotalIn"><span class="skeleton inline-block h-6 w-16 rounded"></span></p>
+          </div>
         </div>
-    </div>
-    <?php endif; ?>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="h-0.5 bg-rose-500"></div>
+          <div class="p-4 text-center">
+            <div class="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center mx-auto mb-2">
+              <i class="fas fa-arrow-up text-rose-500 text-sm"></i>
+            </div>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total Out</p>
+            <p class="mt-1 text-xl font-bold text-rose-600 dark:text-rose-400 tabular" id="kpiTotalOut"><span class="skeleton inline-block h-6 w-16 rounded"></span></p>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="h-0.5 bg-blue-500"></div>
+          <div class="p-4 text-center">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mx-auto mb-2">
+              <i class="fas fa-scale-balanced text-blue-500 text-sm"></i>
+            </div>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Current Balance</p>
+            <p class="mt-1 text-xl font-bold text-slate-800 dark:text-white tabular" id="kpiBalance"><span class="skeleton inline-block h-6 w-16 rounded"></span></p>
+          </div>
+        </div>
+      </div>
 
-    <script>
+      <!-- Filters -->
+      <div id="filtersSection" style="display: none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 mb-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <i class="fas fa-filter text-brand-500 text-xs"></i> Filters
+          </h3>
+          <button class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" onclick="clearFilters()" style="touch-action: manipulation;">
+            <i class="fas fa-times-circle mr-1"></i> Clear All
+          </button>
+        </div>
+        <div class="filters-grid">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+            <input type="date" id="filterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+            <input type="date" id="filterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+            <select id="filterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Seasons</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Customer</label>
+            <select id="filterCustomer" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Customers</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+
+        <!-- Skeleton Loader -->
+        <div id="skeletonLoader" class="p-5">
+          <div class="skeleton-table">
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div id="tableContainer" style="display: none;" class="p-5">
+          <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table id="bagsLogTable" class="display" style="width:100%"></table>
+          </div>
+        </div>
+
+      </div><!-- end data card -->
+
+    </main>
+  </div><!-- end main-content -->
+</div><!-- end appRoot -->
+
+<!-- Add/Edit Modal -->
+<?php if ($canCreate || $canUpdate): ?>
+<div class="modal-overlay" id="bagLogModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modalTitle"><i class="fas fa-boxes-stacked text-brand-500 mr-2"></i> Add Entry</h3>
+      <button class="close-btn" onclick="closeModal()" style="touch-action: manipulation;">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form id="bagLogForm">
+        <input type="hidden" id="bagLogId" name="bag_log_id">
+
+        <div class="form-grid">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date *</label>
+            <input type="date" id="bagLogDate" name="date" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Counterpart</label>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" class="cp-toggle-btn active" id="cpTypeCustomer" onclick="setCounterpartType('customer')">Customer</button>
+              <button type="button" class="cp-toggle-btn inactive" id="cpTypeSupplier" onclick="setCounterpartType('supplier')">Supplier</button>
+            </div>
+            <div id="customerDropdownGroup">
+              <div class="searchable-dropdown" id="custDropdownWrapper">
+                <input type="text" class="searchable-dropdown-input" id="custSearch" placeholder="Search customer..." autocomplete="off">
+                <input type="hidden" id="custCustomerId" name="customer_id">
+                <span class="searchable-dropdown-arrow" id="custArrow"><i class="fas fa-chevron-down"></i></span>
+                <div class="searchable-dropdown-list" id="custList" style="display:none;"></div>
+              </div>
+            </div>
+            <div id="supplierDropdownGroup" style="display:none;">
+              <div class="searchable-dropdown" id="suppDropdownWrapper">
+                <input type="text" class="searchable-dropdown-input" id="suppSearch" placeholder="Search supplier..." autocomplete="off">
+                <input type="hidden" id="suppSupplierId" name="supplier_id">
+                <span class="searchable-dropdown-arrow" id="suppArrow"><i class="fas fa-chevron-down"></i></span>
+                <div class="searchable-dropdown-list" id="suppList" style="display:none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Bag Type</label>
+            <div class="dropdown-with-add">
+              <select id="bagTypeId" name="bag_type_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">Select bag type...</option>
+              </select>
+              <button type="button" class="btn-quick-add" onclick="quickAddBagType()" title="Add new bag type">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Description</label>
+            <input type="text" id="bagLogDescription" name="description" maxlength="300" placeholder="Enter description..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Qty In</label>
+            <input type="number" id="bagLogQtyIn" name="qty_in" min="0" value="0" onchange="computeBalance()" oninput="computeBalance()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Ref Number</label>
+            <input type="text" id="bagLogRefNumber" name="ref_number" maxlength="50" placeholder="REF-..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Qty Out</label>
+            <input type="number" id="bagLogQtyOut" name="qty_out" min="0" value="0" onchange="computeBalance()" oninput="computeBalance()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Previous Balance</label>
+            <input type="number" id="bagLogPrevBalance" name="previous_balance" readonly class="readonly-field w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Balance</label>
+            <input type="number" id="bagLogBalance" name="balance" readonly class="readonly-field w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Truck</label>
+            <select id="bagLogTruckId" name="truck_id" onchange="onTruckChange()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">Select truck...</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Driver Name</label>
+            <input type="text" id="bagLogDriverName" name="driver_name" readonly class="readonly-field w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors" placeholder="Auto-filled from truck">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+            <?php echo renderSeasonDropdown('bagLogSeason', 'season', null, false); ?>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-600 transition-colors" onclick="closeModal()" style="touch-action: manipulation;">
+            <i class="fas fa-times mr-1"></i> Cancel
+          </button>
+          <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" style="touch-action: manipulation;">
+            <i class="fas fa-save mr-1"></i> Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
+<script>
     // Global variables
     var ACTIVE_SEASON = '<?php echo addslashes(getActiveSeason()); ?>';
     var bagsLogTable;
@@ -956,24 +1266,16 @@ if (isset($_GET['action'])) {
         var suppGrp = document.getElementById('supplierDropdownGroup');
 
         if (type === 'customer') {
-            custBtn.style.background = 'var(--navy-accent)';
-            custBtn.style.color = '#fff';
-            custBtn.style.border = 'none';
-            suppBtn.style.background = 'var(--bg-secondary)';
-            suppBtn.style.color = 'var(--text-muted)';
-            suppBtn.style.border = '1px solid var(--border-light)';
+            custBtn.className = 'cp-toggle-btn active';
+            suppBtn.className = 'cp-toggle-btn inactive';
             custGrp.style.display = '';
             suppGrp.style.display = 'none';
             // clear supplier
             document.getElementById('suppSupplierId').value = '';
             document.getElementById('suppSearch').value = '';
         } else {
-            suppBtn.style.background = 'var(--navy-accent)';
-            suppBtn.style.color = '#fff';
-            suppBtn.style.border = 'none';
-            custBtn.style.background = 'var(--bg-secondary)';
-            custBtn.style.color = 'var(--text-muted)';
-            custBtn.style.border = '1px solid var(--border-light)';
+            suppBtn.className = 'cp-toggle-btn active';
+            custBtn.className = 'cp-toggle-btn inactive';
             custGrp.style.display = 'none';
             suppGrp.style.display = '';
             // clear customer
@@ -1013,6 +1315,25 @@ if (isset($_GET['action'])) {
     }
 
     // =====================================================
+    // UPDATE KPI CARDS
+    // =====================================================
+    function updateKpiCards(data) {
+        var totalEntries = data.length;
+        var totalIn = 0, totalOut = 0, balance = 0;
+        data.forEach(function(d) {
+            totalIn += parseInt(d.qty_in) || 0;
+            totalOut += parseInt(d.qty_out) || 0;
+        });
+        if (data.length > 0) {
+            balance = parseInt(data[0].balance) || 0;
+        }
+        document.getElementById('kpiTotalEntries').textContent = totalEntries.toLocaleString();
+        document.getElementById('kpiTotalIn').textContent = '+' + totalIn.toLocaleString();
+        document.getElementById('kpiTotalOut').textContent = '-' + totalOut.toLocaleString();
+        document.getElementById('kpiBalance').textContent = balance.toLocaleString();
+    }
+
+    // =====================================================
     // LOAD BAGS LOG
     // =====================================================
     function loadBagsLog() {
@@ -1028,6 +1349,7 @@ if (isset($_GET['action'])) {
                     bagsLogData = response.data;
                     $('#filtersSection').show();
                     populateSeasonFilter(response.data);
+                    updateKpiCards(response.data);
                     initializeDataTable(response.data);
                 } else {
                     $('#skeletonLoader').hide();
@@ -1072,10 +1394,10 @@ if (isset($_GET['action'])) {
                 title: 'Counterpart',
                 render: function(data, type, row) {
                     if (row.supplier_id && row.supplier_name) {
-                        return '<span style="color:var(--navy-accent);font-weight:600;">' + row.supplier_name + '</span><br><small class="text-muted">' + row.supplier_id + ' <span style="background:#e8f4fd;padding:1px 6px;border-radius:3px;font-size:10px;">Supplier</span></small>';
+                        return '<span style="color:#2d9d99;font-weight:600;">' + row.supplier_name + '</span><br><small style="color:#94a3b8;">' + row.supplier_id + ' <span style="background:rgba(45,157,153,0.1);padding:1px 6px;border-radius:3px;font-size:10px;color:#2d9d99;">Supplier</span></small>';
                     }
                     if (row.customer_id && row.customer_name) {
-                        return row.customer_name + '<br><small class="text-muted">' + row.customer_id + '</small>';
+                        return row.customer_name + '<br><small style="color:#94a3b8;">' + row.customer_id + '</small>';
                     }
                     return '—';
                 }
@@ -1096,7 +1418,7 @@ if (isset($_GET['action'])) {
                 title: 'Qty In',
                 render: function(data) {
                     var val = parseInt(data) || 0;
-                    return val > 0 ? '<span style="color: var(--success, #34a853); font-weight: 600;">+' + val.toLocaleString() + '</span>' : '0';
+                    return val > 0 ? '<span style="color: #16a34a; font-weight: 600;">+' + val.toLocaleString() + '</span>' : '0';
                 }
             },
             { data: 'ref_number', title: 'Ref#', defaultContent: '' },
@@ -1105,7 +1427,7 @@ if (isset($_GET['action'])) {
                 title: 'Qty Out',
                 render: function(data) {
                     var val = parseInt(data) || 0;
-                    return val > 0 ? '<span style="color: var(--danger, #ea4335); font-weight: 600;">-' + val.toLocaleString() + '</span>' : '0';
+                    return val > 0 ? '<span style="color: #ef4444; font-weight: 600;">-' + val.toLocaleString() + '</span>' : '0';
                 }
             },
             {
@@ -1120,7 +1442,7 @@ if (isset($_GET['action'])) {
                 title: 'Truck',
                 render: function(data, type, row) {
                     if (!data) return '';
-                    return data + (row.vehicle_registration ? '<br><small class="text-muted">' + row.vehicle_registration + '</small>' : '');
+                    return data + (row.vehicle_registration ? '<br><small style="color:#94a3b8;">' + row.vehicle_registration + '</small>' : '');
                 }
             },
             { data: 'driver_name', title: 'Driver', defaultContent: '' },
@@ -1229,7 +1551,7 @@ if (isset($_GET['action'])) {
     // =====================================================
     function openAddModal() {
         isEditMode = false;
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-boxes-packing"></i> Add Entry';
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-boxes-stacked text-brand-500 mr-2"></i> Add Entry';
         document.getElementById('bagLogForm').reset();
         document.getElementById('bagLogId').value = '';
         document.getElementById('custCustomerId').value = '';
@@ -1263,7 +1585,7 @@ if (isset($_GET['action'])) {
     // =====================================================
     function editEntry(row) {
         isEditMode = true;
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Entry #' + row.bag_log_id;
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit text-brand-500 mr-2"></i> Edit Entry #' + row.bag_log_id;
         document.getElementById('bagLogId').value = row.bag_log_id;
         document.getElementById('bagLogDate').value = row.date_raw;
 
@@ -1433,6 +1755,22 @@ if (isset($_GET['action'])) {
             }
         });
     }
-    </script>
+
+    /* Theme init */
+    (function() {
+      var _store = {}; try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+      var html = document.documentElement;
+      var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      html.classList.toggle('dark', dark);
+    })();
+
+    /* i18n loader */
+    (function() {
+      var _store = {}; try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+      var lang = _store.getItem('cp_lang') || 'en';
+      document.documentElement.lang = lang;
+    })();
+</script>
+
 </body>
 </html>
