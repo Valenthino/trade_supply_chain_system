@@ -723,256 +723,505 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!-- Developed by Rameez Scripts — https://www.youtube.com/@rameezimdad -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Payments - Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Commodity Flow &mdash; Payments</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6.4.0 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="styles.css?v=5.0" />
+
+  <!-- JS Dependencies -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton shimmer */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    /* Sidebar */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Nav link active */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTable overrides */
+    #paymentsTable_wrapper .dataTables_filter input {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+      color: inherit;
+      outline: none;
+      transition: border-color 150ms;
+    }
+    .dark #paymentsTable_wrapper .dataTables_filter input { border-color: #475569; background: #1e293b; color: #e2e8f0; }
+    #paymentsTable_wrapper .dataTables_filter input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.2); }
+    #paymentsTable_wrapper .dataTables_length select {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      color: inherit;
+    }
+    .dark #paymentsTable_wrapper .dataTables_length select { border-color: #475569; background: #1e293b; color: #e2e8f0; }
+    table.dataTable thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: #64748b; border-bottom: 2px solid #e2e8f0; }
+    .dark table.dataTable thead th { color: #94a3b8; border-bottom-color: #334155; }
+    table.dataTable tbody td { font-size: 0.8125rem; padding: 0.625rem 0.75rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b; color: #e2e8f0; }
+    table.dataTable tbody tr:hover { background: #f8fafc !important; }
+    .dark table.dataTable tbody tr:hover { background: #1e293b !important; }
+    table.dataTable.no-footer { border-bottom: none; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; border-radius: 0.375rem; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: #f0f9f9 !important; color: #2d9d99 !important; border-color: #d9f2f0 !important; border-radius: 0.375rem; }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button { color: #94a3b8 !important; }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: #164342 !important; color: #4db8b4 !important; border-color: #164342 !important; }
+    .dataTables_wrapper .dataTables_info { font-size: 0.8125rem; color: #64748b; }
+    .dark .dataTables_wrapper .dataTables_info { color: #94a3b8; }
+    .dt-buttons .dt-button { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; color: #475569 !important; border-radius: 0.5rem !important; padding: 0.375rem 0.875rem !important; font-size: 0.8125rem !important; font-weight: 500; }
+    .dark .dt-buttons .dt-button { background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important; }
+    .dt-buttons .dt-button:hover { background: #f0f9f9 !important; border-color: #2d9d99 !important; color: #2d9d99 !important; }
+    .dark .dt-buttons .dt-button:hover { background: #164342 !important; color: #4db8b4 !important; border-color: #164342 !important; }
+
+    /* Status badges */
+    .status-badge { display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.025em; line-height: 1.25rem; white-space: nowrap; }
+    .status-outgoing { background: #fef2f2; color: #dc2626; }
+    .dark .status-outgoing { background: rgba(220,38,38,0.15); color: #f87171; }
+    .status-incoming { background: #f0fdf4; color: #16a34a; }
+    .dark .status-incoming { background: rgba(22,163,74,0.15); color: #4ade80; }
+    .status-pending { background: #f8fafc; color: #64748b; }
+    .dark .status-pending { background: rgba(100,116,139,0.15); color: #94a3b8; }
+
+    /* Action icons */
+    .action-icon { background: none; border: none; cursor: pointer; padding: 0.25rem 0.375rem; border-radius: 0.375rem; transition: background 150ms, color 150ms; font-size: 0.8125rem; color: #64748b; }
+    .action-icon:hover { background: #f1f5f9; }
+    .dark .action-icon { color: #94a3b8; }
+    .dark .action-icon:hover { background: #1e293b; }
+    .action-icon.edit-icon { color: #2d9d99; }
+    .action-icon.edit-icon:hover { background: #f0f9f9; color: #247f7c; }
+    .dark .action-icon.edit-icon:hover { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .action-icon.delete-icon { color: #f43f5e; }
+    .action-icon.delete-icon:hover { background: #fff1f2; color: #e11d48; }
+    .dark .action-icon.delete-icon:hover { background: rgba(244,63,94,0.15); color: #fb7185; }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: opacity 200ms, visibility 200ms;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-overlay .modal {
+      background: #fff; border-radius: 1rem; width: 95%; max-width: 720px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      transform: translateY(10px); transition: transform 200ms;
+    }
+    .dark .modal-overlay .modal { background: #1e293b; }
+    .modal-overlay.active .modal { transform: translateY(0); }
+
+    /* Searchable dropdown */
+    .searchable-dropdown { position: relative; }
+    .searchable-dropdown-input {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.5rem 2rem 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 150ms, box-shadow 150ms;
+    }
+    .dark .searchable-dropdown-input { background: #334155; border-color: #475569; color: #e2e8f0; }
+    .searchable-dropdown-input:focus { border-color: #4db8b4; box-shadow: 0 0 0 2px rgba(45,157,153,0.2); }
+    .searchable-dropdown-arrow {
+      position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; pointer-events: none; transition: transform 200ms;
+    }
+    .searchable-dropdown-arrow.open { transform: translateY(-50%) rotate(180deg); }
+    .searchable-dropdown-list {
+      position: absolute; left: 0; right: 0; top: 100%; margin-top: 0.25rem;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+      max-height: 200px; overflow-y: auto; z-index: 60; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .dark .searchable-dropdown-list { background: #1e293b; border-color: #334155; }
+    .searchable-dropdown-item {
+      padding: 0.5rem 0.75rem; font-size: 0.8125rem; cursor: pointer; transition: background 100ms;
+    }
+    .searchable-dropdown-item:hover, .searchable-dropdown-item.selected { background: #f0f9f9; color: #2d9d99; }
+    .dark .searchable-dropdown-item:hover, .dark .searchable-dropdown-item.selected { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .searchable-dropdown-item.no-results { color: #94a3b8; cursor: default; }
+
+    /* Form ID info */
+    .form-id-info {
+      background: #f0f9f9; border: 1px solid #d9f2f0; border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem; font-size: 0.8125rem; color: #247f7c; margin-bottom: 1rem;
+    }
+    .dark .form-id-info { background: rgba(45,157,153,0.1); border-color: rgba(45,157,153,0.2); color: #4db8b4; }
+
+    /* Radio group */
+    .radio-group { display: flex; gap: 0.75rem; }
+    .radio-label { display: flex; align-items: center; gap: 0.375rem; cursor: pointer; font-size: 0.875rem; color: #475569; }
+    .dark .radio-label { color: #cbd5e1; }
+    .radio-label input[type="radio"] { accent-color: #2d9d99; }
+
+    /* Skeleton table */
+    .skeleton-table { display: flex; flex-direction: column; gap: 0.75rem; }
+    .skeleton-table-row { display: flex; gap: 0.75rem; }
+    .skeleton-table-cell { flex: 1; height: 1rem; border-radius: 0.375rem; }
+
+    /* Table scroll hint */
+    .table-scroll-hint {
+      display: none; padding: 0.5rem; text-align: center; font-size: 0.75rem; color: #94a3b8;
+    }
+    @media (max-width: 768px) { .table-scroll-hint { display: block; } }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-credit-card"></i> Payments</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+  <?php include 'mobile-menu.php'; ?>
 
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Payments</h2>
-                    <div class="section-header-actions">
-                        <button class="btn btn-primary" onclick="loadPayments()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Payment
-                        </button>
-                        <?php endif; ?>
-                    </div>
-                </div>
+  <div class="flex h-full overflow-hidden" id="appRoot">
 
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                            <input type="date" id="filterDateFrom" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                            <input type="date" id="filterDateTo" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-exchange-alt"></i> Direction</label>
-                            <select id="filterDirection" class="filter-input">
-                                <option value="">All</option>
-                                <option value="Outgoing">Outgoing</option>
-                                <option value="Incoming">Incoming</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-tags"></i> Payment Type</label>
-                            <select id="filterPaymentType" class="filter-input">
-                                <option value="">All</option>
-                                <option value="Purchase">Purchase</option>
-                                <option value="Sale">Sale</option>
-                                <option value="Financing">Financing</option>
-                                <option value="Repayment">Repayment</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-leaf"></i> Season</label>
-                            <select id="filterSeason" class="filter-input">
-                                <option value="">All Seasons</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <?php include 'sidebar.php'; ?>
 
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                    </div>
-                </div>
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="paymentsTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
+      <!-- Header -->
+      <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+        <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+          <i class="fas fa-bars text-sm"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-credit-card text-brand-500 text-sm"></i>
+          <h1 class="text-base font-bold text-slate-800 dark:text-white" data-t="header-title">Payments</h1>
         </div>
-    </div>
-
-    <?php if ($canCreate || $canUpdate): ?>
-    <div class="modal-overlay" id="paymentModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-credit-card"></i> Add Payment</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="paymentIdInfo" class="form-id-info" style="display: none;">
-                    <strong><i class="fas fa-id-badge"></i> Payment ID:</strong> <span id="paymentIdDisplay"></span>
-                </div>
-
-                <form id="paymentForm">
-                    <input type="hidden" id="paymentId" name="payment_id">
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-calendar-day"></i> Date *</label>
-                            <input type="date" id="paymentDate" name="date" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-exchange-alt"></i> Direction *</label>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="direction" value="Outgoing" id="dirOutgoing" required>
-                                    <span>Outgoing</span>
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="direction" value="Incoming" id="dirIncoming">
-                                    <span>Incoming</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-tags"></i> Payment Type *</label>
-                            <select id="paymentType" name="payment_type" required onchange="onPaymentTypeChange()">
-                                <option value="">Select type...</option>
-                                <option value="Purchase">Purchase</option>
-                                <option value="Sale">Sale</option>
-                                <option value="Financing">Financing</option>
-                                <option value="Repayment">Repayment</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-handshake"></i> Counterparty *</label>
-                            <div class="searchable-dropdown" id="counterpartyDropdownWrapper">
-                                <input type="text" class="searchable-dropdown-input" id="counterpartySearch" placeholder="Search counterparty..." autocomplete="off">
-                                <input type="hidden" id="counterpartId" name="counterpart_id" required>
-                                <span class="searchable-dropdown-arrow" id="counterpartyArrow"><i class="fas fa-chevron-down"></i></span>
-                                <div class="searchable-dropdown-list" id="counterpartyList" style="display:none;"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-dollar-sign"></i> Amount *</label>
-                            <input type="text" inputmode="decimal" id="paymentAmount" name="amount" class="money-input" required placeholder="0.00">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-money-check-alt"></i> Payment Mode *</label>
-                            <select id="paymentMode" name="payment_mode" required>
-                                <option value="">Select mode...</option>
-                                <option value="Cash">Cash</option>
-                                <option value="Bank">Bank</option>
-                                <option value="Mobile Money">Mobile Money</option>
-                                <option value="Cheque">Cheque</option>
-                                <option value="Swap/Hawala">Swap/Hawala</option>
-                                <option value="Products Delivery">Products Delivery</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-hashtag"></i> Reference Number</label>
-                            <input type="text" id="referenceNumber" name="reference_number" placeholder="Enter reference..." maxlength="100">
-                        </div>
-
-                        <div class="form-group" id="linkedPurchaseGroup" style="display: none;">
-                            <label><i class="fas fa-shopping-cart"></i> Linked Purchase</label>
-                            <select id="linkedPurchaseId" name="linked_purchase_id">
-                                <option value="">None</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="linkedSaleGroup" style="display: none;">
-                            <label><i class="fas fa-receipt"></i> Linked Sale</label>
-                            <select id="linkedSaleId" name="linked_sale_id">
-                                <option value="">None</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group" id="linkedFinancingGroup" style="display: none;">
-                            <label><i class="fas fa-hand-holding-usd"></i> Linked Financing</label>
-                            <select id="linkedFinancingId" name="linked_financing_id">
-                                <option value="">None</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-leaf"></i> Season *</label>
-                            <?php echo renderSeasonDropdown('season', 'season'); ?>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-sticky-note"></i> Notes</label>
-                            <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
+        <div class="ml-auto flex items-center gap-3">
+          <span class="hidden sm:inline text-xs text-slate-400 dark:text-slate-500">Welcome, <?php echo htmlspecialchars($username); ?></span>
         </div>
-    </div>
-    <?php endif; ?>
+      </header>
 
-    <script>
+      <!-- Main scrollable content -->
+      <main class="flex-1 overflow-y-auto p-5 space-y-5">
+
+        <!-- Action bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <i class="fas fa-table text-slate-400 text-sm"></i> Payments
+          </h2>
+          <div class="flex items-center gap-2">
+            <button class="inline-flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow-sm transition-colors" onclick="loadPayments()">
+              <i class="fas fa-sync text-xs"></i> Refresh
+            </button>
+            <?php if ($canCreate): ?>
+            <button class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow-sm transition-colors" onclick="openAddModal()">
+              <i class="fas fa-plus text-xs"></i> Add Payment
+            </button>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- Filters Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card" id="filtersSection" style="display: none;">
+          <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700">
+            <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <i class="fas fa-filter text-slate-400 text-xs"></i> Filters
+            </h3>
+            <button class="text-xs font-medium text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 transition-colors flex items-center gap-1" onclick="clearFilters()">
+              <i class="fas fa-times-circle"></i> Clear All
+            </button>
+          </div>
+          <div class="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-calendar-alt mr-1"></i> Date From</label>
+              <input type="date" id="filterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-calendar-alt mr-1"></i> Date To</label>
+              <input type="date" id="filterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-exchange-alt mr-1"></i> Direction</label>
+              <select id="filterDirection" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">All</option>
+                <option value="Outgoing">Outgoing</option>
+                <option value="Incoming">Incoming</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-tags mr-1"></i> Payment Type</label>
+              <select id="filterPaymentType" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">All</option>
+                <option value="Purchase">Purchase</option>
+                <option value="Sale">Sale</option>
+                <option value="Financing">Financing</option>
+                <option value="Repayment">Repayment</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-leaf mr-1"></i> Season</label>
+              <select id="filterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">All Seasons</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+
+          <!-- Skeleton Loader -->
+          <div id="skeletonLoader" class="p-5">
+            <div class="skeleton-table">
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+              <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div id="tableContainer" style="display: none;" class="p-5">
+            <div class="table-scroll-hint">
+              <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
+            </div>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+              <table id="paymentsTable" class="display" style="width:100%"></table>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  </div>
+
+  <?php if ($canCreate || $canUpdate): ?>
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h3 id="modalTitle" class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <i class="fas fa-credit-card text-brand-500"></i> Add Payment
+        </h3>
+        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700" onclick="closeModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="px-6 py-5">
+        <div id="paymentIdInfo" class="form-id-info" style="display: none;">
+          <strong><i class="fas fa-id-badge"></i> Payment ID:</strong> <span id="paymentIdDisplay"></span>
+        </div>
+
+        <form id="paymentForm">
+          <input type="hidden" id="paymentId" name="payment_id">
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-calendar-day mr-1"></i> Date *</label>
+              <input type="date" id="paymentDate" name="date" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-exchange-alt mr-1"></i> Direction *</label>
+              <div class="radio-group mt-1.5">
+                <label class="radio-label">
+                  <input type="radio" name="direction" value="Outgoing" id="dirOutgoing" required>
+                  <span>Outgoing</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="direction" value="Incoming" id="dirIncoming">
+                  <span>Incoming</span>
+                </label>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-tags mr-1"></i> Payment Type *</label>
+              <select id="paymentType" name="payment_type" required onchange="onPaymentTypeChange()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">Select type...</option>
+                <option value="Purchase">Purchase</option>
+                <option value="Sale">Sale</option>
+                <option value="Financing">Financing</option>
+                <option value="Repayment">Repayment</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-handshake mr-1"></i> Counterparty *</label>
+              <div class="searchable-dropdown" id="counterpartyDropdownWrapper">
+                <input type="text" class="searchable-dropdown-input" id="counterpartySearch" placeholder="Search counterparty..." autocomplete="off">
+                <input type="hidden" id="counterpartId" name="counterpart_id" required>
+                <span class="searchable-dropdown-arrow" id="counterpartyArrow"><i class="fas fa-chevron-down"></i></span>
+                <div class="searchable-dropdown-list" id="counterpartyList" style="display:none;"></div>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-dollar-sign mr-1"></i> Amount *</label>
+              <input type="text" inputmode="decimal" id="paymentAmount" name="amount" class="money-input w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors" required placeholder="0.00">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-money-check-alt mr-1"></i> Payment Mode *</label>
+              <select id="paymentMode" name="payment_mode" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">Select mode...</option>
+                <option value="Cash">Cash</option>
+                <option value="Bank">Bank</option>
+                <option value="Mobile Money">Mobile Money</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Swap/Hawala">Swap/Hawala</option>
+                <option value="Products Delivery">Products Delivery</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-hashtag mr-1"></i> Reference Number</label>
+              <input type="text" id="referenceNumber" name="reference_number" placeholder="Enter reference..." maxlength="100" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+
+            <div id="linkedPurchaseGroup" style="display: none;">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-shopping-cart mr-1"></i> Linked Purchase</label>
+              <select id="linkedPurchaseId" name="linked_purchase_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">None</option>
+              </select>
+            </div>
+
+            <div id="linkedSaleGroup" style="display: none;">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-receipt mr-1"></i> Linked Sale</label>
+              <select id="linkedSaleId" name="linked_sale_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">None</option>
+              </select>
+            </div>
+
+            <div id="linkedFinancingGroup" style="display: none;">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-hand-holding-usd mr-1"></i> Linked Financing</label>
+              <select id="linkedFinancingId" name="linked_financing_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">None</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-leaf mr-1"></i> Season *</label>
+              <?php echo renderSeasonDropdown('season', 'season'); ?>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-sticky-note mr-1"></i> Notes</label>
+              <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors resize-none"></textarea>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-700">
+            <button type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" onclick="closeModal()">
+              <i class="fas fa-times text-xs"></i> Cancel
+            </button>
+            <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 shadow-sm transition-colors">
+              <i class="fas fa-save text-xs"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
+
+  <script>
     // Global variables
     let paymentsTable;
     let isEditMode = false;
@@ -1373,7 +1622,7 @@ if (isset($_GET['action'])) {
 
     function openAddModal() {
         isEditMode = false;
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-credit-card"></i> Add Payment';
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-credit-card text-brand-500"></i> Add Payment';
         document.getElementById('paymentForm').reset();
         document.getElementById('paymentId').value = '';
         document.getElementById('paymentIdInfo').style.display = 'none';
@@ -1398,7 +1647,7 @@ if (isset($_GET['action'])) {
 
     function editPayment(row) {
         isEditMode = true;
-        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Payment';
+        document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit text-brand-500"></i> Edit Payment';
         document.getElementById('paymentId').value = row.payment_id;
         document.getElementById('paymentIdInfo').style.display = 'block';
         document.getElementById('paymentIdDisplay').textContent = row.payment_id;
@@ -1694,7 +1943,7 @@ if (isset($_GET['action'])) {
             text: 'This action cannot be undone. Linked records will be recalculated.',
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#d33',
+            confirmButtonColor: '#f43f5e',
             confirmButtonText: 'Yes, delete it!'
         }).then(function(result) {
             if (result.isConfirmed) {
@@ -1724,6 +1973,96 @@ if (isset($_GET['action'])) {
             }
         });
     }
-    </script>
+  </script>
+
+  <!-- Theme init + i18n loader -->
+  <script>
+  (function() {
+    var _store = {};
+    try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+
+    /* Theme */
+    var html = document.documentElement;
+    var btn  = document.getElementById('themeToggleBtn');
+    var icon = document.getElementById('themeIcon');
+    var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var applyTheme = function() {
+      html.classList.toggle('dark', dark);
+      _store.setItem('cp_theme', dark ? 'dark' : 'light');
+      if (icon) icon.className = dark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+      var lbl = document.getElementById('themeLabel');
+      if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
+    };
+    applyTheme();
+    if (btn) btn.addEventListener('click', function() { dark = !dark; applyTheme(); });
+
+    /* Sidebar collapse */
+    var appRoot = document.getElementById('appRoot');
+    var collapseBtn = document.getElementById('sidebarCollapseBtn');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        appRoot.classList.toggle('app-collapsed');
+        var ic = document.getElementById('collapseIcon');
+        if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+      });
+    }
+
+    /* i18n */
+    var currentLang = _store.getItem('cp_lang') || 'en';
+    var TRANSLATIONS = {
+      en: {
+        'nav-section-ops':'Operations','nav-dashboard':'Dashboard','nav-purchases':'Purchases','nav-sales':'Sales',
+        'nav-deliveries':'Deliveries','nav-payments':'Payments','nav-section-master':'Master Data',
+        'nav-suppliers':'Suppliers','nav-customers':'Customers','nav-pricing':'Price Grid','nav-banks':'Banks',
+        'nav-section-finance':'Finance','nav-financing':'Financing','nav-expenses':'Expenses','nav-pl':'P&L Analysis',
+        'nav-section-ai':'AI & Analytics','nav-ai':'AI Reports','badge-new':'New',
+        'nav-section-logistics':'Logistics','nav-fleet':'Fleet & Drivers','nav-bags':'Bag Journal','nav-inventory':'Inventory',
+        'nav-section-admin':'Administration','nav-users':'Users','nav-settings':'Settings','nav-logout':'Sign Out',
+        'tooltip-collapse':'Collapse','header-title':'Payments',
+        'theme-dark':'Dark Mode','theme-light':'Light Mode','lang-switch':'Fran\u00e7ais'
+      },
+      fr: {
+        'nav-section-ops':'Op\u00e9rations','nav-dashboard':'Dashboard','nav-purchases':'Achats','nav-sales':'Ventes',
+        'nav-deliveries':'Livraisons','nav-payments':'Paiements','nav-section-master':'Donn\u00e9es Ma\u00eetres',
+        'nav-suppliers':'Fournisseurs','nav-customers':'Clients','nav-pricing':'Grille Prix','nav-banks':'Banques',
+        'nav-section-finance':'Finance','nav-financing':'Financement','nav-expenses':'D\u00e9penses','nav-pl':'Analyse P&L',
+        'nav-section-ai':'IA & Analytique','nav-ai':'Rapports IA','badge-new':'Nouveau',
+        'nav-section-logistics':'Logistique','nav-fleet':'Flotte & Chauffeurs','nav-bags':'Journal Sacs','nav-inventory':'Inventaire',
+        'nav-section-admin':'Administration','nav-users':'Utilisateurs','nav-settings':'Param\u00e8tres','nav-logout':'D\u00e9connexion',
+        'tooltip-collapse':'R\u00e9duire','header-title':'Paiements',
+        'theme-dark':'Mode sombre','theme-light':'Mode clair','lang-switch':'English'
+      }
+    };
+
+    function t(key) {
+      return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]) || key;
+    }
+
+    function applyTranslations() {
+      document.querySelectorAll('[data-t]').forEach(function(el) {
+        var key = el.getAttribute('data-t');
+        el.textContent = t(key);
+      });
+      var langLabel = document.getElementById('langLabel');
+      if (langLabel) langLabel.textContent = t('lang-switch');
+      var isDarkNow = html.classList.contains('dark');
+      var themeLabel = document.getElementById('themeLabel');
+      if (themeLabel) themeLabel.textContent = isDarkNow ? t('theme-light') : t('theme-dark');
+    }
+
+    var langBtn = document.getElementById('langToggleBtn');
+    if (langBtn) {
+      langBtn.addEventListener('click', function() {
+        currentLang = (currentLang === 'en') ? 'fr' : 'en';
+        _store.setItem('cp_lang', currentLang);
+        html.lang = currentLang;
+        applyTranslations();
+      });
+    }
+
+    applyTranslations();
+  })();
+  </script>
+
 </body>
 </html>

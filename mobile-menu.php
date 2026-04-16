@@ -46,7 +46,7 @@ $mobile_role = isset($role) ? $role : 'Warehouse Clerk';
 <div class="quick-add-overlay" id="quickAddOverlay" onclick="closeQuickAdd()"></div>
 <div class="quick-add-menu" id="quickAddMenu">
     <a href="purchases.php" class="quick-add-item" onclick="closeQuickAdd()">
-        <div class="quick-add-icon" style="background:#0074D9;"><i class="fas fa-cart-shopping"></i></div>
+        <div class="quick-add-icon" style="background:#2d9d99;"><i class="fas fa-cart-shopping"></i></div>
         <span>Purchase</span>
     </a>
     <a href="payments.php" class="quick-add-item" onclick="closeQuickAdd()">

@@ -151,7 +151,7 @@ echo generateUserThemeCSS($user_id);
       </svg>
     </div>
     <div class="logo-text flex flex-col min-w-0">
-      <span class="text-sm font-bold text-slate-800 dark:text-white leading-tight whitespace-nowrap">CashewPro</span>
+      <span class="text-sm font-bold text-slate-800 dark:text-white leading-tight whitespace-nowrap">Commodity Flow</span>
       <span class="text-[10px] font-semibold text-brand-500 uppercase tracking-wider leading-tight" id="sidebarSeason"><?php echo htmlspecialchars($activeSeason ?? 'No Season'); ?></span>
     </div>
     <button id="sidebarCollapseBtn" class="ml-auto text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-6 h-6 flex items-center justify-center rounded flex-shrink-0" data-t="tooltip-collapse">
@@ -171,6 +171,22 @@ echo generateUserThemeCSS($user_id);
         <p class="text-[10px] text-slate-400 truncate" id="sidebarRole"><?php echo htmlspecialchars($_SESSION['role'] ?? ''); ?></p>
       </div>
     </div>
+  </div>
+
+  <!-- Season Selector -->
+  <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-700 flex-shrink-0" id="seasonSelectorWrap">
+    <select id="globalSeasonSelect" class="w-full text-xs bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-2 py-1.5 text-slate-700 dark:text-slate-300 font-medium focus:outline-none focus:ring-2 focus:ring-brand-400">
+      <?php
+        if (function_exists('getAllSeasons')) {
+          $allSeasons = getAllSeasons();
+          $currentActiveSeason = function_exists('getActiveSeason') ? getActiveSeason() : '';
+          foreach ($allSeasons as $s):
+            $sel = ($s['season_name'] === $currentActiveSeason) ? 'selected' : '';
+            echo '<option value="' . htmlspecialchars($s['season_name']) . '" ' . $sel . '>' . htmlspecialchars($s['season_name']) . '</option>';
+          endforeach;
+        }
+      ?>
+    </select>
   </div>
 
   <!-- Navigation -->
@@ -523,4 +539,22 @@ echo generateUserThemeCSS($user_id);
         setTimeout(loadNotifications, 1000);
     });
 })();
+</script>
+
+<!-- Season Selector JS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var sel = document.getElementById('globalSeasonSelect');
+  if (sel) {
+    var url = new URL(window.location.href);
+    var sp = url.searchParams.get('selected_season') || sessionStorage.getItem('selectedSeason');
+    if (sp) { sel.value = sp; sessionStorage.setItem('selectedSeason', sp); }
+    sel.addEventListener('change', function() {
+      sessionStorage.setItem('selectedSeason', this.value);
+      var u = new URL(window.location.href);
+      u.searchParams.set('selected_season', this.value);
+      window.location.href = u.toString();
+    });
+  }
+});
 </script>

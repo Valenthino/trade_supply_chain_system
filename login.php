@@ -1,8 +1,3 @@
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <?php
 require_once 'config.php';
 
@@ -52,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 } catch (Exception $e) {
                     // Check if it's a table/column not found error
                     if (strpos($e->getMessage(), "doesn't exist") !== false || strpos($e->getMessage(), "Unknown column") !== false) {
-                        $error = 'Database not set up. Please run <a href="setup.php" style="color: var(--navy-accent); text-decoration: underline;">setup.php</a> first.';
+                        $error = 'Database not set up. Please run <a href="setup.php" class="text-brand-500 underline">setup.php</a> first.';
                     } else {
                         $error = 'Database error. Please contact administrator.';
                         error_log("Login error: " . $e->getMessage());
@@ -120,79 +115,103 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Login - Dashboard System</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; Sign In</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: {
+            50:  '#f0f9f9',
+            100: '#d9f2f0',
+            200: '#b5e6e3',
+            300: '#82d3cf',
+            400: '#4db8b4',
+            500: '#2d9d99',
+            600: '#247f7c',
+            700: '#1d6462',
+            800: '#185150',
+            900: '#164342',
+          }
+        }
+      }
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <div class="login-container">
-        <div class="login-box">
-            <img src="<?php echo htmlspecialchars($loginLogo); ?>" alt="Logo" class="login-logo" onerror="this.src='<?php echo $defaultLogo; ?>'">
-            <h2>System Login</h2>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-brand-50 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center p-4 font-sans antialiased">
 
-            <?php if ($error): ?>
-                <div class="error"><i class="fas fa-exclamation-circle"></i> <?php echo $error; ?></div>
-            <?php endif; ?>
-
-            <form method="POST" action="">
-                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
-
-                <div class="form-group">
-                    <label><i class="fas fa-envelope"></i> Email</label>
-                    <input type="email" id="email" name="email" required autofocus autocomplete="email" maxlength="200">
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fas fa-lock"></i> Password</label>
-                    <input type="password" id="password" name="password" required autocomplete="current-password" minlength="6">
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-            </form>
-
-            <div class="login-footer">
-                <p>&copy; 2025 Dashboard System. All rights reserved.</p>
-            </div>
-        </div>
-
-        <!-- Theme Toggle Button -->
-        <button class="login-theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-            <i class="fas fa-moon" id="themeIcon"></i>
-        </button>
+  <div class="w-full max-w-md">
+    <!-- Logo & branding -->
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl bg-brand-500 flex items-center justify-center mx-auto mb-4 shadow-lg">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M8 24 C8 16 16 8 26 8 C24 16 18 22 8 24Z" fill="white" opacity="0.9"/><circle cx="24" cy="10" r="2" fill="white" opacity="0.7"/></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-white">Commodity Flow</h1>
+      <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Supply Chain Management</p>
     </div>
 
-    <script>
-    // Theme Toggle for Login Page
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    <!-- Login card -->
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-8">
+      <h2 class="text-lg font-bold text-slate-800 dark:text-white mb-6">Sign in to your account</h2>
 
-        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            document.body.classList.add('dark-mode');
-            updateThemeIcon(true);
-        }
+      <?php if ($error): ?>
+        <div class="mb-4 flex items-start gap-2 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-400 px-4 py-3 rounded-lg text-sm">
+          <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+          <span><?php echo $error; ?></span>
+        </div>
+      <?php endif; ?>
+
+      <form method="POST" action="">
+        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
+
+        <div class="mb-4">
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+            <i class="fas fa-envelope mr-1"></i> Email
+          </label>
+          <input type="email" id="email" name="email" required autofocus autocomplete="email" maxlength="200"
+            class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors"
+            placeholder="you@example.com">
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">
+            <i class="fas fa-lock mr-1"></i> Password
+          </label>
+          <input type="password" id="password" name="password" required autocomplete="current-password" minlength="6"
+            class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors"
+            placeholder="Enter your password">
+        </div>
+
+        <button type="submit" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-semibold py-2.5 rounded-lg shadow-sm transition-colors flex items-center justify-center gap-2">
+          <i class="fas fa-sign-in-alt text-sm"></i> Sign In
+        </button>
+      </form>
+    </div>
+
+    <p class="text-center text-xs text-slate-400 dark:text-slate-500 mt-6">&copy; 2025 Commodity Flow. All rights reserved.</p>
+  </div>
+
+  <!-- Theme init -->
+  <script>
+  (function(){
+    var t = localStorage.getItem('cp_theme');
+    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
     }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateThemeIcon(isDark);
-    }
-
-    function updateThemeIcon(isDark) {
-        const icon = document.getElementById('themeIcon');
-        if (icon) {
-            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-    }
-
-    initTheme();
-    </script>
+  })();
+  </script>
 </body>
 </html>

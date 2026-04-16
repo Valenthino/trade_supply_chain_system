@@ -554,949 +554,1170 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Customer Master - Dashboard System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; Customers</title>
 
-    <!-- CDN Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="styles.css?v=4.0">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton shimmer */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Nav-link active */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTable overrides for Tailwind dark mode */
+    .dataTables_wrapper { color: inherit; }
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate { color: inherit; font-size: 0.8rem; padding: 8px 0; }
+    .dataTables_wrapper .dataTables_filter input,
+    .dataTables_wrapper .dataTables_length select {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 4px 10px; font-size: 0.8rem; color: inherit;
+    }
+    .dark .dataTables_wrapper .dataTables_filter input,
+    .dark .dataTables_wrapper .dataTables_length select {
+      background: #334155; border-color: #475569; color: #e2e8f0;
+    }
+    table.dataTable { border-collapse: collapse !important; width: 100% !important; }
+    table.dataTable thead th { background: #f8fafc; color: #475569; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 10px 14px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+    .dark table.dataTable thead th { background: #1e293b; color: #94a3b8; border-bottom-color: #334155; }
+    table.dataTable tbody td { padding: 10px 14px; font-size: 0.82rem; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b; color: #cbd5e1; }
+    table.dataTable tbody tr:hover { background: #f0f9f9 !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.06) !important; }
+    table.dataTable.no-footer { border-bottom: none; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { font-size: 0.78rem; border-radius: 6px; padding: 4px 10px; border: 1px solid #e2e8f0; margin: 0 2px; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: #f0f9f9 !important; color: #2d9d99 !important; border-color: #2d9d99 !important; }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button { border-color: #475569; color: #94a3b8; }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; }
+    .dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: rgba(45,157,153,0.15) !important; color: #4db8b4 !important; border-color: #2d9d99 !important; }
+    .dt-buttons .dt-button { font-size: 0.75rem; padding: 5px 14px; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-weight: 500; }
+    .dt-buttons .dt-button:hover { background: #f0f9f9; border-color: #2d9d99; color: #2d9d99; }
+    .dark .dt-buttons .dt-button { background: #1e293b; border-color: #475569; color: #94a3b8; }
+    .dark .dt-buttons .dt-button:hover { background: rgba(45,157,153,0.15); color: #4db8b4; border-color: #2d9d99; }
+
+    /* Report tab and table styles inside Tailwind context */
+    .report-tabs { display: flex; border-bottom: 2px solid #e2e8f0; background: #fff; padding: 0 20px; gap: 0; overflow-x: auto; }
+    .dark .report-tabs { border-bottom-color: #334155; background: #1e293b; }
+    .report-tab { padding: 12px 20px; border: none; background: transparent; color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .report-tab:hover { color: #2d9d99; background: rgba(45,157,153,0.05); }
+    .report-tab.active { color: #2d9d99; border-bottom-color: #2d9d99; }
+    .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .report-summary-card { background: #f8fafc; border-radius: 8px; padding: 14px; text-align: center; }
+    .dark .report-summary-card { background: #0f172a; }
+    .report-summary-card .val { font-size: 22px; font-weight: 700; color: #2d9d99; }
+    .report-summary-card .lbl { font-size: 11px; color: #94a3b8; text-transform: uppercase; margin-top: 4px; }
+    .report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .report-table thead th { background: #1e293b; color: white; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; }
+    .report-table tbody td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; color: #334155; }
+    .dark .report-table tbody td { border-bottom-color: #1e293b; color: #cbd5e1; }
+    .report-table tbody tr:hover { background: #f0f9f9; }
+    .dark .report-table tbody tr:hover { background: rgba(45,157,153,0.06); }
+
+    /* Action icon buttons */
+    .action-icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 6px; border: none; background: transparent; cursor: pointer; transition: all 0.15s; font-size: 13px; }
+    .action-icon:hover { background: #f1f5f9; }
+    .dark .action-icon:hover { background: #334155; }
+
+    /* Status badges */
+    .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; }
+    .status-active { background: #dcfce7; color: #16a34a; }
+    .dark .status-active { background: rgba(22,163,74,0.15); color: #4ade80; }
+    .status-inactive { background: #fee2e2; color: #dc2626; }
+    .dark .status-inactive { background: rgba(220,38,38,0.15); color: #f87171; }
+
+    /* Modal overlay */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+    .modal-overlay.active { display: flex; }
+    .modal-dialog { background: #fff; border-radius: 16px; width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 48px -12px rgba(0,0,0,0.25); }
+    .dark .modal-dialog { background: #1e293b; }
+    .modal-dialog-wide { max-width: 80%; width: 80%; }
+
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-handshake"></i> Customer Master</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+  <?php include 'mobile-menu.php'; ?>
 
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Customers</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="loadCustomers()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Customer
-                        </button>
-                        <?php endif; ?>
-                    </div>
-                </div>
+  <div class="flex h-full overflow-hidden" id="appRoot">
 
-                <!-- Filters Section -->
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-toggle-on"></i> Status</label>
-                            <select id="filterStatus" class="filter-input">
-                                <option value="">All Status</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Location</label>
-                            <select id="filterLocation" class="filter-input">
-                                <option value="">All Locations</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-file-contract"></i> Contract Type</label>
-                            <select id="filterContractType" class="filter-input">
-                                <option value="">All Contract Types</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <?php include 'sidebar.php'; ?>
 
-                <!-- Loading Skeleton -->
-                <div id="loadingSkeleton">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                        </div>
-                        <?php for ($i = 0; $i < 6; $i++): ?>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                        </div>
-                        <?php endfor; ?>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-                <!-- DataTable -->
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="customersTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
+      <!-- Header -->
+      <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+        <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+          <i class="fas fa-bars text-sm"></i>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <i class="fas fa-users text-brand-500 text-sm"></i>
+          <h1 class="text-base font-bold text-slate-800 dark:text-white">Customers</h1>
         </div>
-    </div>
 
-    <?php if ($canCreate || $canUpdate): ?>
-    <!-- Customer Modal -->
-    <div class="modal-overlay" id="customerModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-user-plus"></i> Add Customer</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
+        <div class="ml-auto flex items-center gap-3">
+          <button class="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-brand-500 dark:text-slate-400 dark:hover:text-brand-400 transition-colors" onclick="loadCustomers()">
+            <i class="fas fa-sync text-[10px]"></i>
+            <span class="hidden sm:inline">Refresh</span>
+          </button>
+          <?php if ($canCreate): ?>
+          <button onclick="openAddModal()" class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow-sm transition-colors">
+            <i class="fas fa-plus text-xs"></i>
+            <span>Add Customer</span>
+          </button>
+          <?php endif; ?>
+        </div>
+      </header>
+
+      <!-- Main scrollable area -->
+      <main class="flex-1 overflow-y-auto p-5 space-y-5">
+
+        <!-- Filters Card -->
+        <div id="filtersSection" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4" style="display: none;">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-filter text-brand-500 text-xs"></i>
+              <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Filters</h3>
+            </div>
+            <button class="text-xs font-medium text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors" onclick="clearFilters()">
+              <i class="fas fa-times-circle mr-1"></i> Clear All
+            </button>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-toggle-on mr-1"></i> Status</label>
+              <select id="filterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-map-marker-alt mr-1"></i> Location</label>
+              <select id="filterLocation" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <option value="">All Locations</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-file-contract mr-1"></i> Contract Type</label>
+              <select id="filterContractType" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <option value="">All Contract Types</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- DataTable Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+
+          <!-- Loading Skeleton -->
+          <div id="loadingSkeleton" class="p-5 space-y-3">
+            <div class="flex gap-3">
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:2"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+            </div>
+            <?php for ($i = 0; $i < 6; $i++): ?>
+            <div class="flex gap-3">
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:2"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+              <div class="skeleton h-4 rounded" style="flex:1"></div>
+            </div>
+            <?php endfor; ?>
+          </div>
+
+          <!-- DataTable -->
+          <div id="tableContainer" style="display: none;">
+            <div class="px-4 py-2 text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1 sm:hidden">
+              <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
+            </div>
+            <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+              <table id="customersTable" class="display" style="width:100%"></table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <?php if ($canCreate || $canUpdate): ?>
+  <!-- Customer Modal -->
+  <div class="modal-overlay" id="customerModal">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h3 id="modalTitle" class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <i class="fas fa-user-plus text-brand-500"></i> Add Customer
+        </h3>
+        <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-300 dark:hover:bg-slate-700 transition-colors" onclick="closeModal()">
+          <i class="fas fa-times text-sm"></i>
+        </button>
+      </div>
+      <div class="px-6 py-5">
+        <form id="customerForm">
+          <input type="hidden" id="customerId" name="customer_id">
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-user mr-1"></i> Customer Name *</label>
+              <input type="text" id="customerName" name="customer_name" required maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-address-card mr-1"></i> Contact Person</label>
+              <input type="text" id="contactPerson" name="contact_person" maxlength="150" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-phone mr-1"></i> Phone</label>
+              <input type="tel" id="phone" name="phone" maxlength="20" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-phone-flip mr-1"></i> Phone 2</label>
+              <input type="tel" id="phone2" name="phone2" maxlength="20" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-envelope mr-1"></i> Email</label>
+              <input type="email" id="email" name="email" maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-map-marker-alt mr-1"></i> Location</label>
+              <select id="locationSelect" name="location_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <option value="">Select Location</option>
+              </select>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-map-pin mr-1"></i> GPS Coordinates <span class="text-slate-400 dark:text-slate-500">(optional)</span></label>
+              <div class="flex gap-2">
+                <input type="text" id="latitude" name="latitude" placeholder="Latitude" inputmode="decimal" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <input type="text" id="longitude" name="longitude" placeholder="Longitude" inputmode="decimal" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <button type="button" class="px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 text-slate-500 hover:text-brand-500 hover:border-brand-500 transition-colors" onclick="getGPSLocation()" title="Get current location">
+                  <i class="fas fa-crosshairs text-sm"></i>
                 </button>
+              </div>
             </div>
-            <div class="modal-body">
-                <form id="customerForm">
-                    <input type="hidden" id="customerId" name="customer_id">
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Customer Name *</label>
-                            <input type="text" id="customerName" name="customer_name" required maxlength="200">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-address-card"></i> Contact Person</label>
-                            <input type="text" id="contactPerson" name="contact_person" maxlength="150">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="tel" id="phone" name="phone" maxlength="20">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-phone-flip"></i> Phone 2</label>
-                            <input type="tel" id="phone2" name="phone2" maxlength="20">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> Email</label>
-                            <input type="email" id="email" name="email" maxlength="200">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Location</label>
-                            <select id="locationSelect" name="location_id">
-                                <option value="">Select Location</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-map-pin"></i> GPS Coordinates <small style="color:var(--text-muted);">(optional)</small></label>
-                            <div style="display:flex;gap:8px;">
-                                <input type="text" id="latitude" name="latitude" placeholder="Latitude" style="flex:1;" inputmode="decimal">
-                                <input type="text" id="longitude" name="longitude" placeholder="Longitude" style="flex:1;" inputmode="decimal">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="getGPSLocation()" title="Get current location" style="padding:8px 12px;white-space:nowrap;">
-                                    <i class="fas fa-crosshairs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-file-contract"></i> Contract Type</label>
-                            <select id="contractTypeSelect" name="contract_type_id">
-                                <option value="">Select Contract Type</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-percent"></i> Interest Rate %</label>
-                            <input type="number" id="interestRate" name="interest_rate" step="0.01" min="0" max="100">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-credit-card"></i> Payment Terms</label>
-                            <input type="text" id="paymentTerms" name="payment_terms" maxlength="200">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-dollar-sign"></i> Financing Provided</label>
-                            <input type="number" id="financingProvided" name="financing_provided" step="0.01" min="0">
-                        </div>
-
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label><i class="fas fa-clipboard-check"></i> Quality Terms</label>
-                            <textarea id="qualityTerms" name="quality_terms" maxlength="300" rows="3"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-file-contract mr-1"></i> Contract Type</label>
+              <select id="contractTypeSelect" name="contract_type_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+                <option value="">Select Contract Type</option>
+              </select>
             </div>
-        </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-percent mr-1"></i> Interest Rate %</label>
+              <input type="number" id="interestRate" name="interest_rate" step="0.01" min="0" max="100" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-credit-card mr-1"></i> Payment Terms</label>
+              <input type="text" id="paymentTerms" name="payment_terms" maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-dollar-sign mr-1"></i> Financing Provided</label>
+              <input type="number" id="financingProvided" name="financing_provided" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors">
+            </div>
+
+            <div class="sm:col-span-2">
+              <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1"><i class="fas fa-clipboard-check mr-1"></i> Quality Terms</label>
+              <textarea id="qualityTerms" name="quality_terms" maxlength="300" rows="3" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-colors resize-none"></textarea>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+            <button type="button" class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors" onclick="closeModal()">
+              <i class="fas fa-times mr-1"></i> Cancel
+            </button>
+            <button type="submit" class="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-brand-500 hover:bg-brand-600 shadow-sm transition-colors">
+              <i class="fas fa-save mr-1"></i> Save
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-    <?php endif; ?>
+  </div>
+  <?php endif; ?>
 
-    <!-- Report Modal CSS -->
-    <style>
-        .report-tabs { display: flex; border-bottom: 2px solid var(--border-color); background: var(--bg-card); padding: 0 20px; gap: 0; overflow-x: auto; }
-        .report-tab { padding: 12px 20px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-        .report-tab:hover { color: var(--navy-accent); background: rgba(0,116,217,0.05); }
-        .report-tab.active { color: var(--navy-accent); border-bottom-color: var(--navy-accent); }
-        .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-        .report-summary-card { background: var(--bg-primary); border-radius: 8px; padding: 14px; text-align: center; }
-        .report-summary-card .val { font-size: 22px; font-weight: 700; color: var(--navy-accent); }
-        .report-summary-card .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
-        .report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .report-table thead th { background: var(--navy-primary); color: white; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; }
-        .report-table tbody td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); color: var(--text-primary); }
-        .report-table tbody tr:hover { background: var(--table-hover); }
-    </style>
-
-    <!-- Customer Report Modal -->
-    <div id="reportModal" class="modal-overlay">
-        <div class="modal" style="max-width:80%;width:80%;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="reportTitle"><i class="fas fa-file-alt"></i> Customer Report</h3>
-                <div style="display:flex;gap:8px;align-items:center;">
-                    <button class="btn btn-primary btn-sm" onclick="printReport()"><i class="fas fa-print"></i> Print</button>
-                    <button class="close-btn" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="modal-body" style="padding:0;">
-                <!-- Tabs -->
-                <div id="reportTabs" class="report-tabs">
-                    <button class="report-tab active" onclick="switchReportTab('sales', this)"><i class="fas fa-coins"></i> Sales</button>
-                    <button class="report-tab" onclick="switchReportTab('deliveries', this)"><i class="fas fa-truck-fast"></i> Deliveries</button>
-                    <button class="report-tab" onclick="switchReportTab('payments', this)"><i class="fas fa-credit-card"></i> Payments</button>
-                    <button class="report-tab" onclick="switchReportTab('financing', this)"><i class="fas fa-money-bill-transfer"></i> Financing</button>
-                    <button class="report-tab" onclick="switchReportTab('transactions', this)"><i class="fas fa-scroll"></i> Transactions Log</button>
-                </div>
-                <!-- Tab content -->
-                <div id="reportContent" style="padding:20px;">
-                    <div class="skeleton" style="height:200px;"></div>
-                </div>
-            </div>
+  <!-- Customer Report Modal -->
+  <div id="reportModal" class="modal-overlay">
+    <div class="modal-dialog modal-dialog-wide" onclick="event.stopPropagation()">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+        <h3 id="reportTitle" class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
+          <i class="fas fa-file-alt text-brand-500"></i> Customer Report
+        </h3>
+        <div class="flex items-center gap-2">
+          <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-brand-500 hover:bg-brand-600 transition-colors" onclick="printReport()">
+            <i class="fas fa-print text-xs"></i> Print
+          </button>
+          <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-300 dark:hover:bg-slate-700 transition-colors" onclick="closeReportModal()">
+            <i class="fas fa-times text-sm"></i>
+          </button>
         </div>
+      </div>
+      <div>
+        <!-- Tabs -->
+        <div id="reportTabs" class="report-tabs">
+          <button class="report-tab active" onclick="switchReportTab('sales', this)"><i class="fas fa-coins"></i> Sales</button>
+          <button class="report-tab" onclick="switchReportTab('deliveries', this)"><i class="fas fa-truck-fast"></i> Deliveries</button>
+          <button class="report-tab" onclick="switchReportTab('payments', this)"><i class="fas fa-credit-card"></i> Payments</button>
+          <button class="report-tab" onclick="switchReportTab('financing', this)"><i class="fas fa-money-bill-transfer"></i> Financing</button>
+          <button class="report-tab" onclick="switchReportTab('transactions', this)"><i class="fas fa-scroll"></i> Transactions Log</button>
+        </div>
+        <!-- Tab content -->
+        <div id="reportContent" class="p-5">
+          <div class="skeleton" style="height:200px;"></div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <script>
+      let customersTable;
+      let isEditMode = false;
+      let customersData = [];
+      const isReadOnly = <?php echo $isReadOnly ? 'true' : 'false'; ?>;
+      const canCreate = <?php echo $canCreate ? 'true' : 'false'; ?>;
+      const canUpdate = <?php echo $canUpdate ? 'true' : 'false'; ?>;
+      const canDelete = <?php echo $canDelete ? 'true' : 'false'; ?>;
+
+      // grab GPS from browser
+      function getGPSLocation() {
+          if (!navigator.geolocation) {
+              Swal.fire({icon:'warning', title:'Not Supported', text:'Geolocation is not supported by your browser.'});
+              return;
+          }
+          navigator.geolocation.getCurrentPosition(function(pos) {
+              document.getElementById('latitude').value = pos.coords.latitude.toFixed(7);
+              document.getElementById('longitude').value = pos.coords.longitude.toFixed(7);
+              Swal.fire({icon:'success', title:'Location Set', text:'GPS coordinates captured.', timer:1500, showConfirmButton:false});
+          }, function(err) {
+              Swal.fire({icon:'error', title:'GPS Error', text: err.message});
+          });
+      }
+
+      $(document).ready(function() {
+          loadDropdowns();
+          loadCustomers();
+      });
+
+      function loadDropdowns() {
+          $.ajax({
+              url: '?action=getDropdowns',
+              method: 'GET',
+              dataType: 'json',
+              success: function(response) {
+                  if (response.success) {
+                      // Populate modal selects
+                      const locSelect = document.getElementById('locationSelect');
+                      const ctSelect = document.getElementById('contractTypeSelect');
+                      const filterLoc = document.getElementById('filterLocation');
+                      const filterCt = document.getElementById('filterContractType');
+
+                      // Location selects
+                      if (locSelect) {
+                          locSelect.innerHTML = '<option value="">Select Location</option>';
+                          response.locations.forEach(function(loc) {
+                              const option = document.createElement('option');
+                              option.value = loc.id;
+                              option.textContent = loc.name;
+                              locSelect.appendChild(option);
+                          });
+                      }
+
+                      if (filterLoc) {
+                          filterLoc.innerHTML = '<option value="">All Locations</option>';
+                          response.locations.forEach(function(loc) {
+                              const option = document.createElement('option');
+                              option.value = loc.name;
+                              option.textContent = loc.name;
+                              filterLoc.appendChild(option);
+                          });
+                      }
+
+                      // Contract type selects
+                      if (ctSelect) {
+                          ctSelect.innerHTML = '<option value="">Select Contract Type</option>';
+                          response.contract_types.forEach(function(ct) {
+                              const option = document.createElement('option');
+                              option.value = ct.id;
+                              option.textContent = ct.name;
+                              ctSelect.appendChild(option);
+                          });
+                      }
+
+                      if (filterCt) {
+                          filterCt.innerHTML = '<option value="">All Contract Types</option>';
+                          response.contract_types.forEach(function(ct) {
+                              const option = document.createElement('option');
+                              option.value = ct.name;
+                              option.textContent = ct.name;
+                              filterCt.appendChild(option);
+                          });
+                      }
+                  }
+              }
+          });
+      }
+
+      function loadCustomers() {
+          $('#loadingSkeleton').show();
+          $('#tableContainer').hide();
+
+          $.ajax({
+              url: '?action=getCustomers',
+              method: 'GET',
+              dataType: 'json',
+              success: function(response) {
+                  if (response.success) {
+                      customersData = response.data;
+                      $('#loadingSkeleton').hide();
+                      $('#tableContainer').show();
+                      $('#filtersSection').show();
+                      initializeDataTable(response.data);
+                  } else {
+                      $('#loadingSkeleton').hide();
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: response.message || 'Failed to load customers'
+                      });
+                  }
+              },
+              error: function(xhr, status, error) {
+                  console.error('AJAX Error:', error);
+                  $('#loadingSkeleton').hide();
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Connection Error',
+                      text: 'Could not connect to server. Please check console for details.'
+                  });
+              }
+          });
+      }
+
+      function initializeDataTable(data) {
+          if (customersTable) {
+              customersTable.destroy();
+              $('#customersTable').empty();
+          }
+
+          const columns = [
+              { data: 'customer_id', title: 'ID' },
+              { data: 'customer_name', title: 'Name' },
+              { data: 'contact_person', title: 'Contact' },
+              { data: 'phone', title: 'Phone' },
+              {
+                  data: 'location_name',
+                  title: 'Location',
+                  render: function(data, type, row) {
+                      var html = data || 'N/A';
+                      if (row.latitude && row.longitude) {
+                          html += ' <a href="https://www.google.com/maps?q=' + row.latitude + ',' + row.longitude + '" target="_blank" title="View on Map" style="color:#2d9d99;"><i class="fas fa-map-marker-alt"></i></a>';
+                      }
+                      return html;
+                  }
+              },
+              { data: 'contract_type_name', title: 'Contract Type' },
+              {
+                  data: 'interest_rate',
+                  title: 'Interest %',
+                  render: function(data) {
+                      return (data !== null && data !== '' && data !== undefined) ? parseFloat(data).toFixed(2) + '%' : 'N/A';
+                  }
+              },
+              {
+                  data: 'account_balance',
+                  title: 'Account Bal.',
+                  render: function(data) {
+                      var val = parseFloat(data) || 0;
+                      var formatted = Math.abs(val).toLocaleString('en-US', {maximumFractionDigits: 0});
+                      if (val > 0.01) {
+                          // positive = we owe them product/refund (advance credit) = RED, arrow OUT (money/goods leaving us)
+                          return '<span style="color:#e11d48;font-weight:600;" title="We owe — customer has advance credit"><i class="fas fa-caret-up" style="font-size:13px;margin-right:4px;"></i>+ ' + formatted + ' F</span>';
+                      } else if (val < -0.01) {
+                          // negative = they owe us money (receivable) = BLUE, arrow IN (money owed to us)
+                          return '<span style="color:#2d9d99;font-weight:600;" title="Receivable — customer owes us"><i class="fas fa-caret-down" style="font-size:13px;margin-right:4px;"></i>- ' + formatted + ' F</span>';
+                      } else {
+                          return '<span style="color:#16a34a;font-weight:600;" title="Settled"><i class="fas fa-check" style="font-size:11px;margin-right:4px;"></i>0.00</span>';
+                      }
+                  }
+              },
+              {
+                  data: 'status',
+                  title: 'Status',
+                  render: function(data) {
+                      return data === 'Active'
+                          ? '<span class="status-badge status-active"><i class="fas fa-check-circle"></i> Active</span>'
+                          : '<span class="status-badge status-inactive"><i class="fas fa-times-circle"></i> Inactive</span>';
+                  }
+              }
+          ];
+
+          // Add actions column (always visible for report button)
+          columns.push({
+              data: null,
+              title: 'Actions',
+              orderable: false,
+              render: function(data, type, row) {
+                  let actions = '';
+
+                  actions += `<button class="action-icon" onclick="showCustomerReport('${row.customer_id}', '${(row.customer_name || '').replace(/'/g, "\\'")}')" title="Report" style="color:#2d9d99"><i class="fas fa-file-alt"></i></button> `;
+
+                  if (canUpdate) {
+                      actions += `<button class="action-icon" onclick='editCustomer(${JSON.stringify(row)})' title="Edit" style="color:#2d9d99">
+                          <i class="fas fa-edit"></i>
+                      </button>`;
+
+                      const toggleIcon = row.status === 'Active' ? 'fa-toggle-on' : 'fa-toggle-off';
+                      const toggleColor = row.status === 'Active' ? 'style="color:#16a34a"' : 'style="color:#e11d48"';
+                      const toggleTitle = row.status === 'Active' ? 'Deactivate' : 'Activate';
+
+                      actions += `<button class="action-icon" onclick="toggleStatus('${row.customer_id}')" title="${toggleTitle}" ${toggleColor}>
+                          <i class="fas ${toggleIcon}"></i>
+                      </button>`;
+                  }
+
+                  if (canDelete) {
+                      actions += `<button class="action-icon" onclick="deleteCustomer('${row.customer_id}')" title="Delete" style="color:#e11d48">
+                          <i class="fas fa-trash"></i>
+                      </button>`;
+                  }
+
+                  return actions;
+              }
+          });
+
+          setTimeout(() => {
+              customersTable = $('#customersTable').DataTable({
+                  data: data,
+                  destroy: true,
+                  columns: columns,
+                  pageLength: 50,
+                  lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+                  responsive: true,
+                  dom: 'Blfrtip',
+                  buttons: [
+                      {
+                          extend: 'csv',
+                          text: '<i class="fas fa-file-csv"></i> CSV',
+                          exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
+                      },
+                      {
+                          extend: 'pdf',
+                          text: '<i class="fas fa-file-pdf"></i> PDF',
+                          exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
+                      },
+                      {
+                          extend: 'print',
+                          text: '<i class="fas fa-print"></i> Print',
+                          exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
+                      }
+                  ],
+                  order: [[0, 'desc']]
+              });
+
+              // Apply filters on change
+              $('#filterStatus, #filterLocation, #filterContractType').on('change', function() {
+                  applyFilters();
+              });
+          }, 100);
+      }
+
+      function applyFilters() {
+          if (!customersTable) return;
+
+          $.fn.dataTable.ext.search = [];
+
+          const status = document.getElementById('filterStatus').value;
+          const location = document.getElementById('filterLocation').value;
+          const contractType = document.getElementById('filterContractType').value;
+
+          // Status filter
+          if (status) {
+              $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+                  const rowStatus = customersData[dataIndex]?.status;
+                  return rowStatus === status;
+              });
+          }
+
+          // Location filter (column index 4)
+          if (location) {
+              customersTable.column(4).search('^' + location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', true, false);
+          } else {
+              customersTable.column(4).search('');
+          }
+
+          // Contract type filter (column index 5)
+          if (contractType) {
+              customersTable.column(5).search('^' + contractType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', true, false);
+          } else {
+              customersTable.column(5).search('');
+          }
+
+          customersTable.draw();
+      }
+
+      function clearFilters() {
+          document.getElementById('filterStatus').value = '';
+          document.getElementById('filterLocation').value = '';
+          document.getElementById('filterContractType').value = '';
+
+          if (customersTable) {
+              $.fn.dataTable.ext.search = [];
+              customersTable.columns().search('').draw();
+          }
+      }
+
+      <?php if ($canCreate || $canUpdate): ?>
+      function openAddModal() {
+          isEditMode = false;
+          document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus text-brand-500"></i> Add Customer';
+          document.getElementById('customerForm').reset();
+          document.getElementById('customerId').value = '';
+          document.getElementById('customerModal').classList.add('active');
+      }
+
+      function editCustomer(row) {
+          if (!canUpdate) return;
+          isEditMode = true;
+          document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit text-brand-500"></i> Edit Customer';
+          document.getElementById('customerId').value = row.customer_id;
+          document.getElementById('customerName').value = row.customer_name;
+          document.getElementById('contactPerson').value = row.contact_person || '';
+          document.getElementById('phone').value = row.phone || '';
+          document.getElementById('phone2').value = row.phone2 || '';
+          document.getElementById('email').value = row.email || '';
+          document.getElementById('locationSelect').value = row.location_id || '';
+          document.getElementById('latitude').value = row.latitude || '';
+          document.getElementById('longitude').value = row.longitude || '';
+          document.getElementById('contractTypeSelect').value = row.contract_type_id || '';
+          document.getElementById('interestRate').value = row.interest_rate || '';
+          document.getElementById('paymentTerms').value = row.payment_terms || '';
+          document.getElementById('qualityTerms').value = row.quality_terms || '';
+          document.getElementById('financingProvided').value = row.financing_provided || '';
+          document.getElementById('customerModal').classList.add('active');
+      }
+
+      function closeModal() {
+          document.getElementById('customerModal').classList.remove('active');
+          document.getElementById('customerForm').reset();
+      }
+
+      document.getElementById('customerModal').addEventListener('click', function(e) {
+          if (e.target === this) closeModal();
+      });
+
+      document.getElementById('customerForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const action = isEditMode ? 'updateCustomer' : 'addCustomer';
+
+          Swal.fire({
+              title: 'Processing...',
+              allowOutsideClick: false,
+              didOpen: () => { Swal.showLoading(); }
+          });
+
+          $.ajax({
+              url: '?action=' + action,
+              method: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              dataType: 'json',
+              success: function(response) {
+                  if (response.success) {
+                      Swal.fire({
+                          icon: 'success',
+                          title: 'Success!',
+                          text: response.message,
+                          timer: 2000,
+                          showConfirmButton: false
+                      });
+                      closeModal();
+                      setTimeout(() => loadCustomers(), 100);
+                  } else {
+                      Swal.fire({ icon: 'error', title: 'Error', text: response.message });
+                  }
+              },
+              error: function(xhr, status, error) {
+                  Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
+              }
+          });
+      });
+      <?php endif; ?>
+
+      <?php if ($canUpdate): ?>
+      function toggleStatus(customerId) {
+          Swal.fire({
+              icon: 'question',
+              title: 'Toggle Customer Status?',
+              text: 'This will activate or deactivate the customer',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, proceed',
+              cancelButtonText: 'Cancel'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  const formData = new FormData();
+                  formData.append('customer_id', customerId);
+
+                  $.ajax({
+                      url: '?action=toggleStatus',
+                      method: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      dataType: 'json',
+                      success: function(response) {
+                          if (response.success) {
+                              Swal.fire({ icon: 'success', text: response.message, timer: 2000, showConfirmButton: false });
+                              setTimeout(() => loadCustomers(), 100);
+                          } else {
+                              Swal.fire({ icon: 'error', title: 'Error', text: response.message });
+                          }
+                      },
+                      error: function(xhr, status, error) {
+                          Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
+                      }
+                  });
+              }
+          });
+      }
+      <?php endif; ?>
+
+      <?php if ($canDelete): ?>
+      function deleteCustomer(customerId) {
+          Swal.fire({
+              icon: 'warning',
+              title: 'Delete Customer?',
+              text: 'This action cannot be undone!',
+              showCancelButton: true,
+              confirmButtonColor: '#e11d48',
+              confirmButtonText: 'Yes, delete it',
+              cancelButtonText: 'Cancel'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  const formData = new FormData();
+                  formData.append('customer_id', customerId);
+
+                  $.ajax({
+                      url: '?action=deleteCustomer',
+                      method: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      dataType: 'json',
+                      success: function(response) {
+                          if (response.success) {
+                              Swal.fire({ icon: 'success', text: response.message, timer: 2000, showConfirmButton: false });
+                              setTimeout(() => loadCustomers(), 100);
+                          } else {
+                              Swal.fire({ icon: 'error', title: 'Error', text: response.message });
+                          }
+                      },
+                      error: function(xhr, status, error) {
+                          Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
+                      }
+                  });
+              }
+          });
+      }
+      <?php endif; ?>
+
+      // ===== Customer Report Functions =====
+      var reportData = null;
+
+      function showCustomerReport(customerId, customerName) {
+          document.getElementById('reportTitle').innerHTML = '<i class="fas fa-file-alt text-brand-500"></i> ' + customerName + ' — Report';
+          document.getElementById('reportContent').innerHTML = '<div class="skeleton" style="height:200px;"></div>';
+          document.getElementById('reportModal').classList.add('active');
+
+          // Reset to first tab
+          document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+          document.querySelector('.report-tab').classList.add('active');
+
+          $.getJSON('?action=getCustomerReport&customer_id=' + encodeURIComponent(customerId), function(r) {
+              if (!r.success) {
+                  document.getElementById('reportContent').innerHTML = '<p style="color:#e11d48;padding:20px;">' + (r.message || 'Failed to load') + '</p>';
+                  return;
+              }
+              reportData = r.data;
+              renderReportTab('sales');
+          }).fail(function() {
+              document.getElementById('reportContent').innerHTML = '<p style="color:#e11d48;padding:20px;">Connection error</p>';
+          });
+      }
+
+      function closeReportModal() {
+          document.getElementById('reportModal').classList.remove('active');
+          reportData = null;
+      }
+
+      document.getElementById('reportModal').addEventListener('click', function(e) {
+          if (e.target === this) closeReportModal();
+      });
+
+      function switchReportTab(tab, btn) {
+          document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
+          btn.classList.add('active');
+          renderReportTab(tab);
+      }
+
+      function fmtR(n) { return Number(n || 0).toLocaleString(); }
+      function fmtDate(d) { if (!d) return '-'; var p = d.split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; }
+
+      function renderReportTab(tab) {
+          var html = '';
+          var d = reportData;
+          if (!d) return;
+
+          if (tab === 'sales') {
+              var totalRev = 0, totalProfit = 0, totalKg = 0;
+              d.sales.forEach(function(s) { totalRev += parseFloat(s.gross_sale_amount || 0); totalProfit += parseFloat(s.net_profit || 0); totalKg += parseFloat(s.net_weight_kg || 0); });
+
+              html += '<div class="report-summary">';
+              html += '<div class="report-summary-card"><div class="val">' + d.sales.length + '</div><div class="lbl">Total Sales</div></div>';
+              html += '<div class="report-summary-card"><div class="val">' + fmtR(totalRev) + ' F</div><div class="lbl">Revenue</div></div>';
+              html += '<div class="report-summary-card"><div class="val">' + fmtR(totalProfit) + ' F</div><div class="lbl">Net Profit</div></div>';
+              html += '<div class="report-summary-card"><div class="val">' + fmtR(totalKg) + ' kg</div><div class="lbl">Volume</div></div>';
+              html += '</div>';
+
+              html += '<table class="report-table"><thead><tr><th>Sale ID</th><th>Date</th><th>Weight (kg)</th><th>Price/kg</th><th>Amount</th><th>Profit</th><th>Status</th></tr></thead><tbody>';
+              if (d.sales.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">No sales found</td></tr>';
+              d.sales.forEach(function(s) {
+                  var cls = s.sale_status === 'Confirmed' ? 'status-active' : s.sale_status === 'Cancelled' ? 'status-inactive' : '';
+                  html += '<tr><td>' + s.sale_id + '</td><td>' + fmtDate(s.unloading_date) + '</td><td>' + fmtR(s.net_weight_kg) + '</td><td>' + fmtR(s.selling_price_per_kg) + '</td><td>' + fmtR(s.gross_sale_amount) + ' F</td><td>' + fmtR(s.net_profit) + ' F</td><td><span class="status-badge ' + cls + '">' + s.sale_status + '</span></td></tr>';
+              });
+              html += '</tbody></table>';
+          }
+
+          if (tab === 'deliveries') {
+              var totalDel = d.deliveries.length, totalDelKg = 0;
+              d.deliveries.forEach(function(dl) { totalDelKg += parseFloat(dl.weight_kg || 0); });
+
+              html += '<div class="report-summary">';
+              html += '<div class="report-summary-card"><div class="val">' + totalDel + '</div><div class="lbl">Total Deliveries</div></div>';
+              html += '<div class="report-summary-card"><div class="val">' + fmtR(totalDelKg) + ' kg</div><div class="lbl">Total Weight</div></div>';
+              html += '</div>';
+
+              html += '<table class="report-table"><thead><tr><th>Delivery ID</th><th>Date</th><th>Weight (kg)</th><th>Bags</th><th>Warehouse</th><th>Status</th></tr></thead><tbody>';
+              if (d.deliveries.length === 0) html += '<tr><td colspan="6" style="text-align:center;padding:20px;color:#94a3b8;">No deliveries found</td></tr>';
+              d.deliveries.forEach(function(dl) {
+                  html += '<tr><td>' + dl.delivery_id + '</td><td>' + fmtDate(dl.date) + '</td><td>' + fmtR(dl.weight_kg) + '</td><td>' + fmtR(dl.num_bags) + '</td><td>' + (dl.warehouse_name || '-') + '</td><td><span class="status-badge">' + dl.status + '</span></td></tr>';
+              });
+              html += '</tbody></table>';
+          }
+
+          if (tab === 'payments') {
+              var totalIn = 0, totalOut = 0;
+              d.payments.forEach(function(p) { if (p.direction === 'Incoming') totalIn += parseFloat(p.amount); else totalOut += parseFloat(p.amount); });
+
+              html += '<div class="report-summary">';
+              html += '<div class="report-summary-card"><div class="val">' + d.payments.length + '</div><div class="lbl">Total Payments</div></div>';
+              html += '<div class="report-summary-card"><div class="val" style="color:#16a34a;">' + fmtR(totalIn) + ' F</div><div class="lbl">Incoming</div></div>';
+              html += '<div class="report-summary-card"><div class="val" style="color:#e11d48;">' + fmtR(totalOut) + ' F</div><div class="lbl">Outgoing</div></div>';
+              html += '</div>';
+
+              html += '<table class="report-table"><thead><tr><th>Payment ID</th><th>Date</th><th>Direction</th><th>Type</th><th>Amount</th><th>Mode</th><th>Reference</th></tr></thead><tbody>';
+              if (d.payments.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">No payments found</td></tr>';
+              d.payments.forEach(function(p) {
+                  var dirCls = p.direction === 'Incoming' ? 'color:#16a34a;' : 'color:#e11d48;';
+                  html += '<tr><td>' + p.payment_id + '</td><td>' + fmtDate(p.date) + '</td><td style="' + dirCls + 'font-weight:600;">' + p.direction + '</td><td>' + p.payment_type + '</td><td>' + fmtR(p.amount) + ' F</td><td>' + (p.payment_mode || '-') + '</td><td>' + (p.reference_number || '-') + '</td></tr>';
+              });
+              html += '</tbody></table>';
+          }
+
+          if (tab === 'financing') {
+              var totalFin = 0, totalBal = 0;
+              d.financing.forEach(function(f) { totalFin += parseFloat(f.amount); totalBal += parseFloat(f.balance_due || 0); });
+
+              html += '<div class="report-summary">';
+              html += '<div class="report-summary-card"><div class="val">' + d.financing.length + '</div><div class="lbl">Agreements</div></div>';
+              html += '<div class="report-summary-card"><div class="val">' + fmtR(totalFin) + ' F</div><div class="lbl">Total Amount</div></div>';
+              html += '<div class="report-summary-card"><div class="val" style="color:#f59e0b;">' + fmtR(totalBal) + ' F</div><div class="lbl">Balance Due</div></div>';
+              html += '</div>';
+
+              html += '<table class="report-table"><thead><tr><th>Financing ID</th><th>Date</th><th>Direction</th><th>Amount</th><th>Repaid</th><th>Balance</th><th>Status</th></tr></thead><tbody>';
+              if (d.financing.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:#94a3b8;">No financing found</td></tr>';
+              d.financing.forEach(function(f) {
+                  html += '<tr><td>' + f.financing_id + '</td><td>' + fmtDate(f.date) + '</td><td>' + f.direction + '</td><td>' + fmtR(f.amount) + ' F</td><td>' + fmtR(f.amount_repaid) + ' F</td><td>' + fmtR(f.balance_due) + ' F</td><td><span class="status-badge">' + f.status + '</span></td></tr>';
+              });
+              html += '</tbody></table>';
+          }
+
+          if (tab === 'transactions') {
+              var txns = d.transactions_log || [];
+              var totalPay = 0, totalSale = 0;
+              txns.forEach(function(t) {
+                  var pay = parseFloat(t.payment_amt) || 0;
+                  if (pay > 0) totalPay += pay;
+                  totalSale += parseFloat(t.sale_amt) || 0;
+              });
+              var netBal = txns.length ? parseFloat(txns[txns.length - 1].new_balance) || 0 : 0;
+              var balColor = netBal > 0.01 ? '#e11d48' : (netBal < -0.01 ? '#2d9d99' : '#16a34a');
+              var balLabel = netBal > 0.01 ? 'We Owe Customer' : (netBal < -0.01 ? 'Customer Owes Us' : 'Settled');
+              var balIcon = netBal > 0.01 ? '<i class="fas fa-caret-up" style="font-size:14px;margin-right:4px;"></i>' : (netBal < -0.01 ? '<i class="fas fa-caret-down" style="font-size:14px;margin-right:4px;"></i>' : '<i class="fas fa-check-circle" style="font-size:12px;margin-right:4px;"></i>');
+
+              html += '<div class="report-summary">';
+              html += '<div class="report-summary-card"><div class="val">' + txns.length + '</div><div class="lbl">Transactions</div></div>';
+              html += '<div class="report-summary-card"><div class="val" style="color:#16a34a;">' + fmtR(totalPay) + ' F</div><div class="lbl">Total Received</div></div>';
+              html += '<div class="report-summary-card"><div class="val" style="color:#e11d48;">' + fmtR(totalSale) + ' F</div><div class="lbl">Total Sales Value</div></div>';
+              html += '<div class="report-summary-card" style="border:2px solid ' + balColor + ';"><div class="val" style="color:' + balColor + ';font-weight:700;">' + balIcon + fmtR(Math.abs(netBal)) + ' F</div><div class="lbl" style="color:' + balColor + ';font-weight:600;">' + balLabel + '</div></div>';
+              html += '</div>';
+
+              if (txns.length === 0) {
+                  html += '<div style="text-align:center;padding:30px;color:#94a3b8;"><i class="fas fa-inbox" style="font-size:32px;"></i><p style="margin-top:10px;">No transactions found.</p></div>';
+              } else {
+                  html += '<div style="overflow-x:auto;"><table class="report-table" style="font-size:11px;"><thead><tr>';
+                  html += '<th>#</th><th>Date</th><th>Description</th><th style="text-align:right;">Prev. Balance</th><th style="text-align:right;">Weight (kg)</th><th style="text-align:right;">Price/Kg</th><th style="text-align:right;">Sale Amt</th><th style="text-align:right;">Payment Amt</th><th style="text-align:right;">New Balance</th><th>Mode</th>';
+                  html += '</tr></thead><tbody>';
+                  txns.forEach(function(t, i) {
+                      var pb = parseFloat(t.prev_balance) || 0;
+                      var nb = parseFloat(t.new_balance) || 0;
+                      var pbC = pb > 0.01 ? '#e11d48' : (pb < -0.01 ? '#2d9d99' : '#64748b');
+                      var nbC = nb > 0.01 ? '#e11d48' : (nb < -0.01 ? '#2d9d99' : '#16a34a');
+
+                      var dC = '';
+                      switch(t.desc) {
+                          case 'Payment Received': dC = '#16a34a'; break;
+                          case 'Financing Advance': dC = '#2d9d99'; break;
+                          case 'Sale / Delivery': dC = '#f59e0b'; break;
+                          default: dC = '#64748b';
+                      }
+
+                      html += '<tr>';
+                      html += '<td>' + (i + 1) + '</td>';
+                      html += '<td style="white-space:nowrap;">' + fmtDate(t.date) + '</td>';
+                      html += '<td style="font-weight:600;color:' + dC + ';white-space:nowrap;">' + t.desc + '</td>';
+                      html += '<td style="text-align:right;color:' + pbC + ';">' + fmtR(pb) + ' F</td>';
+                      html += '<td style="text-align:right;">' + (t.weight_kg ? fmtR(t.weight_kg) : '') + '</td>';
+                      html += '<td style="text-align:right;">' + (t.price_per_kg ? fmtR(t.price_per_kg) : '') + '</td>';
+
+                      // sale amt: shown in parentheses (reduces balance)
+                      html += '<td style="text-align:right;color:#e11d48;font-weight:600;">' + (t.sale_amt ? '(' + fmtR(t.sale_amt) + ') F' : '') + '</td>';
+
+                      // payment amt: positive = green
+                      var pay = parseFloat(t.payment_amt) || 0;
+                      var payHtml = '';
+                      if (pay > 0.01) payHtml = '<span style="color:#16a34a;font-weight:600;">' + fmtR(pay) + ' F</span>';
+                      html += '<td style="text-align:right;">' + payHtml + '</td>';
+
+                      html += '<td style="text-align:right;font-weight:700;color:' + nbC + ';">' + (nb < -0.01 ? '(' + fmtR(Math.abs(nb)) + ')' : fmtR(nb)) + ' F</td>';
+                      html += '<td style="font-size:10px;white-space:nowrap;">' + (t.payment_mode || '') + '</td>';
+                      html += '</tr>';
+                  });
+                  html += '</tbody></table></div>';
+
+                  html += '<div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #2d9d99;font-size:12px;color:#64748b;">';
+                  html += '<i class="fas fa-info-circle" style="margin-right:6px;color:#2d9d99;"></i>';
+                  html += '<strong>Balance</strong> = Payments received minus sales value. Positive = we owe customer. Negative (parentheses) = customer owes us.';
+                  html += '</div>';
+              }
+          }
+
+          document.getElementById('reportContent').innerHTML = html;
+      }
+
+      function printReport() {
+          var content = document.getElementById('reportContent').innerHTML;
+          var title = document.getElementById('reportTitle').textContent;
+          var printWin = window.open('', '_blank', 'width=900,height=700');
+          printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + '</title><style>');
+          printWin.document.write('body { font-family: Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; font-size: 12px; color: #333; padding: 20px; }');
+          printWin.document.write('h2 { color: #1e293b; margin-bottom: 16px; font-size: 18px; }');
+          printWin.document.write('.report-summary { display: flex; gap: 12px; margin-bottom: 16px; }');
+          printWin.document.write('.report-summary-card { background: #f8fafc; border-radius: 6px; padding: 12px; text-align: center; flex: 1; }');
+          printWin.document.write('.report-summary-card .val { font-size: 18px; font-weight: 700; color: #2d9d99; }');
+          printWin.document.write('.report-summary-card .lbl { font-size: 10px; color: #64748b; text-transform: uppercase; }');
+          printWin.document.write('.report-table { width: 100%; border-collapse: collapse; }');
+          printWin.document.write('.report-table th { background: #1e293b; color: white; padding: 6px 8px; font-size: 10px; text-align: left; }');
+          printWin.document.write('.report-table td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; font-size: 11px; }');
+          printWin.document.write('.status-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }');
+          printWin.document.write('@media print { body { padding: 0; } }');
+          printWin.document.write('</style></head><body>');
+          printWin.document.write('<h2>' + title + '</h2>');
+          printWin.document.write(content);
+          printWin.document.write('</body></html>');
+          printWin.document.close();
+          printWin.onload = function() { printWin.focus(); printWin.print(); };
+      }
+  </script>
+
+  <!-- Theme initialization -->
+  <script>
+  (function() {
+    var _store = localStorage;
+    var html = document.documentElement;
+    var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    html.classList.toggle('dark', dark);
+  })();
+  </script>
+
+  <!-- i18n loader stub (sidebar language/theme toggles) -->
+  <script>
+  (function() {
+    var _store = localStorage;
+    var currentLang = _store.getItem('cp_lang') || 'en';
+    document.documentElement.lang = currentLang;
+
+    var themeBtn = document.getElementById('themeToggleBtn');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function() {
+        var html = document.documentElement;
+        var isDark = html.classList.contains('dark');
+        html.classList.toggle('dark', !isDark);
+        _store.setItem('cp_theme', !isDark ? 'dark' : 'light');
+        var icon = document.getElementById('themeIcon');
+        if (icon) icon.className = !isDark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+      });
+    }
+
+    var langBtn = document.getElementById('langToggleBtn');
+    if (langBtn) {
+      langBtn.addEventListener('click', function() {
+        currentLang = (currentLang === 'en') ? 'fr' : 'en';
+        _store.setItem('cp_lang', currentLang);
+        document.documentElement.lang = currentLang;
+      });
+    }
+
+    /* Sidebar collapse */
+    var appRoot = document.getElementById('appRoot');
+    var collapseBtn = document.getElementById('sidebarCollapseBtn');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        appRoot.classList.toggle('app-collapsed');
+        var ic = document.getElementById('collapseIcon');
+        if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+      });
+    }
+
+    /* Mobile sidebar */
+    var mobileBtn = document.getElementById('mobileSidebarBtn');
+    var sidebar = document.getElementById('sidebar');
+    if (mobileBtn && sidebar) {
+      mobileBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+      });
+    }
+  })();
+  </script>
 
-    <script>
-        let customersTable;
-        let isEditMode = false;
-        let customersData = [];
-        const isReadOnly = <?php echo $isReadOnly ? 'true' : 'false'; ?>;
-        const canCreate = <?php echo $canCreate ? 'true' : 'false'; ?>;
-        const canUpdate = <?php echo $canUpdate ? 'true' : 'false'; ?>;
-        const canDelete = <?php echo $canDelete ? 'true' : 'false'; ?>;
-
-        // grab GPS from browser
-        function getGPSLocation() {
-            if (!navigator.geolocation) {
-                Swal.fire({icon:'warning', title:'Not Supported', text:'Geolocation is not supported by your browser.'});
-                return;
-            }
-            navigator.geolocation.getCurrentPosition(function(pos) {
-                document.getElementById('latitude').value = pos.coords.latitude.toFixed(7);
-                document.getElementById('longitude').value = pos.coords.longitude.toFixed(7);
-                Swal.fire({icon:'success', title:'Location Set', text:'GPS coordinates captured.', timer:1500, showConfirmButton:false});
-            }, function(err) {
-                Swal.fire({icon:'error', title:'GPS Error', text: err.message});
-            });
-        }
-
-        $(document).ready(function() {
-            loadDropdowns();
-            loadCustomers();
-        });
-
-        function loadDropdowns() {
-            $.ajax({
-                url: '?action=getDropdowns',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        // Populate modal selects
-                        const locSelect = document.getElementById('locationSelect');
-                        const ctSelect = document.getElementById('contractTypeSelect');
-                        const filterLoc = document.getElementById('filterLocation');
-                        const filterCt = document.getElementById('filterContractType');
-
-                        // Location selects
-                        if (locSelect) {
-                            locSelect.innerHTML = '<option value="">Select Location</option>';
-                            response.locations.forEach(function(loc) {
-                                const option = document.createElement('option');
-                                option.value = loc.id;
-                                option.textContent = loc.name;
-                                locSelect.appendChild(option);
-                            });
-                        }
-
-                        if (filterLoc) {
-                            filterLoc.innerHTML = '<option value="">All Locations</option>';
-                            response.locations.forEach(function(loc) {
-                                const option = document.createElement('option');
-                                option.value = loc.name;
-                                option.textContent = loc.name;
-                                filterLoc.appendChild(option);
-                            });
-                        }
-
-                        // Contract type selects
-                        if (ctSelect) {
-                            ctSelect.innerHTML = '<option value="">Select Contract Type</option>';
-                            response.contract_types.forEach(function(ct) {
-                                const option = document.createElement('option');
-                                option.value = ct.id;
-                                option.textContent = ct.name;
-                                ctSelect.appendChild(option);
-                            });
-                        }
-
-                        if (filterCt) {
-                            filterCt.innerHTML = '<option value="">All Contract Types</option>';
-                            response.contract_types.forEach(function(ct) {
-                                const option = document.createElement('option');
-                                option.value = ct.name;
-                                option.textContent = ct.name;
-                                filterCt.appendChild(option);
-                            });
-                        }
-                    }
-                }
-            });
-        }
-
-        function loadCustomers() {
-            $('#loadingSkeleton').show();
-            $('#tableContainer').hide();
-
-            $.ajax({
-                url: '?action=getCustomers',
-                method: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        customersData = response.data;
-                        $('#loadingSkeleton').hide();
-                        $('#tableContainer').show();
-                        $('#filtersSection').show();
-                        initializeDataTable(response.data);
-                    } else {
-                        $('#loadingSkeleton').hide();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: response.message || 'Failed to load customers'
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    $('#loadingSkeleton').hide();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Connection Error',
-                        text: 'Could not connect to server. Please check console for details.'
-                    });
-                }
-            });
-        }
-
-        function initializeDataTable(data) {
-            if (customersTable) {
-                customersTable.destroy();
-                $('#customersTable').empty();
-            }
-
-            const columns = [
-                { data: 'customer_id', title: 'ID' },
-                { data: 'customer_name', title: 'Name' },
-                { data: 'contact_person', title: 'Contact' },
-                { data: 'phone', title: 'Phone' },
-                {
-                    data: 'location_name',
-                    title: 'Location',
-                    render: function(data, type, row) {
-                        var html = data || 'N/A';
-                        if (row.latitude && row.longitude) {
-                            html += ' <a href="https://www.google.com/maps?q=' + row.latitude + ',' + row.longitude + '" target="_blank" title="View on Map" style="color:var(--navy-accent);"><i class="fas fa-map-marker-alt"></i></a>';
-                        }
-                        return html;
-                    }
-                },
-                { data: 'contract_type_name', title: 'Contract Type' },
-                {
-                    data: 'interest_rate',
-                    title: 'Interest %',
-                    render: function(data) {
-                        return (data !== null && data !== '' && data !== undefined) ? parseFloat(data).toFixed(2) + '%' : 'N/A';
-                    }
-                },
-                {
-                    data: 'account_balance',
-                    title: 'Account Bal.',
-                    render: function(data) {
-                        var val = parseFloat(data) || 0;
-                        var formatted = Math.abs(val).toLocaleString('en-US', {maximumFractionDigits: 0});
-                        if (val > 0.01) {
-                            // positive = we owe them product/refund (advance credit) = RED, arrow OUT (money/goods leaving us)
-                            return '<span style="color:#e74c3c;font-weight:600;" title="We owe — customer has advance credit"><i class="fas fa-caret-up" style="font-size:13px;margin-right:4px;"></i>+ ' + formatted + ' F</span>';
-                        } else if (val < -0.01) {
-                            // negative = they owe us money (receivable) = BLUE, arrow IN (money owed to us)
-                            return '<span style="color:#0074D9;font-weight:600;" title="Receivable — customer owes us"><i class="fas fa-caret-down" style="font-size:13px;margin-right:4px;"></i>- ' + formatted + ' F</span>';
-                        } else {
-                            return '<span style="color:#27ae60;font-weight:600;" title="Settled"><i class="fas fa-check" style="font-size:11px;margin-right:4px;"></i>0.00</span>';
-                        }
-                    }
-                },
-                {
-                    data: 'status',
-                    title: 'Status',
-                    render: function(data) {
-                        return data === 'Active'
-                            ? '<span class="status-badge status-active"><i class="fas fa-check-circle"></i> Active</span>'
-                            : '<span class="status-badge status-inactive"><i class="fas fa-times-circle"></i> Inactive</span>';
-                    }
-                }
-            ];
-
-            // Add actions column (always visible for report button)
-            columns.push({
-                data: null,
-                title: 'Actions',
-                orderable: false,
-                render: function(data, type, row) {
-                    let actions = '';
-
-                    actions += `<button class="action-icon" onclick="showCustomerReport('${row.customer_id}', '${(row.customer_name || '').replace(/'/g, "\\'")}')" title="Report" style="color:#0074D9"><i class="fas fa-file-alt"></i></button> `;
-
-                    if (canUpdate) {
-                        actions += `<button class="action-icon edit-icon" onclick='editCustomer(${JSON.stringify(row)})' title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </button>`;
-
-                        const toggleIcon = row.status === 'Active' ? 'fa-toggle-on' : 'fa-toggle-off';
-                        const toggleColor = row.status === 'Active' ? 'style="color:#34a853"' : 'style="color:#ea4335"';
-                        const toggleTitle = row.status === 'Active' ? 'Deactivate' : 'Activate';
-
-                        actions += `<button class="action-icon" onclick="toggleStatus('${row.customer_id}')" title="${toggleTitle}" ${toggleColor}>
-                            <i class="fas ${toggleIcon}"></i>
-                        </button>`;
-                    }
-
-                    if (canDelete) {
-                        actions += `<button class="action-icon delete-icon" onclick="deleteCustomer('${row.customer_id}')" title="Delete" style="color:#ea4335">
-                            <i class="fas fa-trash"></i>
-                        </button>`;
-                    }
-
-                    return actions;
-                }
-            });
-
-            setTimeout(() => {
-                customersTable = $('#customersTable').DataTable({
-                    data: data,
-                    destroy: true,
-                    columns: columns,
-                    pageLength: 50,
-                    lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
-                    responsive: true,
-                    dom: 'Blfrtip',
-                    buttons: [
-                        {
-                            extend: 'csv',
-                            text: '<i class="fas fa-file-csv"></i> CSV',
-                            exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
-                        },
-                        {
-                            extend: 'pdf',
-                            text: '<i class="fas fa-file-pdf"></i> PDF',
-                            exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
-                        },
-                        {
-                            extend: 'print',
-                            text: '<i class="fas fa-print"></i> Print',
-                            exportOptions: { columns: (canUpdate || canDelete) ? ':not(:last-child)' : ':visible' }
-                        }
-                    ],
-                    order: [[0, 'desc']]
-                });
-
-                // Apply filters on change
-                $('#filterStatus, #filterLocation, #filterContractType').on('change', function() {
-                    applyFilters();
-                });
-            }, 100);
-        }
-
-        function applyFilters() {
-            if (!customersTable) return;
-
-            $.fn.dataTable.ext.search = [];
-
-            const status = document.getElementById('filterStatus').value;
-            const location = document.getElementById('filterLocation').value;
-            const contractType = document.getElementById('filterContractType').value;
-
-            // Status filter
-            if (status) {
-                $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-                    const rowStatus = customersData[dataIndex]?.status;
-                    return rowStatus === status;
-                });
-            }
-
-            // Location filter (column index 4)
-            if (location) {
-                customersTable.column(4).search('^' + location.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', true, false);
-            } else {
-                customersTable.column(4).search('');
-            }
-
-            // Contract type filter (column index 5)
-            if (contractType) {
-                customersTable.column(5).search('^' + contractType.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '$', true, false);
-            } else {
-                customersTable.column(5).search('');
-            }
-
-            customersTable.draw();
-        }
-
-        function clearFilters() {
-            document.getElementById('filterStatus').value = '';
-            document.getElementById('filterLocation').value = '';
-            document.getElementById('filterContractType').value = '';
-
-            if (customersTable) {
-                $.fn.dataTable.ext.search = [];
-                customersTable.columns().search('').draw();
-            }
-        }
-
-        <?php if ($canCreate || $canUpdate): ?>
-        function openAddModal() {
-            isEditMode = false;
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-user-plus"></i> Add Customer';
-            document.getElementById('customerForm').reset();
-            document.getElementById('customerId').value = '';
-            document.getElementById('customerModal').classList.add('active');
-        }
-
-        function editCustomer(row) {
-            if (!canUpdate) return;
-            isEditMode = true;
-            document.getElementById('modalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Customer';
-            document.getElementById('customerId').value = row.customer_id;
-            document.getElementById('customerName').value = row.customer_name;
-            document.getElementById('contactPerson').value = row.contact_person || '';
-            document.getElementById('phone').value = row.phone || '';
-            document.getElementById('phone2').value = row.phone2 || '';
-            document.getElementById('email').value = row.email || '';
-            document.getElementById('locationSelect').value = row.location_id || '';
-            document.getElementById('latitude').value = row.latitude || '';
-            document.getElementById('longitude').value = row.longitude || '';
-            document.getElementById('contractTypeSelect').value = row.contract_type_id || '';
-            document.getElementById('interestRate').value = row.interest_rate || '';
-            document.getElementById('paymentTerms').value = row.payment_terms || '';
-            document.getElementById('qualityTerms').value = row.quality_terms || '';
-            document.getElementById('financingProvided').value = row.financing_provided || '';
-            document.getElementById('customerModal').classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('customerModal').classList.remove('active');
-            document.getElementById('customerForm').reset();
-        }
-
-        document.getElementById('customerModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
-
-        document.getElementById('customerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            const action = isEditMode ? 'updateCustomer' : 'addCustomer';
-
-            Swal.fire({
-                title: 'Processing...',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-
-            $.ajax({
-                url: '?action=' + action,
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        closeModal();
-                        setTimeout(() => loadCustomers(), 100);
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Error', text: response.message });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
-                }
-            });
-        });
-        <?php endif; ?>
-
-        <?php if ($canUpdate): ?>
-        function toggleStatus(customerId) {
-            Swal.fire({
-                icon: 'question',
-                title: 'Toggle Customer Status?',
-                text: 'This will activate or deactivate the customer',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, proceed',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData();
-                    formData.append('customer_id', customerId);
-
-                    $.ajax({
-                        url: '?action=toggleStatus',
-                        method: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({ icon: 'success', text: response.message, timer: 2000, showConfirmButton: false });
-                                setTimeout(() => loadCustomers(), 100);
-                            } else {
-                                Swal.fire({ icon: 'error', title: 'Error', text: response.message });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
-                        }
-                    });
-                }
-            });
-        }
-        <?php endif; ?>
-
-        <?php if ($canDelete): ?>
-        function deleteCustomer(customerId) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Delete Customer?',
-                text: 'This action cannot be undone!',
-                showCancelButton: true,
-                confirmButtonColor: '#ea4335',
-                confirmButtonText: 'Yes, delete it',
-                cancelButtonText: 'Cancel'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    const formData = new FormData();
-                    formData.append('customer_id', customerId);
-
-                    $.ajax({
-                        url: '?action=deleteCustomer',
-                        method: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire({ icon: 'success', text: response.message, timer: 2000, showConfirmButton: false });
-                                setTimeout(() => loadCustomers(), 100);
-                            } else {
-                                Swal.fire({ icon: 'error', title: 'Error', text: response.message });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            Swal.fire({ icon: 'error', title: 'Error', text: 'Connection error: ' + error });
-                        }
-                    });
-                }
-            });
-        }
-        <?php endif; ?>
-
-        // ===== Customer Report Functions =====
-        var reportData = null;
-
-        function showCustomerReport(customerId, customerName) {
-            document.getElementById('reportTitle').innerHTML = '<i class="fas fa-file-alt"></i> ' + customerName + ' — Report';
-            document.getElementById('reportContent').innerHTML = '<div class="skeleton" style="height:200px;"></div>';
-            document.getElementById('reportModal').classList.add('active');
-
-            // Reset to first tab
-            document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('.report-tab').classList.add('active');
-
-            $.getJSON('?action=getCustomerReport&customer_id=' + encodeURIComponent(customerId), function(r) {
-                if (!r.success) {
-                    document.getElementById('reportContent').innerHTML = '<p style="color:var(--danger);padding:20px;">' + (r.message || 'Failed to load') + '</p>';
-                    return;
-                }
-                reportData = r.data;
-                renderReportTab('sales');
-            }).fail(function() {
-                document.getElementById('reportContent').innerHTML = '<p style="color:var(--danger);padding:20px;">Connection error</p>';
-            });
-        }
-
-        function closeReportModal() {
-            document.getElementById('reportModal').classList.remove('active');
-            reportData = null;
-        }
-
-        document.getElementById('reportModal').addEventListener('click', function(e) {
-            if (e.target === this) closeReportModal();
-        });
-
-        function switchReportTab(tab, btn) {
-            document.querySelectorAll('.report-tab').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            renderReportTab(tab);
-        }
-
-        function fmtR(n) { return Number(n || 0).toLocaleString(); }
-        function fmtDate(d) { if (!d) return '-'; var p = d.split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : d; }
-
-        function renderReportTab(tab) {
-            var html = '';
-            var d = reportData;
-            if (!d) return;
-
-            if (tab === 'sales') {
-                var totalRev = 0, totalProfit = 0, totalKg = 0;
-                d.sales.forEach(function(s) { totalRev += parseFloat(s.gross_sale_amount || 0); totalProfit += parseFloat(s.net_profit || 0); totalKg += parseFloat(s.net_weight_kg || 0); });
-
-                html += '<div class="report-summary">';
-                html += '<div class="report-summary-card"><div class="val">' + d.sales.length + '</div><div class="lbl">Total Sales</div></div>';
-                html += '<div class="report-summary-card"><div class="val">' + fmtR(totalRev) + ' F</div><div class="lbl">Revenue</div></div>';
-                html += '<div class="report-summary-card"><div class="val">' + fmtR(totalProfit) + ' F</div><div class="lbl">Net Profit</div></div>';
-                html += '<div class="report-summary-card"><div class="val">' + fmtR(totalKg) + ' kg</div><div class="lbl">Volume</div></div>';
-                html += '</div>';
-
-                html += '<table class="report-table"><thead><tr><th>Sale ID</th><th>Date</th><th>Weight (kg)</th><th>Price/kg</th><th>Amount</th><th>Profit</th><th>Status</th></tr></thead><tbody>';
-                if (d.sales.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No sales found</td></tr>';
-                d.sales.forEach(function(s) {
-                    var cls = s.sale_status === 'Confirmed' ? 'status-active' : s.sale_status === 'Cancelled' ? 'status-inactive' : '';
-                    html += '<tr><td>' + s.sale_id + '</td><td>' + fmtDate(s.unloading_date) + '</td><td>' + fmtR(s.net_weight_kg) + '</td><td>' + fmtR(s.selling_price_per_kg) + '</td><td>' + fmtR(s.gross_sale_amount) + ' F</td><td>' + fmtR(s.net_profit) + ' F</td><td><span class="status-badge ' + cls + '">' + s.sale_status + '</span></td></tr>';
-                });
-                html += '</tbody></table>';
-            }
-
-            if (tab === 'deliveries') {
-                var totalDel = d.deliveries.length, totalDelKg = 0;
-                d.deliveries.forEach(function(dl) { totalDelKg += parseFloat(dl.weight_kg || 0); });
-
-                html += '<div class="report-summary">';
-                html += '<div class="report-summary-card"><div class="val">' + totalDel + '</div><div class="lbl">Total Deliveries</div></div>';
-                html += '<div class="report-summary-card"><div class="val">' + fmtR(totalDelKg) + ' kg</div><div class="lbl">Total Weight</div></div>';
-                html += '</div>';
-
-                html += '<table class="report-table"><thead><tr><th>Delivery ID</th><th>Date</th><th>Weight (kg)</th><th>Bags</th><th>Warehouse</th><th>Status</th></tr></thead><tbody>';
-                if (d.deliveries.length === 0) html += '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">No deliveries found</td></tr>';
-                d.deliveries.forEach(function(dl) {
-                    html += '<tr><td>' + dl.delivery_id + '</td><td>' + fmtDate(dl.date) + '</td><td>' + fmtR(dl.weight_kg) + '</td><td>' + fmtR(dl.num_bags) + '</td><td>' + (dl.warehouse_name || '-') + '</td><td><span class="status-badge">' + dl.status + '</span></td></tr>';
-                });
-                html += '</tbody></table>';
-            }
-
-            if (tab === 'payments') {
-                var totalIn = 0, totalOut = 0;
-                d.payments.forEach(function(p) { if (p.direction === 'Incoming') totalIn += parseFloat(p.amount); else totalOut += parseFloat(p.amount); });
-
-                html += '<div class="report-summary">';
-                html += '<div class="report-summary-card"><div class="val">' + d.payments.length + '</div><div class="lbl">Total Payments</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--success);">' + fmtR(totalIn) + ' F</div><div class="lbl">Incoming</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--danger);">' + fmtR(totalOut) + ' F</div><div class="lbl">Outgoing</div></div>';
-                html += '</div>';
-
-                html += '<table class="report-table"><thead><tr><th>Payment ID</th><th>Date</th><th>Direction</th><th>Type</th><th>Amount</th><th>Mode</th><th>Reference</th></tr></thead><tbody>';
-                if (d.payments.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No payments found</td></tr>';
-                d.payments.forEach(function(p) {
-                    var dirCls = p.direction === 'Incoming' ? 'color:var(--success);' : 'color:var(--danger);';
-                    html += '<tr><td>' + p.payment_id + '</td><td>' + fmtDate(p.date) + '</td><td style="' + dirCls + 'font-weight:600;">' + p.direction + '</td><td>' + p.payment_type + '</td><td>' + fmtR(p.amount) + ' F</td><td>' + (p.payment_mode || '-') + '</td><td>' + (p.reference_number || '-') + '</td></tr>';
-                });
-                html += '</tbody></table>';
-            }
-
-            if (tab === 'financing') {
-                var totalFin = 0, totalBal = 0;
-                d.financing.forEach(function(f) { totalFin += parseFloat(f.amount); totalBal += parseFloat(f.balance_due || 0); });
-
-                html += '<div class="report-summary">';
-                html += '<div class="report-summary-card"><div class="val">' + d.financing.length + '</div><div class="lbl">Agreements</div></div>';
-                html += '<div class="report-summary-card"><div class="val">' + fmtR(totalFin) + ' F</div><div class="lbl">Total Amount</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:var(--warning);">' + fmtR(totalBal) + ' F</div><div class="lbl">Balance Due</div></div>';
-                html += '</div>';
-
-                html += '<table class="report-table"><thead><tr><th>Financing ID</th><th>Date</th><th>Direction</th><th>Amount</th><th>Repaid</th><th>Balance</th><th>Status</th></tr></thead><tbody>';
-                if (d.financing.length === 0) html += '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No financing found</td></tr>';
-                d.financing.forEach(function(f) {
-                    html += '<tr><td>' + f.financing_id + '</td><td>' + fmtDate(f.date) + '</td><td>' + f.direction + '</td><td>' + fmtR(f.amount) + ' F</td><td>' + fmtR(f.amount_repaid) + ' F</td><td>' + fmtR(f.balance_due) + ' F</td><td><span class="status-badge">' + f.status + '</span></td></tr>';
-                });
-                html += '</tbody></table>';
-            }
-
-            if (tab === 'transactions') {
-                var txns = d.transactions_log || [];
-                var totalPay = 0, totalSale = 0;
-                txns.forEach(function(t) {
-                    var pay = parseFloat(t.payment_amt) || 0;
-                    if (pay > 0) totalPay += pay;
-                    totalSale += parseFloat(t.sale_amt) || 0;
-                });
-                var netBal = txns.length ? parseFloat(txns[txns.length - 1].new_balance) || 0 : 0;
-                var balColor = netBal > 0.01 ? '#e74c3c' : (netBal < -0.01 ? '#0074D9' : '#27ae60');
-                var balLabel = netBal > 0.01 ? 'We Owe Customer' : (netBal < -0.01 ? 'Customer Owes Us' : 'Settled');
-                var balIcon = netBal > 0.01 ? '<i class="fas fa-caret-up" style="font-size:14px;margin-right:4px;"></i>' : (netBal < -0.01 ? '<i class="fas fa-caret-down" style="font-size:14px;margin-right:4px;"></i>' : '<i class="fas fa-check-circle" style="font-size:12px;margin-right:4px;"></i>');
-
-                html += '<div class="report-summary">';
-                html += '<div class="report-summary-card"><div class="val">' + txns.length + '</div><div class="lbl">Transactions</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:#27ae60;">' + fmtR(totalPay) + ' F</div><div class="lbl">Total Received</div></div>';
-                html += '<div class="report-summary-card"><div class="val" style="color:#e74c3c;">' + fmtR(totalSale) + ' F</div><div class="lbl">Total Sales Value</div></div>';
-                html += '<div class="report-summary-card" style="border:2px solid ' + balColor + ';"><div class="val" style="color:' + balColor + ';font-weight:700;">' + balIcon + fmtR(Math.abs(netBal)) + ' F</div><div class="lbl" style="color:' + balColor + ';font-weight:600;">' + balLabel + '</div></div>';
-                html += '</div>';
-
-                if (txns.length === 0) {
-                    html += '<div style="text-align:center;padding:30px;color:var(--text-muted);"><i class="fas fa-inbox" style="font-size:32px;"></i><p style="margin-top:10px;">No transactions found.</p></div>';
-                } else {
-                    html += '<div style="overflow-x:auto;"><table class="report-table" style="font-size:11px;"><thead><tr>';
-                    html += '<th>#</th><th>Date</th><th>Description</th><th style="text-align:right;">Prev. Balance</th><th style="text-align:right;">Weight (kg)</th><th style="text-align:right;">Price/Kg</th><th style="text-align:right;">Sale Amt</th><th style="text-align:right;">Payment Amt</th><th style="text-align:right;">New Balance</th><th>Mode</th>';
-                    html += '</tr></thead><tbody>';
-                    txns.forEach(function(t, i) {
-                        var pb = parseFloat(t.prev_balance) || 0;
-                        var nb = parseFloat(t.new_balance) || 0;
-                        var pbC = pb > 0.01 ? '#e74c3c' : (pb < -0.01 ? '#0074D9' : '#666');
-                        var nbC = nb > 0.01 ? '#e74c3c' : (nb < -0.01 ? '#0074D9' : '#27ae60');
-
-                        var dC = '';
-                        switch(t.desc) {
-                            case 'Payment Received': dC = '#27ae60'; break;
-                            case 'Financing Advance': dC = '#0074D9'; break;
-                            case 'Sale / Delivery': dC = '#f39c12'; break;
-                            default: dC = '#666';
-                        }
-
-                        html += '<tr>';
-                        html += '<td>' + (i + 1) + '</td>';
-                        html += '<td style="white-space:nowrap;">' + fmtDate(t.date) + '</td>';
-                        html += '<td style="font-weight:600;color:' + dC + ';white-space:nowrap;">' + t.desc + '</td>';
-                        html += '<td style="text-align:right;color:' + pbC + ';">' + fmtR(pb) + ' F</td>';
-                        html += '<td style="text-align:right;">' + (t.weight_kg ? fmtR(t.weight_kg) : '') + '</td>';
-                        html += '<td style="text-align:right;">' + (t.price_per_kg ? fmtR(t.price_per_kg) : '') + '</td>';
-
-                        // sale amt: shown in parentheses (reduces balance)
-                        html += '<td style="text-align:right;color:#e74c3c;font-weight:600;">' + (t.sale_amt ? '(' + fmtR(t.sale_amt) + ') F' : '') + '</td>';
-
-                        // payment amt: positive = green
-                        var pay = parseFloat(t.payment_amt) || 0;
-                        var payHtml = '';
-                        if (pay > 0.01) payHtml = '<span style="color:#27ae60;font-weight:600;">' + fmtR(pay) + ' F</span>';
-                        html += '<td style="text-align:right;">' + payHtml + '</td>';
-
-                        html += '<td style="text-align:right;font-weight:700;color:' + nbC + ';">' + (nb < -0.01 ? '(' + fmtR(Math.abs(nb)) + ')' : fmtR(nb)) + ' F</td>';
-                        html += '<td style="font-size:10px;white-space:nowrap;">' + (t.payment_mode || '') + '</td>';
-                        html += '</tr>';
-                    });
-                    html += '</tbody></table></div>';
-
-                    html += '<div style="margin-top:12px;padding:10px 14px;background:var(--bg-primary);border-radius:6px;border-left:3px solid var(--navy-accent);font-size:12px;color:var(--text-muted);">';
-                    html += '<i class="fas fa-info-circle" style="margin-right:6px;color:var(--navy-accent);"></i>';
-                    html += '<strong>Balance</strong> = Payments received minus sales value. Positive = we owe customer. Negative (parentheses) = customer owes us.';
-                    html += '</div>';
-                }
-            }
-
-            document.getElementById('reportContent').innerHTML = html;
-        }
-
-        function printReport() {
-            var content = document.getElementById('reportContent').innerHTML;
-            var title = document.getElementById('reportTitle').textContent;
-            var printWin = window.open('', '_blank', 'width=900,height=700');
-            printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + '</title><style>');
-            printWin.document.write('body { font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; font-size: 12px; color: #333; padding: 20px; }');
-            printWin.document.write('h2 { color: #001f3f; margin-bottom: 16px; font-size: 18px; }');
-            printWin.document.write('.report-summary { display: flex; gap: 12px; margin-bottom: 16px; }');
-            printWin.document.write('.report-summary-card { background: #f5f5f5; border-radius: 6px; padding: 12px; text-align: center; flex: 1; }');
-            printWin.document.write('.report-summary-card .val { font-size: 18px; font-weight: 700; color: #001f3f; }');
-            printWin.document.write('.report-summary-card .lbl { font-size: 10px; color: #666; text-transform: uppercase; }');
-            printWin.document.write('.report-table { width: 100%; border-collapse: collapse; }');
-            printWin.document.write('.report-table th { background: #001f3f; color: white; padding: 6px 8px; font-size: 10px; text-align: left; }');
-            printWin.document.write('.report-table td { padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 11px; }');
-            printWin.document.write('.status-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }');
-            printWin.document.write('@media print { body { padding: 0; } }');
-            printWin.document.write('</style></head><body>');
-            printWin.document.write('<h2>' + title + '</h2>');
-            printWin.document.write(content);
-            printWin.document.write('</body></html>');
-            printWin.document.close();
-            printWin.onload = function() { printWin.focus(); printWin.print(); };
-        }
-    </script>
 </body>
 </html>

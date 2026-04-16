@@ -347,284 +347,468 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!-- Developed by Rameez Scripts — https://www.youtube.com/@rameezimdad -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Profit Analysis - Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; P&amp;L Analysis</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    <style>
-        .status-badge.status-above-target {
-            background: #d4edda;
-            color: #155724;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .status-badge.status-below-target {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .status-badge.status-at-target {
-            background: #fff3cd;
-            color: #856404;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-        .report-summary-card { background: var(--bg-primary); border-radius: 8px; padding: 14px; text-align: center; }
-        .report-summary-card .val { font-size: 22px; font-weight: 700; color: var(--navy-accent); }
-        .report-summary-card .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
-    </style>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css?v=5.0">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton animation */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Active nav link */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTable overrides */
+    .dataTables_wrapper { font-size: 13px; }
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate { font-size: 12px; padding: 8px 0; }
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 13px;
+      background: #f8fafc; outline: none; transition: border-color 0.2s;
+    }
+    .dark .dataTables_wrapper .dataTables_filter input {
+      background: #334155; border-color: #475569; color: #e2e8f0;
+    }
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    table.dataTable thead th { background: #f8fafc; color: #475569; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid #e2e8f0; }
+    .dark table.dataTable thead th { background: #1e293b; color: #94a3b8; border-bottom-color: #334155; }
+    table.dataTable tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; font-size: 13px; }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b; color: #cbd5e1; }
+    table.dataTable tbody tr:hover { background: rgba(45,157,153,0.04) !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.08) !important; }
+    .dt-buttons .dt-button {
+      background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important;
+      padding: 6px 14px !important; font-size: 12px !important; font-weight: 500 !important; color: #475569 !important;
+      transition: all 0.2s !important;
+    }
+    .dark .dt-buttons .dt-button { background: #334155 !important; border-color: #475569 !important; color: #cbd5e1 !important; }
+    .dt-buttons .dt-button:hover { background: #f1f5f9 !important; border-color: #2d9d99 !important; color: #2d9d99 !important; }
+
+    /* Status badges */
+    .status-badge.status-above-target {
+      background: rgba(16,185,129,0.1); color: #059669;
+      padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    }
+    .dark .status-badge.status-above-target { background: rgba(16,185,129,0.15); color: #34d399; }
+    .status-badge.status-below-target {
+      background: rgba(244,63,94,0.1); color: #e11d48;
+      padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    }
+    .dark .status-badge.status-below-target { background: rgba(244,63,94,0.15); color: #fb7185; }
+    .status-badge.status-at-target {
+      background: rgba(245,158,11,0.1); color: #d97706;
+      padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+    }
+    .dark .status-badge.status-at-target { background: rgba(245,158,11,0.15); color: #fbbf24; }
+
+    /* Tab styles */
+    .profit-tab-btn {
+      padding: 10px 18px; border: none; background: transparent; color: #64748b;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      border-bottom: 3px solid transparent; transition: all 0.2s; display: flex; align-items: center; gap: 7px; white-space: nowrap;
+    }
+    .profit-tab-btn:hover { color: #2d9d99; background: rgba(45,157,153,0.04); }
+    .profit-tab-btn.active { color: #2d9d99; border-bottom-color: #2d9d99; }
+    .dark .profit-tab-btn { color: #94a3b8; }
+    .dark .profit-tab-btn:hover { color: #4db8b4; background: rgba(45,157,153,0.08); }
+    .dark .profit-tab-btn.active { color: #4db8b4; border-bottom-color: #4db8b4; }
+
+    /* Tab content */
+    .profit-tab-content { display: none; }
+    .profit-tab-content.active { display: block; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="header">
-                <div>
-                    <h1><i class="fas fa-chart-pie"></i> Profit Analysis</h1>
-                    <small style="color: var(--text-secondary, #6c757d);">Logged in as <strong><?php echo htmlspecialchars($role); ?></strong></small>
-                </div>
-                <div>
-                    <button class="btn btn-primary" onclick="refreshAll()">
-                        <i class="fas fa-sync"></i> Refresh
-                    </button>
-                </div>
-            </div>
+  <?php include 'mobile-menu.php'; ?>
 
-            <!-- Tab Navigation -->
-            <div class="pricing-tabs">
-                <button class="pricing-tab-btn active" id="profitTabBtn" onclick="switchProfitTab('profit')">
-                    <i class="fas fa-chart-pie"></i> Profit Analysis
-                </button>
-                <button class="pricing-tab-btn" id="pnlTabBtn" onclick="switchProfitTab('pnl')">
-                    <i class="fas fa-file-invoice-dollar"></i> Profit & Loss
-                </button>
-                <button class="pricing-tab-btn" id="cashFlowTabBtn" onclick="switchProfitTab('cashflow')">
-                    <i class="fas fa-money-bill-wave"></i> Cash Flow
-                </button>
-                <button class="pricing-tab-btn" id="simulationTabBtn" onclick="switchProfitTab('simulation')">
-                    <i class="fas fa-flask"></i> Simulation
-                </button>
-            </div>
+  <div class="flex h-full overflow-hidden" id="appRoot">
 
-            <!-- ====== TAB 1: Profit Analysis ====== -->
-            <div class="pricing-tab-content active" id="profitTab">
+    <?php include 'sidebar.php'; ?>
 
-            <!-- Summary Cards -->
-            <div class="dashboard-grid-3">
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-weight-hanging"></i>
-                    </div>
-                    <div class="stat-card-value" id="totalWeight">0</div>
-                    <div class="stat-card-label">Total Weight Sold (kg)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-coins"></i>
-                    </div>
-                    <div class="stat-card-value" id="totalProfit">0</div>
-                    <div class="stat-card-label">Total Net Profit</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <div class="stat-card-value" id="avgProfitKg">0</div>
-                    <div class="stat-card-label">Avg Profit/kg (F)</div>
-                </div>
-            </div>
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-            <!-- Info Note -->
-            <div style="padding:10px 16px;background:#fff3cd;border-left:4px solid #ffc107;border-radius:3px;margin-bottom:20px;color:#856404;">
-                <i class="fas fa-info-circle"></i> Only <strong>Confirmed</strong> sales are included. Target margin: <strong><?php echo $targetProfit; ?> F/kg</strong>.
-            </div>
+      <!-- HEADER -->
+      <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+        <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+          <i class="fas fa-bars text-sm"></i>
+        </button>
 
-            <!-- Data Table Section -->
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Profit Breakdown</h2>
-                </div>
-
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                    </div>
-                </div>
-
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="profitTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Section -->
-            <div class="dashboard-grid-2" style="margin-top: 25px;">
-                <div class="stat-card" style="padding:20px;">
-                    <h3 style="margin-bottom:15px;"><i class="fas fa-chart-bar"></i> Profit/kg by Customer</h3>
-                    <canvas id="customerProfitChart"></canvas>
-                </div>
-                <div class="stat-card" style="padding:20px;">
-                    <h3 style="margin-bottom:15px;"><i class="fas fa-chart-line"></i> Profit Trend Over Time</h3>
-                    <canvas id="profitTrendChart"></canvas>
-                </div>
-            </div>
-
-            </div><!-- /profitTab -->
-
-            <!-- ====== TAB: Profit & Loss ====== -->
-            <div class="pricing-tab-content" id="pnlTab">
-                <div class="card">
-                    <div class="card-header">
-                        <h3><i class="fas fa-file-invoice-dollar"></i> Profit & Loss Statement</h3>
-                    </div>
-                    <div style="padding:20px;">
-                        <div id="pnlSkeleton" class="skeleton" style="height:200px;"></div>
-                        <div id="pnlContent" style="display:none;"></div>
-                    </div>
-                </div>
-            </div><!-- /pnlTab -->
-
-            <!-- ====== TAB 2: Cash Flow ====== -->
-            <div class="pricing-tab-content" id="cashFlowTab">
-                <div class="data-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-money-bill-wave"></i> Cash Flow</h2>
-                    </div>
-
-                    <div id="cashFlowSummary" class="report-summary" style="margin-top:16px;"></div>
-
-                    <div id="cashFlowSkeleton">
-                        <div class="skeleton-table">
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        </div>
-                    </div>
-
-                    <div id="cashFlowTableContainer" style="display:none;">
-                        <div class="table-scroll-hint">
-                            <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                        </div>
-                        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-                            <table id="cashFlowDT" class="display" style="width:100%;"></table>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /cashFlowTab -->
-
-            <!-- ====== TAB 3: Simulation ====== -->
-            <div class="pricing-tab-content" id="simulationTab">
-                <div class="data-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-flask"></i> What-If Simulation</h2>
-                    </div>
-
-                    <p style="color:var(--text-muted);margin:16px 0;">Simulate the impact of price changes on your unsold stock and season profit.</p>
-
-                    <div class="form-grid" style="max-width:600px;">
-                        <div class="form-group">
-                            <label><i class="fas fa-arrow-up"></i> Price Change (FCFA/kg)</label>
-                            <input type="number" id="simPriceChange" value="0" step="1" placeholder="e.g. -50 or +100">
-                            <small style="color:var(--text-muted);">Positive = price increase, Negative = price drop</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-boxes-stacked"></i> Unsold Stock (kg)</label>
-                            <input type="number" id="simUnsoldStock" value="0" step="1" readonly style="background:var(--bg-secondary);">
-                            <small style="color:var(--text-muted);">Auto-loaded from current inventory</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-money-bill"></i> Current Avg Sell Price (FCFA/kg)</label>
-                            <input type="number" id="simCurrentPrice" value="0" step="0.01" readonly style="background:var(--bg-secondary);">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-chart-line"></i> Current Season Profit</label>
-                            <input type="number" id="simCurrentProfit" value="0" step="0.01" readonly style="background:var(--bg-secondary);">
-                        </div>
-                    </div>
-
-                    <button class="btn btn-primary" onclick="runSimulation()" style="margin-top:12px;">
-                        <i class="fas fa-play"></i> Run Simulation
-                    </button>
-
-                    <div id="simResult" style="display:none;margin-top:20px;padding:20px;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-secondary);">
-                        <h4 style="margin:0 0 12px;"><i class="fas fa-chart-bar"></i> Simulation Result</h4>
-                        <div class="report-summary" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">
-                            <div class="report-summary-card">
-                                <div class="val" id="simNewPrice">&mdash;</div>
-                                <div class="lbl">New Sell Price</div>
-                            </div>
-                            <div class="report-summary-card">
-                                <div class="val" id="simRevenueImpact">&mdash;</div>
-                                <div class="lbl">Revenue Impact</div>
-                            </div>
-                            <div class="report-summary-card">
-                                <div class="val" id="simNewProfit">&mdash;</div>
-                                <div class="lbl">Projected Profit</div>
-                            </div>
-                            <div class="report-summary-card">
-                                <div class="val" id="simProfitChange">&mdash;</div>
-                                <div class="lbl">Profit Change</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- /simulationTab -->
-
+        <div class="flex items-center gap-2">
+          <i class="fas fa-chart-bar text-brand-500 text-sm"></i>
+          <h1 class="text-base font-bold text-slate-800 dark:text-white">P&L Analysis</h1>
+          <span class="hidden sm:inline-block text-xs text-slate-400 dark:text-slate-500 font-normal ml-1">
+            Logged in as <strong><?php echo htmlspecialchars($role); ?></strong>
+          </span>
         </div>
-    </div>
 
-    <script>
+        <div class="ml-auto flex items-center gap-3">
+          <button onclick="refreshAll()" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+            <i class="fas fa-sync"></i> Refresh
+          </button>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 overflow-y-auto p-5 space-y-5">
+
+        <!-- Tab Navigation -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="flex border-b border-slate-200 dark:border-slate-700 overflow-x-auto px-2">
+            <button class="profit-tab-btn active" id="profitTabBtn" onclick="switchProfitTab('profit')">
+              <i class="fas fa-chart-pie"></i> Profit Analysis
+            </button>
+            <button class="profit-tab-btn" id="pnlTabBtn" onclick="switchProfitTab('pnl')">
+              <i class="fas fa-file-invoice-dollar"></i> Profit & Loss
+            </button>
+            <button class="profit-tab-btn" id="cashFlowTabBtn" onclick="switchProfitTab('cashflow')">
+              <i class="fas fa-money-bill-wave"></i> Cash Flow
+            </button>
+            <button class="profit-tab-btn" id="simulationTabBtn" onclick="switchProfitTab('simulation')">
+              <i class="fas fa-flask"></i> Simulation
+            </button>
+          </div>
+        </div>
+
+        <!-- ====== TAB 1: Profit Analysis ====== -->
+        <div class="profit-tab-content active" id="profitTab">
+
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+              <div class="h-0.5 bg-brand-500"></div>
+              <div class="p-4">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total Weight Sold (kg)</p>
+                    <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white" id="totalWeight">0</p>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-weight-hanging text-brand-500 text-sm"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+              <div class="h-0.5 bg-emerald-500"></div>
+              <div class="p-4">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Total Net Profit</p>
+                    <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white" id="totalProfit">0</p>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-coins text-emerald-500 text-sm"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+              <div class="h-0.5 bg-blue-500"></div>
+              <div class="p-4">
+                <div class="flex items-start justify-between">
+                  <div>
+                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Avg Profit/kg (F)</p>
+                    <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white" id="avgProfitKg">0</p>
+                  </div>
+                  <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-chart-line text-blue-500 text-sm"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info Note -->
+          <div class="flex items-center gap-3 p-3.5 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/30 rounded-lg mb-5">
+            <i class="fas fa-info-circle text-amber-500 text-sm flex-shrink-0"></i>
+            <p class="text-xs text-amber-800 dark:text-amber-300">
+              Only <strong>Confirmed</strong> sales are included. Target margin: <strong><?php echo $targetProfit; ?> F/kg</strong>.
+            </p>
+          </div>
+
+          <!-- Data Table Section -->
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                <i class="fas fa-table text-brand-500 text-xs"></i> Profit Breakdown
+              </h2>
+            </div>
+
+            <div class="p-5">
+              <div id="skeletonLoader">
+                <div class="space-y-3">
+                  <div class="skeleton h-8 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                </div>
+              </div>
+
+              <div id="tableContainer" style="display: none;">
+                <div class="flex items-center gap-2 mb-3 text-xs text-slate-400 dark:text-slate-500 sm:hidden">
+                  <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
+                </div>
+                <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                  <table id="profitTable" class="display" style="width:100%"></table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-5">
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+                <i class="fas fa-chart-bar text-brand-500 text-xs"></i> Profit/kg by Customer
+              </h3>
+              <canvas id="customerProfitChart"></canvas>
+            </div>
+            <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+                <i class="fas fa-chart-line text-brand-500 text-xs"></i> Profit Trend Over Time
+              </h3>
+              <canvas id="profitTrendChart"></canvas>
+            </div>
+          </div>
+
+        </div><!-- /profitTab -->
+
+        <!-- ====== TAB: Profit & Loss ====== -->
+        <div class="profit-tab-content" id="pnlTab">
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+            <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+              <i class="fas fa-file-invoice-dollar text-brand-500 text-xs"></i>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white">Profit & Loss Statement</h3>
+            </div>
+            <div class="p-5">
+              <div id="pnlSkeleton" class="skeleton" style="height:200px;"></div>
+              <div id="pnlContent" style="display:none;"></div>
+            </div>
+          </div>
+        </div><!-- /pnlTab -->
+
+        <!-- ====== TAB 2: Cash Flow ====== -->
+        <div class="profit-tab-content" id="cashFlowTab">
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+            <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+              <i class="fas fa-money-bill-wave text-brand-500 text-xs"></i>
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white">Cash Flow</h2>
+            </div>
+
+            <div class="p-5">
+              <div id="cashFlowSummary" class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5"></div>
+
+              <div id="cashFlowSkeleton">
+                <div class="space-y-3">
+                  <div class="skeleton h-8 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                  <div class="skeleton h-6 w-full rounded"></div>
+                </div>
+              </div>
+
+              <div id="cashFlowTableContainer" style="display:none;">
+                <div class="flex items-center gap-2 mb-3 text-xs text-slate-400 dark:text-slate-500 sm:hidden">
+                  <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
+                </div>
+                <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+                  <table id="cashFlowDT" class="display" style="width:100%;"></table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /cashFlowTab -->
+
+        <!-- ====== TAB 3: Simulation ====== -->
+        <div class="profit-tab-content" id="simulationTab">
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+            <div class="flex items-center gap-2 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+              <i class="fas fa-flask text-brand-500 text-xs"></i>
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white">What-If Simulation</h2>
+            </div>
+
+            <div class="p-5">
+              <p class="text-sm text-slate-500 dark:text-slate-400 mb-5">Simulate the impact of price changes on your unsold stock and season profit.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <i class="fas fa-arrow-up mr-1"></i> Price Change (FCFA/kg)
+                  </label>
+                  <input type="number" id="simPriceChange" value="0" step="1" placeholder="e.g. -50 or +100"
+                    class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Positive = price increase, Negative = price drop</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <i class="fas fa-boxes-stacked mr-1"></i> Unsold Stock (kg)
+                  </label>
+                  <input type="number" id="simUnsoldStock" value="0" step="1" readonly
+                    class="w-full bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors cursor-not-allowed">
+                  <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Auto-loaded from current inventory</p>
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <i class="fas fa-money-bill mr-1"></i> Current Avg Sell Price (FCFA/kg)
+                  </label>
+                  <input type="number" id="simCurrentPrice" value="0" step="0.01" readonly
+                    class="w-full bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors cursor-not-allowed">
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1.5">
+                    <i class="fas fa-chart-line mr-1"></i> Current Season Profit
+                  </label>
+                  <input type="number" id="simCurrentProfit" value="0" step="0.01" readonly
+                    class="w-full bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none transition-colors cursor-not-allowed">
+                </div>
+              </div>
+
+              <button onclick="runSimulation()" class="mt-5 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+                <i class="fas fa-play"></i> Run Simulation
+              </button>
+
+              <div id="simResult" style="display:none;" class="mt-5 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl p-5">
+                <h4 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2 mb-4">
+                  <i class="fas fa-chart-bar text-brand-500 text-xs"></i> Simulation Result
+                </h4>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 text-center">
+                    <div class="text-lg font-bold text-slate-800 dark:text-white" id="simNewPrice">&mdash;</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">New Sell Price</div>
+                  </div>
+                  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 text-center">
+                    <div class="text-lg font-bold text-slate-800 dark:text-white" id="simRevenueImpact">&mdash;</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Revenue Impact</div>
+                  </div>
+                  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 text-center">
+                    <div class="text-lg font-bold text-slate-800 dark:text-white" id="simNewProfit">&mdash;</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Projected Profit</div>
+                  </div>
+                  <div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-3 text-center">
+                    <div class="text-lg font-bold text-slate-800 dark:text-white" id="simProfitChange">&mdash;</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Profit Change</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /simulationTab -->
+
+      </main>
+    </div>
+  </div>
+
+  <script>
     /**
      * Developed by Rameez Scripts
      * Profit Analysis - Read-Only Page
@@ -901,10 +1085,19 @@ if (isset($_GET['action'])) {
             var fmt = function(n) { return Math.abs(n).toLocaleString('en-US', {minimumFractionDigits: 0}); };
 
             // summary cards
-            var netColor = s.net >= 0 ? '#27ae60' : '#e74c3c';
-            var sumHtml = '<div class="report-summary-card"><div class="val" style="color:#27ae60;">' + fmt(s.total_in) + '</div><div class="lbl">Total Cash In</div></div>';
-            sumHtml += '<div class="report-summary-card"><div class="val" style="color:#e74c3c;">' + fmt(s.total_out) + '</div><div class="lbl">Total Cash Out</div></div>';
-            sumHtml += '<div class="report-summary-card" style="border:2px solid ' + netColor + ';"><div class="val" style="color:' + netColor + ';font-weight:700;">' + (s.net >= 0 ? '+' : '-') + fmt(s.net) + '</div><div class="lbl">Net Cash Flow</div></div>';
+            var netColor = s.net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400';
+            var sumHtml = '';
+            sumHtml += '<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 text-center">';
+            sumHtml += '<div class="text-xl font-bold text-emerald-600 dark:text-emerald-400">' + fmt(s.total_in) + '</div>';
+            sumHtml += '<div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Total Cash In</div></div>';
+
+            sumHtml += '<div class="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-4 text-center">';
+            sumHtml += '<div class="text-xl font-bold text-rose-600 dark:text-rose-400">' + fmt(s.total_out) + '</div>';
+            sumHtml += '<div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Total Cash Out</div></div>';
+
+            sumHtml += '<div class="bg-white dark:bg-slate-800 rounded-lg border-2 ' + (s.net >= 0 ? 'border-emerald-400 dark:border-emerald-600' : 'border-rose-400 dark:border-rose-600') + ' p-4 text-center">';
+            sumHtml += '<div class="text-xl font-bold ' + netColor + '">' + (s.net >= 0 ? '+' : '-') + fmt(s.net) + '</div>';
+            sumHtml += '<div class="text-xs text-slate-500 dark:text-slate-400 uppercase mt-1">Net Cash Flow</div></div>';
             document.getElementById('cashFlowSummary').innerHTML = sumHtml;
 
             // destroy prev instance
@@ -912,13 +1105,13 @@ if (isset($_GET['action'])) {
 
             var html = '<thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Cash In</th><th>Cash Out</th><th>Balance</th></tr></thead><tbody>';
             res.data.forEach(function(t) {
-                var balColor = t.balance >= 0 ? '#27ae60' : '#e74c3c';
+                var balColor = t.balance >= 0 ? '#059669' : '#e11d48';
                 html += '<tr>';
                 html += '<td>' + t.date + '</td>';
                 html += '<td>' + t.category + '</td>';
                 html += '<td>' + (t.description || '') + '</td>';
-                html += '<td style="text-align:right;color:#27ae60;font-weight:600;">' + (t.cash_in > 0 ? fmt(t.cash_in) : '-') + '</td>';
-                html += '<td style="text-align:right;color:#e74c3c;font-weight:600;">' + (t.cash_out > 0 ? fmt(t.cash_out) : '-') + '</td>';
+                html += '<td style="text-align:right;color:#059669;font-weight:600;">' + (t.cash_in > 0 ? fmt(t.cash_in) : '-') + '</td>';
+                html += '<td style="text-align:right;color:#e11d48;font-weight:600;">' + (t.cash_out > 0 ? fmt(t.cash_out) : '-') + '</td>';
                 html += '<td style="text-align:right;color:' + balColor + ';font-weight:700;">' + (t.balance >= 0 ? '' : '-') + fmt(t.balance) + '</td>';
                 html += '</tr>';
             });
@@ -971,12 +1164,12 @@ if (isset($_GET['action'])) {
 
         document.getElementById('simNewPrice').textContent = fmt(newPrice) + ' F/kg';
 
-        var impactColor = revenueImpact >= 0 ? '#27ae60' : '#e74c3c';
+        var impactColor = revenueImpact >= 0 ? '#059669' : '#e11d48';
         document.getElementById('simRevenueImpact').innerHTML = '<span style="color:' + impactColor + ';">' + (revenueImpact >= 0 ? '+' : '-') + fmt(revenueImpact) + ' F</span>';
 
-        document.getElementById('simNewProfit').innerHTML = '<span style="color:' + (newProfit >= 0 ? '#27ae60' : '#e74c3c') + ';">' + fmt(newProfit) + ' F</span>';
+        document.getElementById('simNewProfit').innerHTML = '<span style="color:' + (newProfit >= 0 ? '#059669' : '#e11d48') + ';">' + fmt(newProfit) + ' F</span>';
 
-        document.getElementById('simProfitChange').innerHTML = '<span style="color:' + (profitChange >= 0 ? '#27ae60' : '#e74c3c') + ';">' + (profitChange >= 0 ? '+' : '') + profitChange.toFixed(1) + '%</span>';
+        document.getElementById('simProfitChange').innerHTML = '<span style="color:' + (profitChange >= 0 ? '#059669' : '#e11d48') + ';">' + (profitChange >= 0 ? '+' : '') + profitChange.toFixed(1) + '%</span>';
 
         document.getElementById('simResult').style.display = 'block';
     }
@@ -998,19 +1191,19 @@ if (isset($_GET['action'])) {
                 if (bold) style += 'font-weight:700;';
                 if (indent) style += 'padding-left:24px;';
                 if (color) style += 'color:' + color + ';';
-                var borderStyle = bold ? 'border-top:2px solid var(--navy-primary);border-bottom:2px solid var(--navy-primary);' : 'border-bottom:1px solid var(--border-color);';
+                var borderStyle = bold ? 'border-top:2px solid #2d9d99;border-bottom:2px solid #2d9d99;' : 'border-bottom:1px solid #e2e8f0;';
                 return '<tr style="' + borderStyle + '"><td style="padding:8px 12px;' + style + '">' + label + '</td><td style="padding:8px 12px;text-align:right;' + style + '">' + fmt(amount) + ' F</td></tr>';
             }
 
             var html = '<table style="width:100%;max-width:700px;border-collapse:collapse;font-size:14px;">';
-            html += '<tr style="background:var(--navy-primary);color:#fff;"><td style="padding:10px 12px;font-weight:700;" colspan="2">PROFIT & LOSS STATEMENT</td></tr>';
+            html += '<tr style="background:#2d9d99;color:#fff;"><td style="padding:10px 12px;font-weight:700;" colspan="2">PROFIT & LOSS STATEMENT</td></tr>';
             html += row('Revenue (Gross Sales)', d.revenue, true);
             html += row('Cost of Goods Sold', d.cogs, false, true);
             html += row('Transport Costs', d.transport, false, true);
             html += row('Interest / Financing', d.interest, false, true);
-            html += row('Gross Profit', d.gross_profit, true, false, d.gross_profit >= 0 ? '#27ae60' : '#e74c3c');
+            html += row('Gross Profit', d.gross_profit, true, false, d.gross_profit >= 0 ? '#059669' : '#e11d48');
             html += '<tr><td colspan="2" style="padding:6px;"></td></tr>';
-            html += '<tr style="background:var(--bg-secondary);"><td style="padding:8px 12px;font-weight:600;" colspan="2">Operating Expenses</td></tr>';
+            html += '<tr style="background:#f8fafc;"><td style="padding:8px 12px;font-weight:600;" colspan="2">Operating Expenses</td></tr>';
 
             if (d.expenses && d.expenses.length > 0) {
                 d.expenses.forEach(function(e) {
@@ -1019,9 +1212,9 @@ if (isset($_GET['action'])) {
             }
             html += row('Total Operating Expenses', d.total_expenses, true);
             html += '<tr><td colspan="2" style="padding:6px;"></td></tr>';
-            html += row('NET PROFIT', d.net_profit, true, false, d.net_profit >= 0 ? '#27ae60' : '#e74c3c');
+            html += row('NET PROFIT', d.net_profit, true, false, d.net_profit >= 0 ? '#059669' : '#e11d48');
             html += '<tr><td colspan="2" style="padding:6px;"></td></tr>';
-            html += '<tr style="background:var(--bg-secondary);"><td style="padding:8px 12px;font-weight:600;" colspan="2">Reference</td></tr>';
+            html += '<tr style="background:#f8fafc;"><td style="padding:8px 12px;font-weight:600;" colspan="2">Reference</td></tr>';
             html += row('Total Purchases', d.total_purchases, false, true);
             html += row('Volume Purchased (kg)', d.total_volume, false, true);
             html += row('Volume Sold (kg)', d.volume_sold, false, true);
@@ -1030,7 +1223,7 @@ if (isset($_GET['action'])) {
 
             // monthly chart
             if (d.monthly && d.monthly.length > 0) {
-                html += '<h4 style="margin-top:24px;"><i class="fas fa-chart-bar"></i> Monthly P&L Breakdown</h4>';
+                html += '<h4 style="margin-top:24px;" class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2"><i class="fas fa-chart-bar text-brand-500 text-xs"></i> Monthly P&L Breakdown</h4>';
                 html += '<canvas id="pnlChart" style="max-height:300px;margin-top:12px;"></canvas>';
             }
 
@@ -1060,6 +1253,50 @@ if (isset($_GET['action'])) {
             }
         });
     }
-    </script>
+  </script>
+
+  <!-- Theme Init -->
+  <script>
+  (function() {
+    var html = document.documentElement;
+    var stored = localStorage.getItem('cp_theme');
+    var dark = stored === 'dark' || (stored === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    html.classList.toggle('dark', dark);
+
+    var btn = document.getElementById('themeToggleBtn');
+    var icon = document.getElementById('themeIcon');
+    function apply() {
+      html.classList.toggle('dark', dark);
+      localStorage.setItem('cp_theme', dark ? 'dark' : 'light');
+      if (icon) icon.className = dark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+      var lbl = document.getElementById('themeLabel');
+      if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
+    }
+    apply();
+    if (btn) btn.addEventListener('click', function() { dark = !dark; apply(); });
+  })();
+
+  /* Sidebar collapse */
+  (function() {
+    var appRoot = document.getElementById('appRoot');
+    var collapseBtn = document.getElementById('sidebarCollapseBtn');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        appRoot.classList.toggle('app-collapsed');
+        var ic = document.getElementById('collapseIcon');
+        if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+      });
+    }
+  })();
+  </script>
+
+  <!-- i18n Loader -->
+  <script>
+  (function() {
+    var lang = localStorage.getItem('cp_lang') || 'en';
+    document.documentElement.lang = lang;
+  })();
+  </script>
+
 </body>
 </html>

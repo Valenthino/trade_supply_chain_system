@@ -640,299 +640,439 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Supplier Master - Dashboard System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; Suppliers</title>
 
-    <!-- CDN Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=4.0">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+  <!-- JS Dependencies -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton animation */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Active nav link */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTable overrides */
+    #suppliersTable_wrapper .dataTables_filter input {
+      background: transparent; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+      padding: 0.4rem 0.75rem; font-size: 0.8rem; outline: none;
+      transition: border-color 200ms, box-shadow 200ms;
+    }
+    #suppliersTable_wrapper .dataTables_filter input:focus {
+      border-color: #4db8b4; box-shadow: 0 0 0 2px rgba(77,184,180,0.25);
+    }
+    .dark #suppliersTable_wrapper .dataTables_filter input {
+      background: #1e293b; border-color: #334155; color: #e2e8f0;
+    }
+    #suppliersTable_wrapper .dataTables_length select {
+      background: transparent; border: 1px solid #e2e8f0; border-radius: 0.5rem;
+      padding: 0.3rem 0.5rem; font-size: 0.8rem;
+    }
+    .dark #suppliersTable_wrapper .dataTables_length select {
+      background: #1e293b; border-color: #334155; color: #e2e8f0;
+    }
+    #suppliersTable_wrapper .dataTables_info,
+    #suppliersTable_wrapper .dataTables_paginate { font-size: 0.75rem; margin-top: 0.75rem; }
+    .dark #suppliersTable_wrapper .dataTables_info { color: #94a3b8; }
+    #suppliersTable_wrapper .dataTables_paginate .paginate_button {
+      border-radius: 0.375rem !important; font-size: 0.75rem !important;
+      padding: 0.25rem 0.65rem !important; margin: 0 2px !important;
+    }
+    #suppliersTable_wrapper .dataTables_paginate .paginate_button.current {
+      background: #2d9d99 !important; color: #fff !important;
+      border-color: #2d9d99 !important;
+    }
+    .dark #suppliersTable_wrapper .dataTables_paginate .paginate_button {
+      color: #94a3b8 !important;
+    }
+    table.dataTable thead th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: #64748b; padding: 0.65rem 0.75rem !important; }
+    .dark table.dataTable thead th { color: #94a3b8; border-bottom-color: #334155 !important; }
+    table.dataTable tbody td { font-size: 0.8rem; padding: 0.55rem 0.75rem !important; vertical-align: middle; }
+    .dark table.dataTable tbody td { color: #e2e8f0; border-bottom-color: #1e293b !important; }
+    table.dataTable tbody tr:hover { background: #f8fafc !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.06) !important; }
+    .dark table.dataTable { border-color: #334155 !important; }
+    table.dataTable.no-footer { border-bottom-color: #e2e8f0 !important; }
+    .dark table.dataTable.no-footer { border-bottom-color: #334155 !important; }
+
+    /* DataTable export buttons override */
+    .dt-buttons .dt-button {
+      background: #f8fafc !important; border: 1px solid #e2e8f0 !important;
+      border-radius: 0.5rem !important; font-size: 0.7rem !important;
+      padding: 0.35rem 0.75rem !important; color: #475569 !important;
+      font-weight: 500 !important; transition: all 150ms !important;
+    }
+    .dt-buttons .dt-button:hover {
+      background: #f1f5f9 !important; border-color: #cbd5e1 !important;
+    }
+    .dark .dt-buttons .dt-button {
+      background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important;
+    }
+    .dark .dt-buttons .dt-button:hover {
+      background: #273349 !important;
+    }
+
+    /* Supplier row click + expand */
+    #suppliersTable tbody tr { cursor: pointer; }
+    #suppliersTable tbody tr.shown { background: #f8fafc !important; }
+    .dark #suppliersTable tbody tr.shown { background: rgba(45,157,153,0.06) !important; }
+    #suppliersTable tbody tr.shown td { border-bottom: none; }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1000;
+      background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-overlay .modal {
+      background: white; border-radius: 1rem; width: 100%; max-width: 700px;
+      max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    .dark .modal-overlay .modal { background: #1e293b; }
+    .modal-overlay .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem; border-bottom: 1px solid #e2e8f0;
+    }
+    .dark .modal-overlay .modal-header { border-bottom-color: #334155; }
+    .modal-overlay .modal-header h3 { font-size: 0.95rem; font-weight: 700; color: #1e293b; }
+    .dark .modal-overlay .modal-header h3 { color: #f1f5f9; }
+    .modal-overlay .modal-body { padding: 1.25rem; }
+    .modal-overlay .close-btn {
+      background: transparent; border: none; font-size: 1.2rem;
+      color: #94a3b8; cursor: pointer; padding: 0.25rem; transition: color 150ms;
+    }
+    .modal-overlay .close-btn:hover { color: #ef4444; }
+
+    /* Tailwind form grid for modal */
+    .tw-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    @media (max-width: 640px) { .tw-form-grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="breadcrumb">
-                <a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-                <span class="breadcrumb-sep">/</span>
-                <span>Supplier Master</span>
+<?php include 'mobile-menu.php'; ?>
+
+<div class="flex h-full overflow-hidden" id="appRoot">
+
+  <?php include 'sidebar.php'; ?>
+
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <i class="fas fa-building text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white">Suppliers</h1>
+      </div>
+
+      <div class="ml-auto flex items-center gap-2">
+        <button class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadSuppliers()">
+          <i class="fas fa-arrows-rotate text-[10px] mr-1"></i> Refresh
+        </button>
+        <?php if ($canCreate): ?>
+        <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="openAddModal()">
+          <i class="fas fa-plus text-[10px] mr-1"></i> Add Supplier
+        </button>
+        <?php endif; ?>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-5 space-y-4">
+
+      <!-- Filters Card -->
+      <div id="filtersSection" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4" style="display: none;">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <i class="fas fa-filter text-brand-500 text-xs"></i>
+            <span class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide">Filters</span>
+          </div>
+          <button class="text-xs text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 font-medium transition-colors" onclick="clearFilters()">
+            <i class="fas fa-times-circle mr-1"></i> Clear All
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Status</label>
+            <select id="filterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Location</label>
+            <select id="filterLocation" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Locations</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Supplier Type</label>
+            <select id="filterSupplierType" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Types</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton Loader -->
+      <div id="skeletonLoader">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5 space-y-3">
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+          <div class="flex gap-3"><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div><div class="skeleton h-4 flex-1"></div></div>
+        </div>
+      </div>
+
+      <!-- DataTable Card -->
+      <div id="tableContainer" style="display: none;">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4">
+          <div class="text-xs text-slate-400 dark:text-slate-500 mb-3 sm:hidden">
+            <i class="fas fa-arrows-alt-h mr-1"></i> Swipe left/right to see all columns
+          </div>
+          <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table id="suppliersTable" class="display" style="width:100%"></table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<?php if ($canCreate || $canUpdate): ?>
+<!-- Supplier Modal -->
+<div class="modal-overlay" id="supplierModal">
+    <div class="modal" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 id="modalTitle"><i class="fas fa-building text-brand-500 mr-1.5"></i> Add Supplier</h3>
+            <button class="close-btn" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- Supplier ID info (shown in edit mode) -->
+            <div id="supplierIdInfo" style="display: none;" class="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-700 border-l-4 border-l-brand-500 px-4 py-3 rounded-lg mb-5 text-sm">
+                <strong class="text-brand-700 dark:text-brand-300"><i class="fas fa-id-badge mr-1"></i> Supplier ID:</strong> <span id="supplierIdDisplay" class="text-slate-700 dark:text-slate-200 font-semibold"></span>
             </div>
 
-            <div class="header">
-                <h1><i class="fas fa-truck-field"></i> Supplier Master</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+            <form id="supplierForm">
+                <input type="hidden" id="supplierId" name="supplier_id">
 
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Suppliers</h2>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="loadSuppliers()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Supplier
-                        </button>
-                        <?php endif; ?>
+                <div class="tw-form-grid">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-user mr-1"></i> First Name *</label>
+                        <input type="text" id="firstName" name="first_name" required maxlength="150" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-phone mr-1"></i> Phone</label>
+                        <input type="tel" id="phone" name="phone" maxlength="20" placeholder="+2250505761440" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fab fa-whatsapp mr-1" style="color:#25D366;"></i> WhatsApp</label>
+                        <div class="flex items-center gap-2">
+                            <label class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 cursor-pointer whitespace-nowrap">
+                                <input type="checkbox" id="whatsappSameAsPhone" onchange="toggleWhatsappField()" checked class="rounded border-slate-300 text-brand-500 focus:ring-brand-400"> Same as phone
+                            </label>
+                            <input type="tel" id="whatsappPhone" name="whatsapp_phone" maxlength="20" placeholder="Different WhatsApp #" style="display:none;" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-id-card mr-1"></i> ID Number</label>
+                        <input type="text" id="idNumber" name="id_number" maxlength="50" placeholder="National ID" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-birthday-cake mr-1"></i> Date of Birth</label>
+                        <input type="date" id="dateOfBirth" name="date_of_birth" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-map-marker-alt mr-1"></i> Location *</label>
+                        <select id="locationId" name="location_id" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                            <option value="">Select Location</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-truck mr-1"></i> Supplier Type</label>
+                        <select id="supplierTypeId" name="supplier_type_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                            <option value="">Select Type</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-money-bill-wave mr-1"></i> Typical Price/Kg</label>
+                        <input type="number" id="typicalPrice" name="typical_price_per_kg" step="0.01" min="0" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-university mr-1"></i> Bank Account</label>
+                        <input type="text" id="bankAccount" name="bank_account" maxlength="100" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-map-location-dot mr-1"></i> Procurement Region</label>
+                        <input type="text" id="procurementRegion" name="procurement_region" maxlength="150" placeholder="e.g. Region de Daloa" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-warehouse mr-1"></i> Closer Warehouse</label>
+                        <select id="closerWarehouseId" name="closer_warehouse_id" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                            <option value="">Select Warehouse</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Filters Section -->
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-toggle-on"></i> Status</label>
-                            <select id="filterStatus" class="filter-input">
-                                <option value="">All Status</option>
-                                <option value="Active">Active</option>
-                                <option value="Inactive">Inactive</option>
-                            </select>
+                <!-- Photo Upload Section -->
+                <div id="photoUploadSection" style="display: none;" class="mt-4 p-4 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200 dark:border-slate-600">
+                    <h4 class="text-xs font-bold text-slate-700 dark:text-slate-200 uppercase tracking-wide mb-3"><i class="fas fa-camera mr-1 text-brand-500"></i> Supplier Photos</h4>
+                    <div id="photoAddHint" style="display:none;" class="text-xs text-slate-400 dark:text-slate-500 mb-2"><i class="fas fa-info-circle mr-1"></i> Pick the photos here — they'll be uploaded automatically after you click <strong>Save</strong>.</div>
+                    <div class="tw-form-grid">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-user-circle mr-1"></i> Profile Photo</label>
+                            <div class="flex gap-2 items-center">
+                                <input type="file" id="profilePhotoFile" accept="image/*" class="flex-1 text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-600 hover:file:bg-brand-100 dark:file:bg-brand-900/30 dark:file:text-brand-300">
+                                <button type="button" id="profilePhotoUploadBtn" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap" onclick="uploadPhoto('profile')">
+                                    <i class="fas fa-upload mr-0.5"></i> Upload
+                                </button>
+                            </div>
+                            <div id="profilePhotoPreview" class="mt-2"></div>
                         </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Location</label>
-                            <select id="filterLocation" class="filter-input">
-                                <option value="">All Locations</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-truck"></i> Supplier Type</label>
-                            <select id="filterSupplierType" class="filter-input">
-                                <option value="">All Types</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Skeleton Loader -->
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                        </div>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                        </div>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                        </div>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                        </div>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                        </div>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex:1"></div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-id-card mr-1"></i> ID Photo</label>
+                            <div class="flex gap-2 items-center">
+                                <input type="file" id="idPhotoFile" accept="image/*" class="flex-1 text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-600 hover:file:bg-brand-100 dark:file:bg-brand-900/30 dark:file:text-brand-300">
+                                <button type="button" id="idPhotoUploadBtn" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap" onclick="uploadPhoto('id')">
+                                    <i class="fas fa-upload mr-0.5"></i> Upload
+                                </button>
+                            </div>
+                            <div id="idPhotoPreview" class="mt-2"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- DataTable Container -->
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="suppliersTable" class="display" style="width:100%"></table>
-                    </div>
+                <div class="flex items-center justify-end gap-2 mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <button type="button" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-4 py-2 rounded-lg transition-colors" onclick="closeModal()">
+                        <i class="fas fa-times mr-1"></i> Cancel
+                    </button>
+                    <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors">
+                        <i class="fas fa-save mr-1"></i> Save
+                    </button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
-
-    <?php if ($canCreate || $canUpdate): ?>
-    <!-- Supplier Modal -->
-    <div class="modal-overlay" id="supplierModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-truck-field"></i> Add Supplier</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Supplier ID info (shown in edit mode) -->
-                <div id="supplierIdInfo" style="display: none; background: #f8f9fa; border: 1px solid #dee2e6; border-left: 4px solid var(--navy-primary); padding: 12px 16px; border-radius: 3px; margin-bottom: 20px;">
-                    <strong><i class="fas fa-id-badge"></i> Supplier ID:</strong> <span id="supplierIdDisplay"></span>
-                </div>
-
-                <form id="supplierForm">
-                    <input type="hidden" id="supplierId" name="supplier_id">
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> First Name *</label>
-                            <input type="text" id="firstName" name="first_name" required maxlength="150">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="tel" id="phone" name="phone" maxlength="20" placeholder="+2250505761440">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</label>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;white-space:nowrap;">
-                                    <input type="checkbox" id="whatsappSameAsPhone" onchange="toggleWhatsappField()" checked> Same as phone
-                                </label>
-                                <input type="tel" id="whatsappPhone" name="whatsapp_phone" maxlength="20" placeholder="Different WhatsApp #" style="display:none;">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-id-card"></i> ID Number</label>
-                            <input type="text" id="idNumber" name="id_number" maxlength="50" placeholder="National ID">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-birthday-cake"></i> Date of Birth</label>
-                            <input type="date" id="dateOfBirth" name="date_of_birth">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Location *</label>
-                            <select id="locationId" name="location_id" required>
-                                <option value="">Select Location</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-truck"></i> Supplier Type</label>
-                            <select id="supplierTypeId" name="supplier_type_id">
-                                <option value="">Select Type</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-money-bill-wave"></i> Typical Price/Kg</label>
-                            <input type="number" id="typicalPrice" name="typical_price_per_kg" step="0.01" min="0">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-university"></i> Bank Account</label>
-                            <input type="text" id="bankAccount" name="bank_account" maxlength="100">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-map-location-dot"></i> Procurement Region</label>
-                            <input type="text" id="procurementRegion" name="procurement_region" maxlength="150" placeholder="e.g. Region de Daloa">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-warehouse"></i> Closer Warehouse</label>
-                            <select id="closerWarehouseId" name="closer_warehouse_id">
-                                <option value="">Select Warehouse</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Photo Upload — visible in both add & edit mode -->
-                    <div id="photoUploadSection" style="display: none; margin-top: 15px; padding: 15px; background: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;">
-                        <h4 style="margin: 0 0 12px 0; font-size: 14px; color: var(--navy-primary);"><i class="fas fa-camera"></i> Supplier Photos</h4>
-                        <div id="photoAddHint" style="display:none;font-size:12px;color:#666;margin-bottom:10px;"><i class="fas fa-info-circle"></i> Pick the photos here — they'll be uploaded automatically after you click <strong>Save</strong>.</div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label><i class="fas fa-user-circle"></i> Profile Photo</label>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <input type="file" id="profilePhotoFile" accept="image/*" style="flex:1;">
-                                    <button type="button" id="profilePhotoUploadBtn" class="btn btn-primary btn-sm" onclick="uploadPhoto('profile')" style="white-space:nowrap;">
-                                        <i class="fas fa-upload"></i> Upload
-                                    </button>
-                                </div>
-                                <div id="profilePhotoPreview" style="margin-top: 8px;"></div>
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-id-card"></i> ID Photo</label>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <input type="file" id="idPhotoFile" accept="image/*" style="flex:1;">
-                                    <button type="button" id="idPhotoUploadBtn" class="btn btn-primary btn-sm" onclick="uploadPhoto('id')" style="white-space:nowrap;">
-                                        <i class="fas fa-upload"></i> Upload
-                                    </button>
-                                </div>
-                                <div id="idPhotoPreview" style="margin-top: 8px;"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
+</div>
+<?php endif; ?>
 
     <script>
         let suppliersTable;
@@ -1582,37 +1722,43 @@ if (isset($_GET['action'])) {
 
 <!-- Report Modal Styles -->
 <style>
-.report-tabs { display: flex; border-bottom: 2px solid var(--border-color); background: var(--bg-card); padding: 0 20px; gap: 0; overflow-x: auto; }
-.report-tab { padding: 12px 20px; border: none; background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s; font-family: inherit; display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-.report-tab:hover { color: var(--navy-accent); background: rgba(0,116,217,0.05); }
-.report-tab.active { color: var(--navy-accent); border-bottom-color: var(--navy-accent); }
-.report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
-.report-summary-card { background: var(--bg-primary); border-radius: 8px; padding: 14px; text-align: center; }
-.report-summary-card .val { font-size: 22px; font-weight: 700; color: var(--navy-accent); }
-.report-summary-card .lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-top: 4px; }
-.report-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.report-table thead th { background: var(--navy-primary); color: white; padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 600; }
-.report-table tbody td { padding: 8px 10px; border-bottom: 1px solid var(--border-light); color: var(--text-primary); }
-.report-table tbody tr:hover { background: var(--table-hover); }
+.report-tabs { display: flex; border-bottom: 1px solid #e2e8f0; background: white; padding: 0 1rem; gap: 0; overflow-x: auto; }
+.dark .report-tabs { background: #1e293b; border-bottom-color: #334155; }
+.report-tab { padding: 0.75rem 1rem; border: none; background: transparent; color: #64748b; font-size: 0.75rem; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: inherit; display: flex; align-items: center; gap: 0.35rem; white-space: nowrap; }
+.report-tab:hover { color: #2d9d99; background: rgba(45,157,153,0.05); }
+.report-tab.active { color: #2d9d99; border-bottom-color: #2d9d99; }
+.dark .report-tab { color: #94a3b8; }
+.dark .report-tab:hover { color: #4db8b4; }
+.dark .report-tab.active { color: #4db8b4; border-bottom-color: #4db8b4; }
+.report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; }
+.report-summary-card { background: #f8fafc; border-radius: 0.75rem; padding: 0.85rem; text-align: center; border: 1px solid #e2e8f0; }
+.dark .report-summary-card { background: #0f172a; border-color: #334155; }
+.report-summary-card .val { font-size: 1.25rem; font-weight: 700; color: #2d9d99; }
+.report-summary-card .lbl { font-size: 0.65rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; margin-top: 0.2rem; }
+.dark .report-summary-card .lbl { color: #94a3b8; }
+.report-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.report-table thead th { background: #1e293b; color: white; padding: 0.5rem 0.65rem; text-align: left; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.dark .report-table thead th { background: #0f172a; }
+.report-table tbody td { padding: 0.5rem 0.65rem; border-bottom: 1px solid #f1f5f9; color: #334155; }
+.dark .report-table tbody td { border-bottom-color: #1e293b; color: #e2e8f0; }
+.report-table tbody tr:hover { background: #f8fafc; }
+.dark .report-table tbody tr:hover { background: rgba(45,157,153,0.04); }
 @media (max-width: 768px) {
     #reportModal .modal { max-width: 98% !important; width: 98% !important; margin: 10px auto; }
     .report-summary { grid-template-columns: repeat(2, 1fr); }
-    .report-table { font-size: 11px; }
-    .report-table thead th, .report-table tbody td { padding: 6px 6px; }
-    .report-tab { padding: 10px 12px; font-size: 12px; }
+    .report-table { font-size: 0.65rem; }
+    .report-table thead th, .report-table tbody td { padding: 0.35rem 0.4rem; }
+    .report-tab { padding: 0.6rem 0.75rem; font-size: 0.7rem; }
 }
-#suppliersTable tbody tr { cursor: pointer; }
-#suppliersTable tbody tr.shown { background: var(--bg-secondary) !important; }
-#suppliersTable tbody tr.shown td { border-bottom: none; }
 </style>
 
 <!-- Report Modal HTML -->
 <div id="reportModal" class="modal-overlay" onclick="if(event.target===this)closeReportModal()">
     <div class="modal" style="max-width:80%;width:80%;">
         <div class="modal-header">
-            <h3 id="reportTitle"><i class="fas fa-file-alt"></i> Supplier Report</h3>
-            <div style="display:flex;gap:8px;align-items:center;">
-                <button class="btn btn-primary btn-sm" onclick="printReport()" style="padding:6px 14px;font-size:12px;"><i class="fas fa-print"></i> Print</button>
+            <h3 id="reportTitle"><i class="fas fa-file-alt text-brand-500 mr-1.5"></i> Supplier Report</h3>
+            <div class="flex items-center gap-2">
+                <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors" onclick="printReport()"><i class="fas fa-print mr-1"></i> Print</button>
                 <button class="close-btn" onclick="closeReportModal()">&times;</button>
             </div>
         </div>
@@ -1624,7 +1770,7 @@ if (isset($_GET['action'])) {
                 <button class="report-tab" onclick="switchReportTab('transactions', this)"><i class="fas fa-scroll"></i> Transactions Log</button>
                 <button class="report-tab" onclick="switchReportTab('performance', this)"><i class="fas fa-chart-bar"></i> Performance</button>
             </div>
-            <div id="reportContent" style="padding:20px;">
+            <div id="reportContent" style="padding:1.25rem;">
                 <div class="skeleton" style="height:200px;"></div>
             </div>
         </div>
@@ -2066,15 +2212,15 @@ if (isset($_GET['action'])) {
         var printWin = window.open('', '_blank', 'width=900,height=700');
         printWin.document.write('<!DOCTYPE html><html><head><title>' + title + ' - ' + tabName + '</title>');
         printWin.document.write('<style>');
-        printWin.document.write('body { font-family: Arial, sans-serif; padding: 20px; color: #333; }');
-        printWin.document.write('h2 { color: #001f3f; border-bottom: 2px solid #001f3f; padding-bottom: 8px; }');
+        printWin.document.write('body { font-family: Inter, Arial, sans-serif; padding: 20px; color: #334155; }');
+        printWin.document.write('h2 { color: #1e293b; border-bottom: 2px solid #2d9d99; padding-bottom: 8px; }');
         printWin.document.write('.report-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 16px; }');
-        printWin.document.write('.report-summary-card { background: #f5f7fa; border-radius: 8px; padding: 14px; text-align: center; }');
-        printWin.document.write('.report-summary-card .val { font-size: 20px; font-weight: 700; color: #001f3f; }');
-        printWin.document.write('.report-summary-card .lbl { font-size: 11px; color: #666; text-transform: uppercase; margin-top: 4px; }');
+        printWin.document.write('.report-summary-card { background: #f8fafc; border-radius: 8px; padding: 14px; text-align: center; border: 1px solid #e2e8f0; }');
+        printWin.document.write('.report-summary-card .val { font-size: 20px; font-weight: 700; color: #2d9d99; }');
+        printWin.document.write('.report-summary-card .lbl { font-size: 11px; color: #64748b; text-transform: uppercase; margin-top: 4px; }');
         printWin.document.write('.report-table { width: 100%; border-collapse: collapse; font-size: 12px; }');
-        printWin.document.write('.report-table thead th { background: #001f3f; color: white; padding: 8px 10px; text-align: left; font-size: 11px; }');
-        printWin.document.write('.report-table tbody td { padding: 8px 10px; border-bottom: 1px solid #ddd; }');
+        printWin.document.write('.report-table thead th { background: #1e293b; color: white; padding: 8px 10px; text-align: left; font-size: 11px; }');
+        printWin.document.write('.report-table tbody td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }');
         printWin.document.write('</style></head><body>');
         printWin.document.write('<h2>' + title + ' &mdash; ' + tabName + '</h2>');
         printWin.document.write(content);
@@ -2083,6 +2229,67 @@ if (isset($_GET['action'])) {
         printWin.focus();
         setTimeout(function() { printWin.print(); }, 400);
     }
+</script>
+
+<!-- Theme init -->
+<script>
+(function() {
+  var _store = {}; try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+  var html = document.documentElement;
+  var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  html.classList.toggle('dark', dark);
+  var btn = document.getElementById('themeToggleBtn');
+  var icon = document.getElementById('themeIcon');
+  function apply() {
+    html.classList.toggle('dark', dark);
+    _store.setItem('cp_theme', dark ? 'dark' : 'light');
+    if (icon) icon.className = dark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+    var lbl = document.getElementById('themeLabel');
+    if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
+  }
+  apply();
+  if (btn) btn.addEventListener('click', function() { dark = !dark; apply(); });
+
+  /* Sidebar collapse */
+  var appRoot = document.getElementById('appRoot');
+  var collapseBtn = document.getElementById('sidebarCollapseBtn');
+  if (collapseBtn) {
+    collapseBtn.addEventListener('click', function() {
+      appRoot.classList.toggle('app-collapsed');
+      var ic = document.getElementById('collapseIcon');
+      if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+    });
+  }
+
+  /* Mobile sidebar toggle */
+  var mobileBtn = document.getElementById('mobileSidebarBtn');
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', function() {
+      var sidebar = document.getElementById('sidebar');
+      if (sidebar) sidebar.classList.toggle('mobile-open');
+    });
+  }
+})();
+</script>
+
+<!-- i18n loader -->
+<script>
+(function() {
+  var _store = {}; try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+  var currentLang = _store.getItem('cp_lang') || 'en';
+  document.documentElement.lang = currentLang;
+
+  var langBtn = document.getElementById('langToggleBtn');
+  if (langBtn) {
+    langBtn.addEventListener('click', function() {
+      currentLang = (currentLang === 'en') ? 'fr' : 'en';
+      _store.setItem('cp_lang', currentLang);
+      document.documentElement.lang = currentLang;
+      var lbl = document.getElementById('langLabel');
+      if (lbl) lbl.textContent = (currentLang === 'en') ? 'Francais' : 'English';
+    });
+  }
+})();
 </script>
 
 </body>

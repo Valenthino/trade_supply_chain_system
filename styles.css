@@ -6,11 +6,11 @@
 
 /* ===== Color Scheme - Light Theme (Default) ===== */
 :root {
-    --navy-primary: #001f3f;
-    --navy-dark: #001529;
-    --navy-light: #003366;
-    --navy-accent: #0074D9;
-    --navy-hover: #002a52;
+    --navy-primary: #2d9d99;
+    --navy-dark: #1d6462;
+    --navy-light: #4db8b4;
+    --navy-accent: #2d9d99;
+    --navy-hover: #247f7c;
     --success: #34a853;
     --warning: #fbbc04;
     --danger: #ea4335;
@@ -51,9 +51,9 @@ body.dark-mode {
     --skeleton-base: #252550;
     --skeleton-shine: #2d2d5a;
 
-    --navy-primary: #0a1628;
-    --navy-dark: #060d16;
-    --navy-light: #1a3a5c;
+    --navy-primary: #2d9d99;
+    --navy-dark: #1d6462;
+    --navy-light: #4db8b4;
 }
 
 /* ===== Global Styles ===== */
@@ -88,6 +88,7 @@ input, select, textarea {
 .app-container {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 
 /* ===== Sidebar ===== */
@@ -546,9 +547,10 @@ input, select, textarea {
     left: 0;
     right: 0;
     height: 65px;
-    background: var(--navy-primary);
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
     z-index: 1001;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
     justify-content: space-around;
     align-items: center;
     padding: 0 5px;
@@ -561,7 +563,7 @@ input, select, textarea {
     align-items: center;
     justify-content: center;
     padding: 8px 12px;
-    color: rgba(255,255,255,0.7);
+    color: #64748b;
     text-decoration: none;
     font-size: 10px;
     font-weight: 500;
@@ -584,14 +586,14 @@ input, select, textarea {
 
 .mobile-nav-item:hover,
 .mobile-nav-item:focus {
-    color: white;
-    background: rgba(255,255,255,0.1);
+    color: #2d9d99;
+    background: rgba(45,157,153,0.08);
 }
 
 .mobile-nav-item.active {
     color: white;
     background: var(--navy-accent);
-    box-shadow: 0 2px 8px rgba(0,116,217,0.4);
+    box-shadow: 0 2px 8px rgba(45,157,153,0.4);
 }
 
 .mobile-nav-item.active i {
@@ -599,7 +601,7 @@ input, select, textarea {
 }
 
 .mobile-nav-more {
-    color: rgba(255,255,255,0.9);
+    color: #64748b;
 }
 
 /* Quick Add FAB */
@@ -617,7 +619,7 @@ input, select, textarea {
     justify-content: center;
     margin-bottom: 2px !important;
     margin-top: -14px;
-    box-shadow: 0 4px 12px rgba(0,116,217,0.4);
+    box-shadow: 0 4px 12px rgba(45,157,153,0.4);
     transition: transform 0.3s, background 0.3s;
 }
 .mobile-nav-fab span { margin-top: -2px; }
@@ -878,8 +880,9 @@ body.dark-mode .mobile-nav-item.active {
 /* ===== Main Content ===== */
 .main-content {
     flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     background: var(--bg-primary);
     transition: background-color 0.3s ease, margin-left 0.3s ease;
 }
@@ -1096,12 +1099,12 @@ body.dark-mode .stat-card-value {
 }
 
 .btn-primary {
-    background: var(--navy-primary);
+    background: #2d9d99;
     color: white;
 }
 
 .btn-primary:hover {
-    background: var(--navy-hover);
+    background: #247f7c;
     transform: translateY(-2px);
 }
 
