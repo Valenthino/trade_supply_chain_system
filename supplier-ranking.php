@@ -275,189 +275,364 @@ if (isset($_GET['action'])) {
   YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Supplier Ranking - Dashboard System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Commodity Flow &mdash; Supplier Ranking</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-
-    <style>
-        /* tier badges */
-        .tier-badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; font-weight:800; font-size:14px; color:#fff; box-shadow:0 2px 4px rgba(0,0,0,.15); }
-        .tier-A { background:linear-gradient(135deg,#1a9c6b,#0d7a4f); }
-        .tier-B { background:linear-gradient(135deg,#0074D9,#0057a3); }
-        .tier-C { background:linear-gradient(135deg,#f39c12,#d4820b); }
-        .tier-D { background:linear-gradient(135deg,#e74c3c,#b8341a); }
-
-        /* rank column */
-        .rank-num { font-size:18px; font-weight:800; color:var(--navy-primary); min-width:32px; text-align:center; }
-        .rank-1 { color:#f1c40f; }
-        .rank-2 { color:#95a5a6; }
-        .rank-3 { color:#cd7f32; }
-
-        /* score bar */
-        .score-bar { width:100%; height:10px; border-radius:6px; background:#eef0f3; overflow:hidden; position:relative; }
-        .score-bar-fill { height:100%; border-radius:6px; transition:width .4s; }
-        .score-text { font-weight:700; font-size:13px; margin-top:2px; display:block; }
-
-        /* summary cards */
-        .tier-summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
-        .tier-summary-card { background:#fff; border-radius:10px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,0.06); border-left:5px solid transparent; display:flex; align-items:center; gap:14px; transition:transform .15s, box-shadow .15s; }
-        .tier-summary-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
-        .tier-summary-card.tier-a-border { border-left-color:#1a9c6b; }
-        .tier-summary-card.tier-b-border { border-left-color:#0074D9; }
-        .tier-summary-card.tier-c-border { border-left-color:#f39c12; }
-        .tier-summary-card.tier-d-border { border-left-color:#e74c3c; }
-        .tier-summary-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; flex-shrink:0; }
-        .tier-summary-value { font-size:28px; font-weight:800; color:var(--navy-primary); line-height:1; }
-        .tier-summary-label { font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); margin-top:4px; font-weight:600; }
-
-        /* movement indicators */
-        .movement-pill { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:700; padding:2px 7px; border-radius:10px; line-height:1; }
-        .mv-up   { background:rgba(26,156,107,0.14);  color:#0d7a4f; }
-        .mv-down { background:rgba(231,76,60,0.14);   color:#b8341a; }
-        .mv-same { background:rgba(127,140,141,0.14); color:#5c6a75; }
-        .mv-new  { background:rgba(155,89,182,0.14);  color:#7b3f95; }
-        .rank-stack { display:flex; flex-direction:column; align-items:center; gap:2px; }
-
-        /* movement summary strip */
-        .movement-strip { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; background:#fff; border-radius:8px; padding:10px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); align-items:center; }
-        .movement-strip-title { font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); font-weight:600; margin-right:4px; }
-        .movement-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px; font-weight:700; font-size:13px; }
-        .movement-chip i { font-size:11px; }
-        .mc-up   { background:rgba(26,156,107,0.14);  color:#0d7a4f; }
-        .mc-down { background:rgba(231,76,60,0.14);   color:#b8341a; }
-        .mc-same { background:rgba(127,140,141,0.14); color:#5c6a75; }
-        .mc-new  { background:rgba(155,89,182,0.14);  color:#7b3f95; }
-        .baseline-note { font-size:11px; color:var(--text-muted); margin-left:auto; font-style:italic; }
-
-        /* expanded row */
-        .rank-detail { padding:16px 24px; background:#f8f9fc; }
-        .rank-detail-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-        .rank-metric { background:#fff; border:1px solid #e3e6ea; border-radius:6px; padding:10px 12px; }
-        .rank-metric-label { font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:600; letter-spacing:.3px; }
-        .rank-metric-value { font-size:16px; font-weight:700; color:var(--navy-primary); margin-top:2px; }
-
-        @media (max-width: 900px) {
-            .tier-summary-grid { grid-template-columns:repeat(2,1fr); }
-            .rank-detail-grid { grid-template-columns:repeat(2,1fr); }
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
         }
-    </style>
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css" />
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="styles.css?v=5.0" />
+
+  <!-- JS Libraries -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* CSS Variables for JS-generated inline styles */
+    :root {
+      --navy-primary: #1e293b;
+      --navy-accent: #2d9d99;
+      --text-primary: #334155;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --success: #059669;
+      --danger: #dc2626;
+      --border-color: #e2e8f0;
+      --border-light: #f1f5f9;
+      --bg-card: white;
+      --bg-primary: #f8fafc;
+      --table-hover: #f1f5f9;
+      --shadow-color: rgba(0,0,0,0.06);
+    }
+    .dark {
+      --navy-primary: #e2e8f0;
+      --navy-accent: #4db8b4;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --success: #34d399;
+      --danger: #f87171;
+      --border-color: #334155;
+      --border-light: #1e293b;
+      --bg-card: #1e293b;
+      --bg-primary: #0f172a;
+      --table-hover: #334155;
+      --shadow-color: rgba(0,0,0,0.2);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton loader */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%; animation: shimmer 1.4s ease infinite; border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+    .skeleton-row { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+    .dark .skeleton-row { border-color: #1e293b; }
+    .skeleton-cell { height: 16px; border-radius: 4px; flex: 1; }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Nav active state */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: ''; position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTables overrides */
+    .dataTables_wrapper { font-size: 13px; color: inherit; }
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate { padding: 12px 16px; font-size: 13px; }
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 13px;
+      background: #f8fafc; outline: none; transition: border-color 200ms;
+    }
+    .dark .dataTables_wrapper .dataTables_filter input {
+      background: #1e293b; border-color: #334155; color: #e2e8f0;
+    }
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    table.dataTable { border-collapse: collapse !important; width: 100% !important; }
+    table.dataTable thead th {
+      background: #f8fafc; font-weight: 600; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.05em; color: #64748b; padding: 10px 14px; border-bottom: 2px solid #e2e8f0;
+    }
+    .dark table.dataTable thead th { background: #0f172a; color: #94a3b8; border-color: #334155; }
+    table.dataTable tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .dark table.dataTable tbody td { border-color: #1e293b; color: #e2e8f0; }
+    table.dataTable tbody tr:hover { background: #f0fdf4 !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.06) !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; border-radius: 6px;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { border-radius: 6px; }
+    .dt-buttons .dt-button {
+      background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important;
+      font-size: 12px !important; font-weight: 500 !important; padding: 6px 14px !important;
+      color: #475569 !important; transition: all 150ms !important;
+    }
+    .dark .dt-buttons .dt-button { background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important; }
+    .dt-buttons .dt-button:hover { background: #f1f5f9 !important; border-color: #2d9d99 !important; color: #2d9d99 !important; }
+
+    /* ── Page-specific: tier badges ── */
+    .tier-badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:50%; font-weight:800; font-size:14px; color:#fff; box-shadow:0 2px 4px rgba(0,0,0,.15); }
+    .tier-A { background:linear-gradient(135deg,#1a9c6b,#0d7a4f); }
+    .tier-B { background:linear-gradient(135deg,#0074D9,#0057a3); }
+    .tier-C { background:linear-gradient(135deg,#f39c12,#d4820b); }
+    .tier-D { background:linear-gradient(135deg,#e74c3c,#b8341a); }
+
+    /* Rank column */
+    .rank-num { font-size:18px; font-weight:800; color:#1e293b; min-width:32px; text-align:center; }
+    .dark .rank-num { color:#e2e8f0; }
+    .rank-1 { color:#f1c40f !important; }
+    .rank-2 { color:#95a5a6 !important; }
+    .rank-3 { color:#cd7f32 !important; }
+
+    /* Score bar */
+    .score-bar { width:100%; height:10px; border-radius:6px; background:#eef0f3; overflow:hidden; position:relative; }
+    .dark .score-bar { background:#334155; }
+    .score-bar-fill { height:100%; border-radius:6px; transition:width .4s; }
+    .score-text { font-weight:700; font-size:13px; margin-top:2px; display:block; }
+
+    /* Rank stack */
+    .rank-stack { display:flex; flex-direction:column; align-items:center; gap:2px; }
+
+    /* Movement pills */
+    .movement-pill { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:700; padding:2px 7px; border-radius:10px; line-height:1; }
+    .mv-up   { background:rgba(26,156,107,0.14);  color:#0d7a4f; }
+    .mv-down { background:rgba(231,76,60,0.14);   color:#b8341a; }
+    .mv-same { background:rgba(127,140,141,0.14); color:#5c6a75; }
+    .mv-new  { background:rgba(155,89,182,0.14);  color:#7b3f95; }
+
+    /* Summary cards */
+    .tier-summary-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+    .tier-summary-card { background:white; border-radius:12px; padding:16px 18px; box-shadow:0 1px 3px rgba(0,0,0,0.06); border:1px solid #e2e8f0; border-left:5px solid transparent; display:flex; align-items:center; gap:14px; transition:transform .15s, box-shadow .15s; }
+    .dark .tier-summary-card { background:#1e293b; border-color:#334155; }
+    .tier-summary-card:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.1); }
+    .tier-summary-card.tier-a-border { border-left-color:#1a9c6b; }
+    .tier-summary-card.tier-b-border { border-left-color:#0074D9; }
+    .tier-summary-card.tier-c-border { border-left-color:#f39c12; }
+    .tier-summary-card.tier-d-border { border-left-color:#e74c3c; }
+    .tier-summary-icon { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; color:#fff; flex-shrink:0; }
+    .tier-summary-value { font-size:28px; font-weight:800; color:#1e293b; line-height:1; }
+    .dark .tier-summary-value { color:#e2e8f0; }
+    .tier-summary-label { font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; margin-top:4px; font-weight:600; }
+
+    /* Movement strip */
+    .movement-strip { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px; background:white; border-radius:12px; padding:10px 14px; box-shadow:0 1px 3px rgba(0,0,0,0.06); border:1px solid #e2e8f0; align-items:center; }
+    .dark .movement-strip { background:#1e293b; border-color:#334155; }
+    .movement-strip-title { font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:var(--text-muted); font-weight:600; margin-right:4px; }
+    .movement-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:20px; font-weight:700; font-size:13px; }
+    .movement-chip i { font-size:11px; }
+    .mc-up   { background:rgba(26,156,107,0.14);  color:#0d7a4f; }
+    .mc-down { background:rgba(231,76,60,0.14);   color:#b8341a; }
+    .mc-same { background:rgba(127,140,141,0.14); color:#5c6a75; }
+    .mc-new  { background:rgba(155,89,182,0.14);  color:#7b3f95; }
+    .baseline-note { font-size:11px; color:#64748b; margin-left:auto; font-style:italic; }
+
+    /* Expanded row detail */
+    .rank-detail { padding:16px 24px; background:#f8fafc; }
+    .dark .rank-detail { background:#0f172a; }
+    .rank-detail-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .rank-metric { background:white; border:1px solid #e2e8f0; border-radius:8px; padding:10px 12px; }
+    .dark .rank-metric { background:#1e293b; border-color:#334155; }
+    .rank-metric-label { font-size:11px; text-transform:uppercase; color:#64748b; font-weight:600; letter-spacing:.3px; }
+    .rank-metric-value { font-size:16px; font-weight:700; color:#1e293b; margin-top:2px; }
+    .dark .rank-metric-value { color:#e2e8f0; }
+
+    @media (max-width: 900px) {
+      .tier-summary-grid { grid-template-columns:repeat(2,1fr); }
+      .rank-detail-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="breadcrumb">
-                <a href="dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-                <span class="breadcrumb-sep">/</span>
-                <span>Supplier Ranking</span>
-            </div>
+<?php include 'mobile-menu.php'; ?>
 
-            <div class="header">
-                <h1><i class="fas fa-ranking-star"></i> Supplier Ranking</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+<div class="flex h-full overflow-hidden" id="appRoot">
 
-            <!-- scoring explainer -->
-            <div style="background:rgba(0,116,217,0.06); border-left:4px solid var(--navy-accent); padding:14px 18px; border-radius:6px; margin-bottom:18px; font-size:13px; color:#31414f;">
-                <strong style="color:var(--navy-primary);"><i class="fas fa-info-circle"></i> How the score is calculated</strong>
-                <div style="margin-top:6px; display:flex; gap:18px; flex-wrap:wrap;">
-                    <span><b>Volume 40%</b> — kg delivered + monetary value</span>
-                    <span><b>Quality 20%</b> — avg KOR out-turn + grainage</span>
-                    <span><b>Reliability 25%</b> — how past advances were handled</span>
-                    <span><b>Activity 15%</b> — recent deliveries (last 90 days)</span>
-                </div>
-                <div style="margin-top:6px; color:var(--text-muted); font-size:12px;">
-                    Use this ranking to decide who gets pre-financed next — Tier A = safest bet, Tier D = avoid.
-                </div>
-            </div>
+  <?php include 'sidebar.php'; ?>
 
-            <!-- movement strip — who went up, who went down since last snapshot -->
-            <div class="movement-strip" id="movementStrip" style="display:none;">
-                <span class="movement-strip-title"><i class="fas fa-chart-line"></i> Movement</span>
-                <span class="movement-chip mc-up" id="mvUpChip"><i class="fas fa-arrow-up"></i> <span id="mvUpCount">0</span> climbed</span>
-                <span class="movement-chip mc-down" id="mvDownChip"><i class="fas fa-arrow-down"></i> <span id="mvDownCount">0</span> dropped</span>
-                <span class="movement-chip mc-same" id="mvSameChip"><i class="fas fa-equals"></i> <span id="mvSameCount">0</span> unchanged</span>
-                <span class="movement-chip mc-new" id="mvNewChip"><i class="fas fa-sparkles"></i> <span id="mvNewCount">0</span> new</span>
-                <span class="baseline-note" id="baselineNote"></span>
-            </div>
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-            <!-- tier summary -->
-            <div class="tier-summary-grid" id="tierSummary">
-                <div class="tier-summary-card tier-a-border">
-                    <div class="tier-summary-icon" style="background:linear-gradient(135deg,#1a9c6b,#0d7a4f);"><i class="fas fa-crown"></i></div>
-                    <div><div class="tier-summary-value" id="tierACount">0</div><div class="tier-summary-label">Tier A · Preferred</div></div>
-                </div>
-                <div class="tier-summary-card tier-b-border">
-                    <div class="tier-summary-icon" style="background:linear-gradient(135deg,#0074D9,#0057a3);"><i class="fas fa-medal"></i></div>
-                    <div><div class="tier-summary-value" id="tierBCount">0</div><div class="tier-summary-label">Tier B · Reliable</div></div>
-                </div>
-                <div class="tier-summary-card tier-c-border">
-                    <div class="tier-summary-icon" style="background:linear-gradient(135deg,#f39c12,#d4820b);"><i class="fas fa-triangle-exclamation"></i></div>
-                    <div><div class="tier-summary-value" id="tierCCount">0</div><div class="tier-summary-label">Tier C · Caution</div></div>
-                </div>
-                <div class="tier-summary-card tier-d-border">
-                    <div class="tier-summary-icon" style="background:linear-gradient(135deg,#e74c3c,#b8341a);"><i class="fas fa-ban"></i></div>
-                    <div><div class="tier-summary-value" id="tierDCount">0</div><div class="tier-summary-label">Tier D · Avoid</div></div>
-                </div>
-            </div>
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
 
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-list-ol"></i> Ranked Suppliers</h2>
-                    <button class="btn btn-primary" onclick="loadRanking()"><i class="fas fa-sync"></i> Refresh</button>
-                </div>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-trophy text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white">Supplier Ranking</h1>
+      </div>
 
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div><div class="skeleton skeleton-table-cell" style="flex:1"></div></div>
-                    </div>
-                </div>
+      <div class="ml-auto flex items-center gap-2">
+        <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadRanking()">
+          <i class="fas fa-sync mr-1"></i> Refresh
+        </button>
+      </div>
+    </header>
 
-                <div id="tableContainer" style="display:none;">
-                    <table id="rankingTable" class="display responsive nowrap" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Move</th>
-                                <th>Supplier</th>
-                                <th>Tier</th>
-                                <th>Score</th>
-                                <th>Volume</th>
-                                <th>Reliability</th>
-                                <th>Activity</th>
-                                <th>Outstanding</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
+    <!-- MAIN SCROLLABLE AREA -->
+    <main class="flex-1 overflow-y-auto p-5">
+
+      <!-- Scoring Explainer Card -->
+      <div class="bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4 mb-4">
+        <div class="font-bold text-sm text-violet-800 dark:text-violet-300 mb-2">
+          <i class="fas fa-info-circle mr-1"></i> How the score is calculated
         </div>
-    </div>
+        <div class="flex gap-4 flex-wrap text-xs text-violet-700 dark:text-violet-400">
+          <span><b>Volume 40%</b> — kg delivered + monetary value</span>
+          <span><b>Quality 20%</b> — avg KOR out-turn + grainage</span>
+          <span><b>Reliability 25%</b> — how past advances were handled</span>
+          <span><b>Activity 15%</b> — recent deliveries (last 90 days)</span>
+        </div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 mt-2">
+          Use this ranking to decide who gets pre-financed next — Tier A = safest bet, Tier D = avoid.
+        </div>
+      </div>
+
+      <!-- Movement Strip -->
+      <div class="movement-strip" id="movementStrip" style="display:none;">
+        <span class="movement-strip-title"><i class="fas fa-chart-line"></i> Movement</span>
+        <span class="movement-chip mc-up" id="mvUpChip"><i class="fas fa-arrow-up"></i> <span id="mvUpCount">0</span> climbed</span>
+        <span class="movement-chip mc-down" id="mvDownChip"><i class="fas fa-arrow-down"></i> <span id="mvDownCount">0</span> dropped</span>
+        <span class="movement-chip mc-same" id="mvSameChip"><i class="fas fa-equals"></i> <span id="mvSameCount">0</span> unchanged</span>
+        <span class="movement-chip mc-new" id="mvNewChip"><i class="fas fa-sparkles"></i> <span id="mvNewCount">0</span> new</span>
+        <span class="baseline-note" id="baselineNote"></span>
+      </div>
+
+      <!-- Tier Summary Grid -->
+      <div class="tier-summary-grid" id="tierSummary">
+        <div class="tier-summary-card tier-a-border">
+          <div class="tier-summary-icon" style="background:linear-gradient(135deg,#1a9c6b,#0d7a4f);"><i class="fas fa-crown"></i></div>
+          <div><div class="tier-summary-value" id="tierACount">0</div><div class="tier-summary-label">Tier A · Preferred</div></div>
+        </div>
+        <div class="tier-summary-card tier-b-border">
+          <div class="tier-summary-icon" style="background:linear-gradient(135deg,#0074D9,#0057a3);"><i class="fas fa-medal"></i></div>
+          <div><div class="tier-summary-value" id="tierBCount">0</div><div class="tier-summary-label">Tier B · Reliable</div></div>
+        </div>
+        <div class="tier-summary-card tier-c-border">
+          <div class="tier-summary-icon" style="background:linear-gradient(135deg,#f39c12,#d4820b);"><i class="fas fa-triangle-exclamation"></i></div>
+          <div><div class="tier-summary-value" id="tierCCount">0</div><div class="tier-summary-label">Tier C · Caution</div></div>
+        </div>
+        <div class="tier-summary-card tier-d-border">
+          <div class="tier-summary-icon" style="background:linear-gradient(135deg,#e74c3c,#b8341a);"><i class="fas fa-ban"></i></div>
+          <div><div class="tier-summary-value" id="tierDCount">0</div><div class="tier-summary-label">Tier D · Avoid</div></div>
+        </div>
+      </div>
+
+      <!-- DataTable Card -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-white"><i class="fas fa-list-ol mr-1"></i> Ranked Suppliers</h3>
+        </div>
+
+        <div id="skeletonLoader" class="p-5">
+          <div class="skeleton-row"><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div></div>
+          <div class="skeleton-row"><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div><div class="skeleton skeleton-cell" style="flex:1"></div></div>
+        </div>
+
+        <div id="tableContainer" style="display:none;" class="p-5 overflow-x-auto">
+          <table id="rankingTable" class="display responsive nowrap" style="width:100%;">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Move</th>
+                <th>Supplier</th>
+                <th>Tier</th>
+                <th>Score</th>
+                <th>Volume</th>
+                <th>Reliability</th>
+                <th>Activity</th>
+                <th>Outstanding</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
 
 <script>
 var rankingData = [];
@@ -618,6 +793,32 @@ function renderDetail(d) {
         '<div class="rank-metric"><div class="rank-metric-label">Advance Count</div><div class="rank-metric-value">' + d.advance_count + '</div></div>' +
         '</div></div>';
 }
+</script>
+
+<script>
+(function(){
+  var t = localStorage.getItem('cp_theme');
+  if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>
+<script>
+window._translations = {};
+function t(key) { return window._translations[key] || key; }
+function applyTranslations() {
+  document.querySelectorAll('[data-t]').forEach(function(el) {
+    var key = el.getAttribute('data-t');
+    if (window._translations[key]) el.textContent = window._translations[key];
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var lang = localStorage.getItem('cp_lang') || 'en';
+  fetch('lang.php?lang=' + lang)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ window._translations = data; applyTranslations(); })
+    .catch(function(){});
+});
 </script>
 </body>
 </html>
