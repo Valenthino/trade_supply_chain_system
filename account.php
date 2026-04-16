@@ -327,265 +327,335 @@ if (isset($_POST['action']) && $_POST['action'] === 'uploadProfileImage') {
 
 // If we reach here, render the HTML page
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>My Account - Dashboard System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; My Account</title>
 
-    <!-- CDN Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="styles.css?v=4.0">
+
+  <!-- jQuery + SweetAlert2 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-user-circle"></i> My Account</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
+  <?php include 'mobile-menu.php'; ?>
 
-            <!-- Profile Image Section -->
-            <div class="data-section" style="margin-bottom: 30px;">
-                <div class="section-header">
-                    <h2><i class="fas fa-image"></i> Profile Image</h2>
-                </div>
+  <div class="flex h-full overflow-hidden" id="appRoot">
 
-                <div class="profile-section-grid">
-                    <!-- Current Profile Image Display -->
-                    <div class="profile-image-display">
-                        <div class="profile-image-container">
-                            <img id="currentProfileImage" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                            <i id="defaultProfileIcon" class="fas fa-user" style="display: none;"></i>
-                        </div>
-                        <div class="profile-image-label">Current Image</div>
-                    </div>
+    <?php include 'sidebar.php'; ?>
 
-                    <!-- Upload Form -->
-                    <div class="profile-upload-form">
-                        <form id="profileImageForm" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label><i class="fas fa-upload"></i> Upload New Profile Image</label>
-                                <input type="file" id="profileImageInput" name="profile_image" accept="image/jpeg,image/png,image/gif,image/webp" class="file-input-styled">
-                                <div class="help-text">
-                                    <i class="fas fa-info-circle"></i> Accepted: JPG, PNG, GIF, WEBP (Max 2MB)
-                                </div>
-                            </div>
+    <!-- MAIN -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-                            <div class="form-actions" id="uploadSection" style="display: none;">
-                                <button type="submit" class="btn btn-primary" id="uploadBtn">
-                                    <i class="fas fa-upload"></i> Upload Image
-                                </button>
-                                <button type="button" class="btn btn-secondary" onclick="cancelUpload()">
-                                    <i class="fas fa-times"></i> Cancel
-                                </button>
-                            </div>
-                        </form>
-
-                        <div id="uploadDisabledMessage" class="warning-message" style="display: none;">
-                            <i class="fas fa-exclamation-triangle"></i> Profile image uploads are currently disabled by administrator.
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Account Information Card -->
-            <div class="account-info-card">
-                <h3><i class="fas fa-info-circle"></i> Account Information</h3>
-                <div class="info-row">
-                    <div class="info-label"><i class="fas fa-user"></i> Full Name:</div>
-                    <div class="info-value" id="display-fullname">Loading...</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label"><i class="fas fa-envelope"></i> Email:</div>
-                    <div class="info-value" id="display-email">Loading...</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label"><i class="fas fa-phone"></i> Phone:</div>
-                    <div class="info-value" id="display-phone">Loading...</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label"><i class="fas fa-user-tag"></i> Role:</div>
-                    <div class="info-value" id="display-role">Loading...</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label"><i class="fas fa-calendar-alt"></i> Member Since:</div>
-                    <div class="info-value" id="display-created">Loading...</div>
-                </div>
-            </div>
-
-            <!-- Update Profile Section -->
-            <div class="data-section" style="margin-bottom: 30px;">
-                <div class="section-header">
-                    <h2><i class="fas fa-edit"></i> Update Profile</h2>
-                </div>
-
-                <form id="profileForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Full Name *</label>
-                            <input type="text" id="fullName" name="full_name" required maxlength="150">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> Email *</label>
-                            <input type="email" id="email" name="email" required maxlength="200">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="tel" id="phone" name="phone" maxlength="20">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Change Password Section -->
-            <div class="data-section" style="margin-bottom: 30px;">
-                <div class="section-header">
-                    <h2><i class="fas fa-lock"></i> Change Password</h2>
-                </div>
-
-                <form id="passwordForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-lock"></i> Current Password *</label>
-                            <input type="password" id="current_password" name="current_password" required>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-key"></i> New Password *</label>
-                            <input type="password" id="new_password" name="new_password" required minlength="6">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-key"></i> Confirm New Password *</label>
-                            <input type="password" id="confirm_password" name="confirm_password" required minlength="6">
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-key"></i> Change Password
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- UI Customization Section -->
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-palette"></i> UI Customization</h2>
-                    <button class="btn btn-secondary" onclick="resetTheme()">
-                        <i class="fas fa-undo"></i> Reset to Default
-                    </button>
-                </div>
-
-                <p class="help-text" style="margin-bottom: 20px; color: var(--text-muted);">
-                    <i class="fas fa-info-circle"></i> Customize your dashboard colors. Changes are saved per user and will apply across all pages.
-                </p>
-
-                <!-- Color Preview -->
-                <div class="theme-preview" id="themePreview" style="margin-bottom: 25px; padding: 20px; border-radius: 8px; border: 2px solid var(--border-color);">
-                    <h4 style="margin-bottom: 15px; color: var(--text-primary);"><i class="fas fa-eye"></i> Live Preview</h4>
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
-                        <div id="previewPrimary" style="width: 80px; height: 50px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">Primary</div>
-                        <div id="previewSecondary" style="width: 80px; height: 50px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">Secondary</div>
-                        <div id="previewAccent" style="width: 80px; height: 50px; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 600;">Accent</div>
-                        <button class="btn" id="previewButton" style="margin-left: 20px;">
-                            <i class="fas fa-check"></i> Sample Button
-                        </button>
-                    </div>
-                </div>
-
-                <form id="themeForm">
-                    <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
-                        <div class="form-group">
-                            <label><i class="fas fa-square" id="primaryColorIcon"></i> Primary Color</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="color" id="theme_primary" name="theme_primary" value="#001f3f" style="width: 60px; height: 45px; padding: 2px; cursor: pointer; border: 2px solid var(--border-color); border-radius: 4px;">
-                                <input type="text" id="theme_primary_hex" value="#001f3f" maxlength="7" style="flex: 1; text-transform: uppercase;">
-                            </div>
-                            <small class="help-text" style="color: var(--text-muted); margin-top: 5px; display: block;">Sidebar & headers</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-square" id="secondaryColorIcon"></i> Secondary Color</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="color" id="theme_secondary" name="theme_secondary" value="#003366" style="width: 60px; height: 45px; padding: 2px; cursor: pointer; border: 2px solid var(--border-color); border-radius: 4px;">
-                                <input type="text" id="theme_secondary_hex" value="#003366" maxlength="7" style="flex: 1; text-transform: uppercase;">
-                            </div>
-                            <small class="help-text" style="color: var(--text-muted); margin-top: 5px; display: block;">Hover states & gradients</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-square" id="accentColorIcon"></i> Accent Color</label>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <input type="color" id="theme_accent" name="theme_accent" value="#0074D9" style="width: 60px; height: 45px; padding: 2px; cursor: pointer; border: 2px solid var(--border-color); border-radius: 4px;">
-                                <input type="text" id="theme_accent_hex" value="#0074D9" maxlength="7" style="flex: 1; text-transform: uppercase;">
-                            </div>
-                            <small class="help-text" style="color: var(--text-muted); margin-top: 5px; display: block;">Buttons & links</small>
-                        </div>
-                    </div>
-
-                    <!-- Theme Mode -->
-                    <div class="form-group" style="margin-top: 20px;">
-                        <label><i class="fas fa-adjust"></i> Default Theme Mode</label>
-                        <div style="display: flex; gap: 20px; margin-top: 10px;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px 20px; border: 2px solid var(--border-color); border-radius: 4px; transition: all 0.3s;" class="theme-mode-option" id="lightModeOption">
-                                <input type="radio" name="theme_mode" value="light" id="theme_mode_light" checked style="width: 18px; height: 18px;">
-                                <i class="fas fa-sun" style="color: #fbbc04;"></i>
-                                <span>Light Mode</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 12px 20px; border: 2px solid var(--border-color); border-radius: 4px; transition: all 0.3s;" class="theme-mode-option" id="darkModeOption">
-                                <input type="radio" name="theme_mode" value="dark" id="theme_mode_dark" style="width: 18px; height: 18px;">
-                                <i class="fas fa-moon" style="color: #5dade2;"></i>
-                                <span>Dark Mode</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Preset Colors -->
-                    <div class="form-group" style="margin-top: 25px;">
-                        <label><i class="fas fa-swatchbook"></i> Quick Presets</label>
-                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
-                            <button type="button" class="preset-btn" onclick="applyPreset('#001f3f', '#003366', '#0074D9')" style="background: linear-gradient(135deg, #001f3f 50%, #0074D9 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Navy Blue (Default)"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#1a1a2e', '#16213e', '#e94560')" style="background: linear-gradient(135deg, #1a1a2e 50%, #e94560 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Dark Rose"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#2d3436', '#636e72', '#00b894')" style="background: linear-gradient(135deg, #2d3436 50%, #00b894 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Emerald Dark"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#4a0e4e', '#810e7a', '#c92bc8')" style="background: linear-gradient(135deg, #4a0e4e 50%, #c92bc8 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Purple Magic"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#1b4332', '#2d6a4f', '#40916c')" style="background: linear-gradient(135deg, #1b4332 50%, #40916c 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Forest Green"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#7f5539', '#9c6644', '#dda15e')" style="background: linear-gradient(135deg, #7f5539 50%, #dda15e 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Warm Brown"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#03045e', '#0077b6', '#00b4d8')" style="background: linear-gradient(135deg, #03045e 50%, #00b4d8 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Ocean Blue"></button>
-                            <button type="button" class="preset-btn" onclick="applyPreset('#3d0066', '#7b2cbf', '#c77dff')" style="background: linear-gradient(135deg, #3d0066 50%, #c77dff 50%); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--border-color); cursor: pointer;" title="Violet Dream"></button>
-                        </div>
-                    </div>
-
-                    <div class="form-actions" style="margin-top: 30px;">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Theme Settings
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="applyThemePreview()">
-                            <i class="fas fa-eye"></i> Preview Changes
-                        </button>
-                    </div>
-                </form>
-            </div>
+      <!-- HEADER -->
+      <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+        <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+          <i class="fas fa-bars text-sm"></i>
+        </button>
+        <div class="flex items-center gap-2">
+          <i class="fas fa-circle-user text-brand-500 text-sm"></i>
+          <h1 class="text-base font-bold text-slate-800 dark:text-white">My Account</h1>
         </div>
+        <div class="ml-auto flex items-center gap-3">
+          <span class="text-xs text-slate-500 dark:text-slate-400">Welcome, <?php echo htmlspecialchars($username); ?></span>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT -->
+      <main class="flex-1 overflow-y-auto p-5 space-y-5">
+
+        <!-- Profile Image Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-6">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-4"><i class="fas fa-image mr-1 text-brand-500"></i> Profile Image</h3>
+          <div class="flex items-start gap-6">
+            <!-- Profile image display -->
+            <div class="flex flex-col items-center gap-2">
+              <div class="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden flex items-center justify-center border-2 border-slate-200 dark:border-slate-600">
+                <img id="currentProfileImage" src="" alt="Profile" class="w-full h-full object-cover" style="display:none;">
+                <i id="defaultProfileIcon" class="fas fa-user text-3xl text-slate-400" style="display:none;"></i>
+              </div>
+              <span class="text-xs text-slate-500">Current Image</span>
+            </div>
+            <!-- Upload form -->
+            <div class="flex-1">
+              <form id="profileImageForm" enctype="multipart/form-data">
+                <div class="mb-3">
+                  <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-upload mr-1"></i> Upload New Profile Image</label>
+                  <input type="file" id="profileImageInput" name="profile_image" accept="image/jpeg,image/png,image/gif,image/webp" class="w-full text-sm text-slate-700 dark:text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-600 hover:file:bg-brand-100">
+                  <p class="text-xs text-slate-400 mt-1"><i class="fas fa-info-circle mr-1"></i> Accepted: JPG, PNG, GIF, WEBP (Max 2MB)</p>
+                </div>
+                <div class="flex gap-2" id="uploadSection" style="display:none;">
+                  <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" id="uploadBtn"><i class="fas fa-upload mr-1"></i> Upload</button>
+                  <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="cancelUpload()"><i class="fas fa-times mr-1"></i> Cancel</button>
+                </div>
+              </form>
+              <div id="uploadDisabledMessage" class="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs p-3 rounded-lg mt-2" style="display:none;">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Profile image uploads are currently disabled by administrator.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Information Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-6">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-4"><i class="fas fa-info-circle mr-1 text-brand-500"></i> Account Information</h3>
+          <div class="flex items-center py-3 border-b border-slate-100 dark:border-slate-700">
+            <div class="text-xs font-semibold text-slate-500 w-36"><i class="fas fa-user mr-1"></i> Full Name:</div>
+            <div class="text-sm text-slate-800 dark:text-slate-200" id="display-fullname">Loading...</div>
+          </div>
+          <div class="flex items-center py-3 border-b border-slate-100 dark:border-slate-700">
+            <div class="text-xs font-semibold text-slate-500 w-36"><i class="fas fa-envelope mr-1"></i> Email:</div>
+            <div class="text-sm text-slate-800 dark:text-slate-200" id="display-email">Loading...</div>
+          </div>
+          <div class="flex items-center py-3 border-b border-slate-100 dark:border-slate-700">
+            <div class="text-xs font-semibold text-slate-500 w-36"><i class="fas fa-phone mr-1"></i> Phone:</div>
+            <div class="text-sm text-slate-800 dark:text-slate-200" id="display-phone">Loading...</div>
+          </div>
+          <div class="flex items-center py-3 border-b border-slate-100 dark:border-slate-700">
+            <div class="text-xs font-semibold text-slate-500 w-36"><i class="fas fa-user-tag mr-1"></i> Role:</div>
+            <div class="text-sm text-slate-800 dark:text-slate-200" id="display-role">Loading...</div>
+          </div>
+          <div class="flex items-center py-3">
+            <div class="text-xs font-semibold text-slate-500 w-36"><i class="fas fa-calendar-alt mr-1"></i> Member Since:</div>
+            <div class="text-sm text-slate-800 dark:text-slate-200" id="display-created">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Update Profile Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-6">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-4"><i class="fas fa-edit mr-1 text-brand-500"></i> Update Profile</h3>
+          <form id="profileForm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-user mr-1"></i> Full Name *</label>
+                <input type="text" id="fullName" name="full_name" required maxlength="150" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-envelope mr-1"></i> Email *</label>
+                <input type="email" id="email" name="email" required maxlength="200" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-phone mr-1"></i> Phone</label>
+                <input type="tel" id="phone" name="phone" maxlength="20" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+            </div>
+            <div class="mt-4">
+              <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+                <i class="fas fa-save mr-1"></i> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-6">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-4"><i class="fas fa-lock mr-1 text-brand-500"></i> Change Password</h3>
+          <form id="passwordForm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-lock mr-1"></i> Current Password *</label>
+                <input type="password" id="current_password" name="current_password" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-key mr-1"></i> New Password *</label>
+                <input type="password" id="new_password" name="new_password" required minlength="6" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-key mr-1"></i> Confirm New Password *</label>
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="6" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+            </div>
+            <div class="mt-4">
+              <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+                <i class="fas fa-key mr-1"></i> Change Password
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- UI Customization Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white"><i class="fas fa-palette mr-1 text-brand-500"></i> UI Customization</h3>
+            <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="resetTheme()">
+              <i class="fas fa-undo mr-1"></i> Reset to Default
+            </button>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-5">
+            <i class="fas fa-info-circle mr-1"></i> Customize your dashboard colors. Changes are saved per user and will apply across all pages.
+          </p>
+
+          <!-- Color Preview -->
+          <div class="bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 p-4 mb-5" id="themePreview">
+            <h4 class="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-3"><i class="fas fa-eye mr-1"></i> Live Preview</h4>
+            <div class="flex gap-3 flex-wrap items-center">
+              <div id="previewPrimary" class="w-20 h-12 rounded-lg flex items-center justify-center text-white text-xs font-semibold">Primary</div>
+              <div id="previewSecondary" class="w-20 h-12 rounded-lg flex items-center justify-center text-white text-xs font-semibold">Secondary</div>
+              <div id="previewAccent" class="w-20 h-12 rounded-lg flex items-center justify-center text-white text-xs font-semibold">Accent</div>
+              <button class="ml-4 px-3 py-2 rounded-lg text-xs font-semibold text-white" id="previewButton" type="button">
+                <i class="fas fa-check mr-1"></i> Sample Button
+              </button>
+            </div>
+          </div>
+
+          <form id="themeForm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-square mr-1" id="primaryColorIcon"></i> Primary Color</label>
+                <div class="flex gap-2 items-center">
+                  <input type="color" id="theme_primary" name="theme_primary" value="#001f3f" class="w-14 h-10 p-0.5 cursor-pointer border-2 border-slate-200 dark:border-slate-600 rounded-lg">
+                  <input type="text" id="theme_primary_hex" value="#001f3f" maxlength="7" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors uppercase">
+                </div>
+                <p class="text-xs text-slate-400 mt-1">Sidebar & headers</p>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-square mr-1" id="secondaryColorIcon"></i> Secondary Color</label>
+                <div class="flex gap-2 items-center">
+                  <input type="color" id="theme_secondary" name="theme_secondary" value="#003366" class="w-14 h-10 p-0.5 cursor-pointer border-2 border-slate-200 dark:border-slate-600 rounded-lg">
+                  <input type="text" id="theme_secondary_hex" value="#003366" maxlength="7" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors uppercase">
+                </div>
+                <p class="text-xs text-slate-400 mt-1">Hover states & gradients</p>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-square mr-1" id="accentColorIcon"></i> Accent Color</label>
+                <div class="flex gap-2 items-center">
+                  <input type="color" id="theme_accent" name="theme_accent" value="#0074D9" class="w-14 h-10 p-0.5 cursor-pointer border-2 border-slate-200 dark:border-slate-600 rounded-lg">
+                  <input type="text" id="theme_accent_hex" value="#0074D9" maxlength="7" class="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors uppercase">
+                </div>
+                <p class="text-xs text-slate-400 mt-1">Buttons & links</p>
+              </div>
+            </div>
+
+            <!-- Theme Mode -->
+            <div class="mt-5">
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2"><i class="fas fa-adjust mr-1"></i> Default Theme Mode</label>
+              <div class="flex gap-4 flex-wrap">
+                <label class="flex items-center gap-2 cursor-pointer px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-lg transition-colors hover:border-brand-400" id="lightModeOption">
+                  <input type="radio" name="theme_mode" value="light" id="theme_mode_light" checked class="w-4 h-4 accent-brand-500">
+                  <i class="fas fa-sun text-amber-400"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300">Light Mode</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer px-4 py-3 border-2 border-slate-200 dark:border-slate-600 rounded-lg transition-colors hover:border-brand-400" id="darkModeOption">
+                  <input type="radio" name="theme_mode" value="dark" id="theme_mode_dark" class="w-4 h-4 accent-brand-500">
+                  <i class="fas fa-moon text-blue-400"></i>
+                  <span class="text-sm text-slate-700 dark:text-slate-300">Dark Mode</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Preset Colors -->
+            <div class="mt-5">
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2"><i class="fas fa-swatchbook mr-1"></i> Quick Presets</label>
+              <div class="flex gap-2.5 flex-wrap">
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#001f3f', '#003366', '#0074D9')" style="background: linear-gradient(135deg, #001f3f 50%, #0074D9 50%);" title="Navy Blue (Default)"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#1a1a2e', '#16213e', '#e94560')" style="background: linear-gradient(135deg, #1a1a2e 50%, #e94560 50%);" title="Dark Rose"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#2d3436', '#636e72', '#00b894')" style="background: linear-gradient(135deg, #2d3436 50%, #00b894 50%);" title="Emerald Dark"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#4a0e4e', '#810e7a', '#c92bc8')" style="background: linear-gradient(135deg, #4a0e4e 50%, #c92bc8 50%);" title="Purple Magic"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#1b4332', '#2d6a4f', '#40916c')" style="background: linear-gradient(135deg, #1b4332 50%, #40916c 50%);" title="Forest Green"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#7f5539', '#9c6644', '#dda15e')" style="background: linear-gradient(135deg, #7f5539 50%, #dda15e 50%);" title="Warm Brown"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#03045e', '#0077b6', '#00b4d8')" style="background: linear-gradient(135deg, #03045e 50%, #00b4d8 50%);" title="Ocean Blue"></button>
+                <button type="button" class="preset-btn w-10 h-10 rounded-full border-2 border-slate-200 dark:border-slate-600 cursor-pointer hover:scale-110 transition-transform" onclick="applyPreset('#3d0066', '#7b2cbf', '#c77dff')" style="background: linear-gradient(135deg, #3d0066 50%, #c77dff 50%);" title="Violet Dream"></button>
+              </div>
+            </div>
+
+            <div class="mt-5 flex gap-2">
+              <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+                <i class="fas fa-save mr-1"></i> Save Theme Settings
+              </button>
+              <button type="button" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="applyThemePreview()">
+                <i class="fas fa-eye mr-1"></i> Preview Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </main>
     </div>
+  </div>
 
     <script>
         let allowUserUploads = true;
@@ -1154,5 +1224,74 @@ if (isset($_POST['action']) && $_POST['action'] === 'uploadProfileImage') {
             updateColorIcons();
         }
     </script>
+
+  <!-- Theme init & i18n -->
+  <script>
+  (function() {
+    var _store = {};
+    try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+
+    // Theme
+    var html = document.documentElement;
+    var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    html.classList.toggle('dark', dark);
+
+    // Sidebar collapse
+    var appRoot = document.getElementById('appRoot');
+    var collapseBtn = document.getElementById('sidebarCollapseBtn');
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        appRoot.classList.toggle('app-collapsed');
+        var ic = document.getElementById('collapseIcon');
+        if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+      });
+    }
+
+    // i18n
+    var currentLang = _store.getItem('cp_lang') || 'en';
+    function applyTranslations() {
+      document.querySelectorAll('[data-t]').forEach(function(el) {
+        var key = el.getAttribute('data-t');
+        if (key) el.textContent = key;
+      });
+    }
+    var langBtn = document.getElementById('langToggleBtn');
+    if (langBtn) {
+      langBtn.addEventListener('click', function() {
+        currentLang = (currentLang === 'en') ? 'fr' : 'en';
+        _store.setItem('cp_lang', currentLang);
+        document.documentElement.lang = currentLang;
+      });
+    }
+
+    // Theme toggle
+    var themeBtn = document.getElementById('themeToggleBtn');
+    var themeIcon = document.getElementById('themeIcon');
+    function applyThemeUI() {
+      if (themeIcon) themeIcon.className = dark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+      var lbl = document.getElementById('themeLabel');
+      if (lbl) lbl.textContent = dark ? 'Light Mode' : 'Dark Mode';
+    }
+    applyThemeUI();
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function() {
+        dark = !dark;
+        html.classList.toggle('dark', dark);
+        _store.setItem('cp_theme', dark ? 'dark' : 'light');
+        applyThemeUI();
+      });
+    }
+
+    // Mobile sidebar
+    var mobileBtn = document.getElementById('mobileSidebarBtn');
+    var sidebar = document.getElementById('sidebar');
+    if (mobileBtn && sidebar) {
+      mobileBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+      });
+    }
+  })();
+  </script>
+
 </body>
 </html>
