@@ -66,129 +66,153 @@ if (isset($_GET['action']) && $_GET['action'] === 'getLogs') {
 
 // If we reach here, render the HTML page
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Activity Logs - Dashboard System</title>
-
-    <!-- CDN Dependencies -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow — Activity Logs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: { 50:'#f0f9f9',100:'#d9f2f0',200:'#b5e6e3',300:'#82d3cf',400:'#4db8b4',500:'#2d9d99',600:'#247f7c',700:'#1d6462',800:'#185150',900:'#164342' },
+          slate: { 850: '#172032' }
+        },
+        boxShadow: { 'card':'0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)', 'card-hover':'0 4px 12px 0 rgba(0,0,0,0.08)' }
+      }
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 400px 100%; animation: shimmer 1.4s ease infinite; border-radius: 6px; }
+    .dark .skeleton { background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%); background-size: 400px 100%; }
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .nav-link.active::before { content:''; position:absolute; left:0; top:15%; bottom:15%; width:3px; background:#2d9d99; border-radius:0 3px 3px 0; }
+    .dataTables_wrapper { font-size: 13px; }
+    table.dataTable thead th { background: transparent; border-bottom: 1px solid #e2e8f0; color: #64748b; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 12px; }
+    table.dataTable tbody tr:hover { background: #f8fafc; }
+    .dark table.dataTable tbody tr:hover { background: #1e293b; }
+    table.dataTable tbody td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+    .dark table.dataTable tbody td { border-bottom-color: #1e293b; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
-
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-history"></i> Activity Logs</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
-
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Activity History</h2>
-                    <button class="btn btn-primary" onclick="loadLogs()">
-                        <i class="fas fa-sync"></i> Refresh
-                    </button>
-                </div>
-
-                <!-- Filters Section -->
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                            <input type="date" id="filterDateFrom" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                            <input type="date" id="filterDateTo" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-tag"></i> Action Type</label>
-                            <select id="filterAction" class="filter-input">
-                                <option value="">All Actions</option>
-                            </select>
-                        </div>
-                        <?php if (in_array($role, ['Admin', 'Manager'])): ?>
-                        <div class="filter-group">
-                            <label><i class="fas fa-user"></i> Username</label>
-                            <select id="filterUsername" class="filter-input">
-                                <option value="">All Users</option>
-                            </select>
-                        </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <!-- Loading Skeleton -->
-                <div id="loadingSkeleton">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                        </div>
-                        <?php for ($i = 0; $i < 8; $i++): ?>
-                        <div class="skeleton-table-row">
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 2"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                            <div class="skeleton skeleton-table-cell" style="flex: 1"></div>
-                        </div>
-                        <?php endfor; ?>
-                    </div>
-                </div>
-
-                <!-- DataTable -->
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="logsTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
+  <?php include 'mobile-menu.php'; ?>
+  <div class="flex h-full overflow-hidden" id="appRoot">
+    <?php include 'sidebar.php'; ?>
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+      <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <i class="fas fa-clipboard-list text-brand-500 text-sm"></i>
+          <h1 class="text-base font-bold text-slate-800 dark:text-white">Activity Logs</h1>
         </div>
+        <div class="ml-auto flex items-center gap-2">
+          <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadLogs()">
+            <i class="fas fa-sync mr-1"></i> Refresh
+          </button>
+        </div>
+      </header>
+      <main class="flex-1 overflow-y-auto p-5">
+        <!-- Filters Card -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 mb-4" id="filtersSection" style="display:none;">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-filter text-brand-500 text-xs"></i>
+              <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Filters</h3>
+            </div>
+            <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors" onclick="clearFilters()">
+              <i class="fas fa-times-circle mr-1"></i> Clear All
+            </button>
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+              <input type="date" id="filterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+              <input type="date" id="filterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Action Type</label>
+              <select id="filterAction" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">All Actions</option>
+              </select>
+            </div>
+            <?php if (in_array($role, ['Admin', 'Manager'])): ?>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Username</label>
+              <select id="filterUsername" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                <option value="">All Users</option>
+              </select>
+            </div>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <!-- Loading Skeleton -->
+        <div id="loadingSkeleton">
+          <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+            <?php for ($i = 0; $i < 8; $i++): ?>
+            <div class="flex gap-3 mb-3">
+              <div class="skeleton h-4 flex-1"></div>
+              <div class="skeleton h-4 flex-1"></div>
+              <div class="skeleton h-4 flex-[2]"></div>
+              <div class="skeleton h-4 flex-[2]"></div>
+              <div class="skeleton h-4 flex-1"></div>
+              <div class="skeleton h-4 flex-1"></div>
+            </div>
+            <?php endfor; ?>
+          </div>
+        </div>
+
+        <!-- DataTable Card -->
+        <div id="tableContainer" style="display:none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+          <div class="p-5 overflow-x-auto">
+            <table id="logsTable" class="display" style="width:100%"></table>
+          </div>
+        </div>
+      </main>
     </div>
+  </div>
 
     <script>
         let logsTable;
@@ -379,5 +403,31 @@ if (isset($_GET['action']) && $_GET['action'] === 'getLogs') {
             }
         }
     </script>
+
+  <script>
+  (function(){
+    var t = localStorage.getItem('cp_theme');
+    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+  </script>
+  <script>
+  window._translations = {};
+  function t(key) { return window._translations[key] || key; }
+  function applyTranslations() {
+    document.querySelectorAll('[data-t]').forEach(function(el) {
+      var key = el.getAttribute('data-t');
+      if (window._translations[key]) el.textContent = window._translations[key];
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var lang = localStorage.getItem('cp_lang') || 'en';
+    fetch('lang.php?lang=' + lang)
+      .then(function(r){ return r.json(); })
+      .then(function(data){ window._translations = data; applyTranslations(); })
+      .catch(function(){});
+  });
+  </script>
 </body>
 </html>
