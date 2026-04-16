@@ -1055,357 +1055,496 @@ if (isset($_GET['action'])) {
 ?>
 <!-- Developed by Rameez Scripts — https://www.youtube.com/@rameezimdad -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Deliveries Out - Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow — Deliveries</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#f0f9f9',100:'#d9f2f0',200:'#b5e6e3',300:'#82d3cf',400:'#4db8b4',500:'#2d9d99',600:'#247f7c',700:'#1d6462',800:'#185150',900:'#164342' },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: { 'card':'0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)', 'card-hover':'0 4px 12px 0 rgba(0,0,0,0.08)' }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" href="styles.css?v=5.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 400px 100%; animation: shimmer 1.4s ease infinite; border-radius: 6px; }
+    .dark .skeleton { background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%); background-size: 400px 100%; }
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .nav-link.active::before { content:''; position:absolute; left:0; top:15%; bottom:15%; width:3px; background:#2d9d99; border-radius:0 3px 3px 0; }
+    /* DataTables overrides */
+    .dataTables_wrapper { font-size: 13px; color: inherit; }
+    .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_paginate { padding: 12px 16px; font-size: 13px; }
+    .dataTables_wrapper .dataTables_filter input { border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 13px; background: #f8fafc; outline: none; transition: border-color 200ms; }
+    .dark .dataTables_wrapper .dataTables_filter input { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    table.dataTable { border-collapse: collapse !important; width: 100% !important; }
+    table.dataTable thead th { background: #f8fafc; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; padding: 10px 14px; border-bottom: 2px solid #e2e8f0; }
+    .dark table.dataTable thead th { background: #0f172a; color: #94a3b8; border-color: #334155; }
+    table.dataTable tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .dark table.dataTable tbody td { border-color: #1e293b; color: #e2e8f0; }
+    table.dataTable tbody tr:hover { background: #f0fdf4 !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.06) !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current { background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; border-radius: 6px; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { border-radius: 6px; }
+    .dt-buttons .dt-button { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; font-size: 12px !important; font-weight: 500 !important; padding: 6px 14px !important; color: #475569 !important; transition: all 150ms !important; }
+    .dark .dt-buttons .dt-button { background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important; }
+    .dt-buttons .dt-button:hover { background: #f1f5f9 !important; border-color: #2d9d99 !important; color: #2d9d99 !important; }
+    /* Modal overlay */
+    .modal-overlay { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(15,23,42,0.5); backdrop-filter: blur(4px); justify-content: center; align-items: start; padding-top: 5vh; overflow-y: auto; }
+    .modal-overlay.active { display: flex; }
+    .modal-card { background: #fff; border-radius: 16px; width: 95%; max-width: 720px; box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-bottom: 5vh; animation: slideUp 250ms ease-out; }
+    .dark .modal-card { background: #1e293b; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    /* Status badges */
+    .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; letter-spacing: 0.02em; }
+    .status-in-transit { background: #dbeafe; color: #1e40af; }
+    .dark .status-in-transit { background: rgba(59,130,246,0.15); color: #60a5fa; }
+    .status-delivered { background: #d1fae5; color: #065f46; }
+    .dark .status-delivered { background: rgba(16,185,129,0.15); color: #34d399; }
+    .status-accepted { background: #d1fae5; color: #065f46; }
+    .dark .status-accepted { background: rgba(16,185,129,0.15); color: #34d399; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .dark .status-rejected { background: rgba(244,63,94,0.15); color: #fb7185; }
+    .status-reassigned { background: #fef3c7; color: #92400e; }
+    .dark .status-reassigned { background: rgba(251,191,36,0.15); color: #fbbf24; }
+    .status-pending { background: #f1f5f9; color: #475569; }
+    .dark .status-pending { background: rgba(100,116,139,0.15); color: #94a3b8; }
+    /* Action icons */
+    .action-icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 0.375rem; border: none; cursor: pointer; transition: all 150ms; font-size: 12px; position: relative; background: transparent; }
+    .edit-icon { color: #2d9d99; }
+    .edit-icon:hover { background: rgba(45,157,153,0.1); }
+    .delete-icon { color: #ef4444; }
+    .delete-icon:hover { background: rgba(239,68,68,0.1); }
+    /* Computed field */
+    .computed-field { padding: 8px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; background: #f8fafc; border: 1px solid #e2e8f0; color: #1e293b; }
+    .dark .computed-field { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    /* Skeleton rows */
+    .skeleton-row { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+    .dark .skeleton-row { border-color: #1e293b; }
+    .skeleton-cell { height: 16px; border-radius: 4px; flex: 1; }
+    /* Delivery section styling */
+    .delivery-section { border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .dark .delivery-section { border-color: #334155; }
+    .delivery-section-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .section-customer { border-left: 4px solid #10b981; background: linear-gradient(135deg, rgba(16,185,129,0.03), transparent); }
+    .dark .section-customer { background: linear-gradient(135deg, rgba(16,185,129,0.05), transparent); }
+    .section-customer .delivery-section-title { color: #10b981; }
+    .section-vehicle { border-left: 4px solid #3b82f6; background: linear-gradient(135deg, rgba(59,130,246,0.03), transparent); }
+    .dark .section-vehicle { background: linear-gradient(135deg, rgba(59,130,246,0.05), transparent); }
+    .section-vehicle .delivery-section-title { color: #3b82f6; }
+    .section-expenses { border-left: 4px solid #f59e0b; background: linear-gradient(135deg, rgba(245,158,11,0.03), transparent); }
+    .dark .section-expenses { background: linear-gradient(135deg, rgba(245,158,11,0.05), transparent); }
+    .section-expenses .delivery-section-title { color: #f59e0b; }
+    /* Searchable dropdown */
+    .searchable-dropdown { position: relative; }
+    .searchable-dropdown-input { width: 100%; }
+    .searchable-dropdown-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none; transition: transform 200ms; }
+    .searchable-dropdown-arrow.open { transform: translateY(-50%) rotate(180deg); }
+    .searchable-dropdown-list { position: absolute; top: 100%; left: 0; right: 0; max-height: 250px; overflow-y: auto; background: #fff; border: 2px solid #2d9d99; border-top: none; border-radius: 0 0 8px 8px; z-index: 50; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .dark .searchable-dropdown-list { background: #1e293b; border-color: #4db8b4; }
+    .searchable-dropdown-item { padding: 8px 12px; cursor: pointer; font-size: 13px; transition: background 100ms; }
+    .searchable-dropdown-item:hover { background: #f0fdf4; }
+    .dark .searchable-dropdown-item:hover { background: rgba(45,157,153,0.1); }
+    .searchable-dropdown-item.selected { background: rgba(45,157,153,0.1); font-weight: 600; }
+    .searchable-dropdown-item.no-results { color: #94a3b8; cursor: default; font-style: italic; }
+    /* Radio group */
+    .radio-group { display: flex; gap: 16px; }
+    .radio-label { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px; }
+    /* Table scroll hint */
+    .table-scroll-hint { display: none; text-align: center; font-size: 11px; color: #94a3b8; padding: 4px 0; }
+    @media (max-width: 768px) { .table-scroll-hint { display: block; } }
+    /* Form inputs inside modal */
+    .modal-input { width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 14px; color: #1e293b; transition: border-color 200ms, box-shadow 200ms; outline: none; }
+    .modal-input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    .dark .modal-input { background: #0f172a; border-color: #334155; color: #e2e8f0; }
+    .dark .modal-input:focus { border-color: #4db8b4; }
+    .modal-label { display: block; font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
+<?php include 'mobile-menu.php'; ?>
+<div class="flex h-full overflow-hidden" id="appRoot">
+  <?php include 'sidebar.php'; ?>
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-truck-fast text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white">Deliveries</h1>
+      </div>
+      <div class="ml-auto flex items-center gap-3">
+        <span class="hidden sm:inline-block text-xs text-slate-400 dark:text-slate-500">Welcome, <?php echo htmlspecialchars($username); ?></span>
+      </div>
+    </header>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
-
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-truck-fast"></i> Deliveries Out</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
-            </div>
-
-            <div class="data-section">
-                <div class="section-header">
-                    <h2><i class="fas fa-table"></i> Deliveries</h2>
-                    <div class="section-header-actions">
-                        <button class="btn btn-primary" onclick="loadDeliveries()">
-                            <i class="fas fa-sync"></i> Refresh
-                        </button>
-                        <?php if ($canCreate): ?>
-                        <button class="btn btn-success" onclick="openAddModal()">
-                            <i class="fas fa-plus"></i> Add Delivery
-                        </button>
-                        <?php endif; ?>
-                    </div>
-                </div>
-
-                <div class="filters-section" id="filtersSection" style="display: none;">
-                    <div class="filters-header">
-                        <h3><i class="fas fa-filter"></i> Filters</h3>
-                        <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
-                            <i class="fas fa-times-circle"></i> Clear All
-                        </button>
-                    </div>
-                    <div class="filters-grid">
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                            <input type="date" id="filterDateFrom" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                            <input type="date" id="filterDateTo" class="filter-input">
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-info-circle"></i> Status</label>
-                            <select id="filterStatus" class="filter-input">
-                                <option value="">All</option>
-                                <option value="In Transit">In Transit</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Rejected">Rejected</option>
-                                <option value="Reassigned">Reassigned</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label><i class="fas fa-leaf"></i> Season</label>
-                            <select id="filterSeason" class="filter-input">
-                                <option value="">All Seasons</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="skeletonLoader">
-                    <div class="skeleton-table">
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                    </div>
-                </div>
-
-                <div id="tableContainer" style="display: none;">
-                    <div class="table-scroll-hint">
-                        <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                    </div>
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table id="deliveriesTable" class="display" style="width:100%"></table>
-                    </div>
-                </div>
-            </div>
+    <main class="flex-1 overflow-y-auto p-5">
+      <!-- Section Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <i class="fas fa-table text-brand-500 text-sm"></i> Deliveries
+          </h2>
+          <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">Manage outbound deliveries and logistics</p>
         </div>
-    </div>
+        <div class="flex items-center gap-2">
+          <button class="bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-600 transition-colors" onclick="loadDeliveries()">
+            <i class="fas fa-sync text-xs mr-1"></i> Refresh
+          </button>
+          <?php if ($canCreate): ?>
+          <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors shadow-sm" onclick="openAddModal()">
+            <i class="fas fa-plus text-xs mr-1"></i> Add Delivery
+          </button>
+          <?php endif; ?>
+        </div>
+      </div>
 
-    <?php if ($canCreate || $canUpdate): ?>
-    <div class="modal-overlay" id="deliveryModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-truck-fast"></i> Add Delivery</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+      <!-- Filters -->
+      <div id="filtersSection" style="display: none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 mb-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <i class="fas fa-filter text-brand-500 text-xs"></i> Filters
+          </h3>
+          <button class="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" onclick="clearFilters()">
+            <i class="fas fa-times-circle mr-1"></i> Clear All
+          </button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+            <input type="date" id="filterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+            <input type="date" id="filterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Status</label>
+            <select id="filterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All</option>
+              <option value="In Transit">In Transit</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Rejected">Rejected</option>
+              <option value="Reassigned">Reassigned</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+            <select id="filterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="">All Seasons</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton Loader -->
+      <div id="skeletonLoader" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+        <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+      </div>
+
+      <!-- DataTable Card -->
+      <div id="tableContainer" style="display:none;" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+        <div class="p-2">
+          <div class="table-scroll-hint"><i class="fas fa-arrows-alt-h"></i> Swipe left/right</div>
+          <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table id="deliveriesTable" class="display" style="width:100%"></table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<?php if ($canCreate || $canUpdate): ?>
+<div class="modal-overlay" id="deliveryModal">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+      <h3 id="modalTitle" class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <i class="fas fa-truck-fast text-brand-500"></i> Add Delivery
+      </h3>
+      <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="closeModal()">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+    <div class="px-5 py-4 max-h-[calc(100vh-180px)] overflow-y-auto">
+
+      <div id="deliveryIdInfo" style="display: none;" class="flex items-center gap-2 mb-4 px-3 py-2 bg-brand-50 dark:bg-slate-700 rounded-lg border border-brand-200 dark:border-slate-600">
+        <i class="fas fa-id-badge text-brand-500 text-xs"></i>
+        <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Delivery ID:</span>
+        <span id="deliveryIdDisplay" class="text-xs font-bold text-brand-600 dark:text-brand-400"></span>
+      </div>
+
+      <form id="deliveryForm">
+        <input type="hidden" id="deliveryId" name="delivery_id">
+
+        <!-- Section 1: Customer Info -->
+        <div class="delivery-section section-customer">
+          <div class="delivery-section-title"><i class="fas fa-handshake"></i> Customer Info</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+            <div>
+              <label class="modal-label"><i class="fas fa-calendar-day mr-1"></i> Date *</label>
+              <input type="date" id="deliveryDate" name="date" required class="modal-input">
             </div>
-            <div class="modal-body">
-                <div id="deliveryIdInfo" class="form-id-info" style="display: none;">
-                    <strong><i class="fas fa-id-badge"></i> Delivery ID:</strong> <span id="deliveryIdDisplay"></span>
+            <div>
+              <label class="modal-label"><i class="fas fa-handshake mr-1"></i> Customer *</label>
+              <div class="searchable-dropdown" id="customerDropdownWrapper">
+                <input type="text" class="searchable-dropdown-input modal-input" id="customerSearch" placeholder="Search customer..." autocomplete="off">
+                <input type="hidden" id="customerId" name="customer_id" required>
+                <span class="searchable-dropdown-arrow" id="customerArrow"><i class="fas fa-chevron-down"></i></span>
+                <div class="searchable-dropdown-list" id="customerList" style="display:none;"></div>
+              </div>
+              <div class="mt-1">
+                <a href="#" onclick="openQuickAddCustomer(); return false;" class="text-xs text-brand-500 hover:text-brand-600 font-medium"><i class="fas fa-plus-circle mr-1"></i>Add New Customer</a>
+              </div>
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-warehouse mr-1"></i> Origin Warehouse</label>
+              <select id="originWarehouse" name="origin_warehouse_id" onchange="onWarehouseChange()" class="modal-input">
+                <option value="">Select warehouse...</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Lot Picker Section -->
+          <div id="lotPickerSection" style="display:none; margin-top: 14px; border: 1px solid #2d9d99; border-radius: 10px; padding: 14px; background: rgba(45,157,153,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h4 style="margin:0; font-size:13px; font-weight:700; color:#2d9d99; display:flex; align-items:center; gap:6px;"><i class="fas fa-cubes"></i> Load from Lots</h4>
+              <div id="lotPickerSummary" style="font-weight:600; color:#2d9d99; font-size:12px;"></div>
+            </div>
+            <div id="lotPickerContent"><div class="skeleton" style="height:60px;"></div></div>
+            <input type="hidden" id="selectedItems" name="selected_items" value="">
+          </div>
+        </div>
+
+        <!-- Section 2: Vehicle -->
+        <div class="delivery-section section-vehicle">
+          <div class="delivery-section-title"><i class="fas fa-truck"></i> Vehicle</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+            <div class="sm:col-span-2">
+              <label class="modal-label"><i class="fas fa-car-side mr-1"></i> Vehicle Type</label>
+              <div class="radio-group mt-1">
+                <label class="radio-label">
+                  <input type="radio" name="vehicle_type" value="Owned" id="vtOwned" checked onchange="onVehicleTypeChange()">
+                  <span class="text-sm text-slate-700 dark:text-slate-300">Owned</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="vehicle_type" value="Rental" id="vtRental" onchange="onVehicleTypeChange()">
+                  <span class="text-sm text-slate-700 dark:text-slate-300">Rental</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Owned-vehicle block -->
+            <div id="ownedFields" class="sm:col-span-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+                <div>
+                  <label class="modal-label"><i class="fas fa-truck mr-1"></i> Vehicle</label>
+                  <select id="vehicleId" name="vehicle_id" class="modal-input">
+                    <option value="">Select vehicle...</option>
+                  </select>
                 </div>
-
-                <form id="deliveryForm">
-                    <input type="hidden" id="deliveryId" name="delivery_id">
-
-                    <!-- ───── Section 1: Customer Info ───── -->
-                    <div class="delivery-section section-customer">
-                        <div class="delivery-section-title"><i class="fas fa-handshake"></i> Customer Info</div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label><i class="fas fa-calendar-day"></i> Date *</label>
-                                <input type="date" id="deliveryDate" name="date" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-handshake"></i> Customer *</label>
-                                <div class="searchable-dropdown" id="customerDropdownWrapper">
-                                    <input type="text" class="searchable-dropdown-input" id="customerSearch" placeholder="Search customer..." autocomplete="off">
-                                    <input type="hidden" id="customerId" name="customer_id" required>
-                                    <span class="searchable-dropdown-arrow" id="customerArrow"><i class="fas fa-chevron-down"></i></span>
-                                    <div class="searchable-dropdown-list" id="customerList" style="display:none;"></div>
-                                </div>
-                                <div style="margin-top:4px;">
-                                    <a href="#" onclick="openQuickAddCustomer(); return false;" style="font-size:12px;color:var(--navy-accent);"><i class="fas fa-plus-circle"></i> Add New Customer</a>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-warehouse"></i> Origin Warehouse</label>
-                                <select id="originWarehouse" name="origin_warehouse_id" onchange="onWarehouseChange()">
-                                    <option value="">Select warehouse...</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- Lot Picker Section (driven by warehouse selection) -->
-                        <div id="lotPickerSection" style="display:none; margin: 12px 0 0; border: 1px solid var(--navy-accent); border-radius: 8px; padding: 16px; background: rgba(0,116,217,0.03);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                <h4 style="margin:0; color:var(--navy-primary);"><i class="fas fa-cubes"></i> Load from Lots</h4>
-                                <div id="lotPickerSummary" style="font-weight:600; color:var(--navy-accent);"></div>
-                            </div>
-                            <div id="lotPickerContent"><div class="skeleton" style="height:60px;"></div></div>
-                            <input type="hidden" id="selectedItems" name="selected_items" value="">
-                        </div>
-                    </div>
-
-                    <!-- ───── Section 2: Vehicle ───── -->
-                    <div class="delivery-section section-vehicle">
-                        <div class="delivery-section-title"><i class="fas fa-truck"></i> Vehicle</div>
-                        <div class="form-grid">
-                            <div class="form-group" style="grid-column:1/-1;">
-                                <label><i class="fas fa-car-side"></i> Vehicle Type</label>
-                                <div class="radio-group">
-                                    <label class="radio-label">
-                                        <input type="radio" name="vehicle_type" value="Owned" id="vtOwned" checked onchange="onVehicleTypeChange()">
-                                        <span>Owned</span>
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="vehicle_type" value="Rental" id="vtRental" onchange="onVehicleTypeChange()">
-                                        <span>Rental</span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Owned-vehicle block: shown when Owned -->
-                            <div id="ownedFields" style="grid-column:1/-1;">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label><i class="fas fa-truck"></i> Vehicle</label>
-                                        <select id="vehicleId" name="vehicle_id">
-                                            <option value="">Select vehicle...</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label><i class="fas fa-user"></i> Driver Name</label>
-                                        <input type="text" id="driverName" name="driver_name" placeholder="Enter driver name" maxlength="150">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Rental block: shown when Rental -->
-                            <div id="rentalFields" style="display:none;grid-column:1/-1;">
-                                <div class="form-grid" style="border:1px dashed var(--border-color);padding:12px;border-radius:6px;background:var(--bg-secondary);">
-                                    <div class="form-group">
-                                        <label><i class="fas fa-user"></i> Rental Driver Name</label>
-                                        <input type="text" id="rentalDriverName" name="rental_driver_name" maxlength="150" placeholder="Driver name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label><i class="fas fa-phone"></i> Rental Driver Phone</label>
-                                        <input type="tel" id="rentalDriverPhone" name="rental_driver_phone" maxlength="20" placeholder="+225...">
-                                    </div>
-                                    <div class="form-group">
-                                        <label><i class="fas fa-truck"></i> Rental Vehicle Reg.</label>
-                                        <input type="text" id="rentalVehicleReg" name="rental_vehicle_reg" maxlength="50" placeholder="Registration #">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ───── Section 3: Cargo & Expenses ───── -->
-                    <div class="delivery-section section-expenses">
-                        <div class="delivery-section-title"><i class="fas fa-coins"></i> Cargo &amp; Expenses</div>
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label><i class="fas fa-weight-hanging"></i> Weight (kg) *</label>
-                                <input type="number" id="weightKg" name="weight_kg" step="0.01" min="0.01" required placeholder="0.00">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-boxes-stacked"></i> Number of Bags</label>
-                                <input type="number" id="numBags" name="num_bags" min="0" placeholder="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-tag"></i> Product Purchase Price (auto)</label>
-                                <div class="computed-field" id="productCostDisplay" style="background:rgba(0,116,217,0.08);border:1px solid var(--navy-accent);color:var(--navy-accent);font-size:15px;">0 F</div>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-truck-moving"></i> Transport Cost</label>
-                                <input type="number" id="transportCost" name="transport_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-shield-halved"></i> Roads Fees</label>
-                                <input type="number" id="roadFees" name="road_fees" step="0.01" min="0" value="0" onchange="computeTotalCost()">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-dolly"></i> Loading Cost</label>
-                                <input type="number" id="loadingCost" name="loading_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-coins"></i> Other Cost</label>
-                                <input type="number" id="otherCost" name="other_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()">
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-calculator"></i> Logistics Total</label>
-                                <div class="computed-field" id="totalCostDisplay">0</div>
-                            </div>
-
-                            <div class="form-group" id="statusGroup" style="display: none;">
-                                <label><i class="fas fa-info-circle"></i> Status</label>
-                                <select id="deliveryStatus" name="status" onchange="toggleStatusFields()">
-                                    <option value="In Transit">In Transit</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group" id="weightAtDestGroup" style="display: none;">
-                                <label><i class="fas fa-weight-scale"></i> Weight at Destination</label>
-                                <input type="number" id="weightAtDest" name="weight_at_destination" step="0.01" min="0" placeholder="0.00">
-                            </div>
-
-                            <div class="form-group" id="rejectionGroup" style="display: none;">
-                                <label><i class="fas fa-ban"></i> Rejection Reason *</label>
-                                <textarea id="rejectionReason" name="rejection_reason" maxlength="300" rows="2" placeholder="Enter reason for rejection..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label><i class="fas fa-leaf"></i> Season *</label>
-                                <?php echo renderSeasonDropdown('season', 'season'); ?>
-                            </div>
-
-                            <div class="form-group" style="grid-column:1/-1;">
-                                <label><i class="fas fa-sticky-note"></i> Notes</label>
-                                <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
+                <div>
+                  <label class="modal-label"><i class="fas fa-user mr-1"></i> Driver Name</label>
+                  <input type="text" id="driverName" name="driver_name" placeholder="Enter driver name" maxlength="150" class="modal-input">
+                </div>
+              </div>
             </div>
+
+            <!-- Rental block -->
+            <div id="rentalFields" style="display:none;" class="sm:col-span-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-3 bg-slate-50 dark:bg-slate-700/50">
+                <div>
+                  <label class="modal-label"><i class="fas fa-user mr-1"></i> Rental Driver Name</label>
+                  <input type="text" id="rentalDriverName" name="rental_driver_name" maxlength="150" placeholder="Driver name" class="modal-input">
+                </div>
+                <div>
+                  <label class="modal-label"><i class="fas fa-phone mr-1"></i> Rental Driver Phone</label>
+                  <input type="tel" id="rentalDriverPhone" name="rental_driver_phone" maxlength="20" placeholder="+225..." class="modal-input">
+                </div>
+                <div>
+                  <label class="modal-label"><i class="fas fa-truck mr-1"></i> Rental Vehicle Reg.</label>
+                  <input type="text" id="rentalVehicleReg" name="rental_vehicle_reg" maxlength="50" placeholder="Registration #" class="modal-input">
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-    <?php endif; ?>
 
-    <?php if ($canCreate): ?>
-    <!-- Quick Add Customer Modal -->
-    <div class="modal-overlay" id="quickCustomerModal" onclick="if(event.target===this)closeQuickCustomer()" style="z-index:10010;">
-        <div class="modal" style="max-width:500px;" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3><i class="fas fa-handshake"></i> Quick Add Customer</h3>
-                <button class="close-btn" onclick="closeQuickCustomer()"><i class="fas fa-times"></i></button>
+        <!-- Section 3: Cargo & Expenses -->
+        <div class="delivery-section section-expenses">
+          <div class="delivery-section-title"><i class="fas fa-coins"></i> Cargo &amp; Expenses</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+            <div>
+              <label class="modal-label"><i class="fas fa-weight-hanging mr-1"></i> Weight (kg) *</label>
+              <input type="number" id="weightKg" name="weight_kg" step="0.01" min="0.01" required placeholder="0.00" class="modal-input">
             </div>
-            <div class="modal-body">
-                <form id="quickCustomerForm">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-building"></i> Customer Name *</label>
-                            <input type="text" id="qcName" required maxlength="200" placeholder="Company or person name">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> Phone</label>
-                            <input type="tel" id="qcPhone" maxlength="20" placeholder="+225...">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> Contact Person</label>
-                            <input type="text" id="qcContact" maxlength="150">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-map-marker-alt"></i> Location</label>
-                            <select id="qcLocation">
-                                <option value="">Select Location</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save & Select</button>
-                        <button type="button" class="btn btn-secondary" onclick="closeQuickCustomer()"><i class="fas fa-times"></i> Cancel</button>
-                    </div>
-                </form>
+            <div>
+              <label class="modal-label"><i class="fas fa-boxes-stacked mr-1"></i> Number of Bags</label>
+              <input type="number" id="numBags" name="num_bags" min="0" placeholder="0" class="modal-input">
             </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-tag mr-1"></i> Product Purchase Price (auto)</label>
+              <div class="computed-field" id="productCostDisplay">0 F</div>
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-truck-moving mr-1"></i> Transport Cost</label>
+              <input type="number" id="transportCost" name="transport_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()" class="modal-input">
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-shield-halved mr-1"></i> Roads Fees</label>
+              <input type="number" id="roadFees" name="road_fees" step="0.01" min="0" value="0" onchange="computeTotalCost()" class="modal-input">
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-dolly mr-1"></i> Loading Cost</label>
+              <input type="number" id="loadingCost" name="loading_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()" class="modal-input">
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-coins mr-1"></i> Other Cost</label>
+              <input type="number" id="otherCost" name="other_cost" step="0.01" min="0" value="0" onchange="computeTotalCost()" class="modal-input">
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-calculator mr-1"></i> Logistics Total</label>
+              <div class="computed-field" id="totalCostDisplay">0</div>
+            </div>
+            <div id="statusGroup" style="display: none;">
+              <label class="modal-label"><i class="fas fa-info-circle mr-1"></i> Status</label>
+              <select id="deliveryStatus" name="status" onchange="toggleStatusFields()" class="modal-input">
+                <option value="In Transit">In Transit</option>
+              </select>
+            </div>
+            <div id="weightAtDestGroup" style="display: none;">
+              <label class="modal-label"><i class="fas fa-weight-scale mr-1"></i> Weight at Destination</label>
+              <input type="number" id="weightAtDest" name="weight_at_destination" step="0.01" min="0" placeholder="0.00" class="modal-input">
+            </div>
+            <div id="rejectionGroup" style="display: none;" class="sm:col-span-2">
+              <label class="modal-label"><i class="fas fa-ban mr-1"></i> Rejection Reason *</label>
+              <textarea id="rejectionReason" name="rejection_reason" maxlength="300" rows="2" placeholder="Enter reason for rejection..." class="modal-input" style="resize:vertical;"></textarea>
+            </div>
+            <div>
+              <label class="modal-label"><i class="fas fa-leaf mr-1"></i> Season *</label>
+              <?php echo renderSeasonDropdown('season', 'season'); ?>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="modal-label"><i class="fas fa-sticky-note mr-1"></i> Notes</label>
+              <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..." class="modal-input" style="resize:vertical;"></textarea>
+            </div>
+          </div>
         </div>
+
+        <div class="flex items-center gap-3 pt-2">
+          <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-sm flex items-center gap-2">
+            <i class="fas fa-save text-xs"></i> Save
+          </button>
+          <button type="button" onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-times text-xs"></i> Cancel
+          </button>
+        </div>
+      </form>
     </div>
-    <?php endif; ?>
+  </div>
+</div>
+<?php endif; ?>
+
+<?php if ($canCreate): ?>
+<!-- Quick Add Customer Modal -->
+<div class="modal-overlay" id="quickCustomerModal" onclick="if(event.target===this)closeQuickCustomer()" style="z-index:10010;">
+  <div class="modal-card" style="max-width:500px;" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+      <h3 class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <i class="fas fa-handshake text-brand-500"></i> Quick Add Customer
+      </h3>
+      <button class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="closeQuickCustomer()">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
+    <div class="px-5 py-4">
+      <form id="quickCustomerForm">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+          <div>
+            <label class="modal-label"><i class="fas fa-building mr-1"></i> Customer Name *</label>
+            <input type="text" id="qcName" required maxlength="200" placeholder="Company or person name" class="modal-input">
+          </div>
+          <div>
+            <label class="modal-label"><i class="fas fa-phone mr-1"></i> Phone</label>
+            <input type="tel" id="qcPhone" maxlength="20" placeholder="+225..." class="modal-input">
+          </div>
+          <div>
+            <label class="modal-label"><i class="fas fa-user mr-1"></i> Contact Person</label>
+            <input type="text" id="qcContact" maxlength="150" class="modal-input">
+          </div>
+          <div>
+            <label class="modal-label"><i class="fas fa-map-marker-alt mr-1"></i> Location</label>
+            <select id="qcLocation" class="modal-input">
+              <option value="">Select Location</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 mt-5">
+          <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-sm flex items-center gap-2">
+            <i class="fas fa-save text-xs"></i> Save &amp; Select
+          </button>
+          <button type="button" onclick="closeQuickCustomer()" class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fas fa-times text-xs"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
 
     <script>
     // Global variables
@@ -1855,29 +1994,29 @@ if (isset($_GET['action'])) {
     function renderLotPicker() {
         var container = document.getElementById('lotPickerContent');
         if (!availableLots.length) {
-            container.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:16px;"><i class="fas fa-inbox"></i> No available stock in this warehouse</div>';
+            container.innerHTML = '<div style="color:#94a3b8;text-align:center;padding:16px;font-size:13px;"><i class="fas fa-inbox"></i> No available stock in this warehouse</div>';
             return;
         }
 
         var html = '';
         availableLots.forEach(function(lot) {
-            html += '<div style="margin-bottom:12px; border:1px solid #ddd; border-radius:6px; overflow:hidden;">';
-            html += '<div style="background:var(--navy-primary); color:#fff; padding:8px 12px; font-size:13px; display:flex; justify-content:space-between;">';
-            html += '<span><i class="fas fa-cube"></i> ' + lot.lot_number + ' <span style="opacity:.7;">(' + lot.status + ')</span></span>';
-            html += '<span>' + lot.available_kg.toLocaleString() + ' kg avail · Avg ' + lot.avg_cost.toLocaleString() + ' F/kg</span>';
+            html += '<div style="margin-bottom:12px; border:1px solid #e2e8f0; border-radius:8px; overflow:hidden;">';
+            html += '<div style="background:#2d9d99; color:#fff; padding:8px 12px; font-size:13px; font-weight:600; display:flex; justify-content:space-between; align-items:center;">';
+            html += '<span><i class="fas fa-cube" style="margin-right:6px;"></i>' + lot.lot_number + ' <span style="opacity:.75;font-weight:400;">(' + lot.status + ')</span></span>';
+            html += '<span style="font-size:12px;font-weight:500;">' + lot.available_kg.toLocaleString() + ' kg avail &middot; Avg ' + lot.avg_cost.toLocaleString() + ' F/kg</span>';
             html += '</div>';
             html += '<table style="width:100%; font-size:12px; border-collapse:collapse;">';
-            html += '<tr style="background:#f8f9fa;"><th style="padding:6px 8px;text-align:left;">Select</th><th style="padding:6px;text-align:left;">Purchase</th><th style="padding:6px;text-align:left;">Supplier</th><th style="padding:6px;text-align:right;">Avail (kg)</th><th style="padding:6px;text-align:right;">Cost/kg</th><th style="padding:6px;text-align:right;">Qty to Load</th></tr>';
+            html += '<tr style="background:#f8fafc;"><th style="padding:7px 10px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Select</th><th style="padding:7px 8px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Purchase</th><th style="padding:7px 8px;text-align:left;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Supplier</th><th style="padding:7px 8px;text-align:right;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Avail (kg)</th><th style="padding:7px 8px;text-align:right;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Cost/kg</th><th style="padding:7px 8px;text-align:right;font-size:11px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid #e2e8f0;">Qty to Load</th></tr>';
 
             lot.purchases.forEach(function(p) {
                 var uid = lot.lot_id + '_' + p.purchase_id;
-                html += '<tr style="border-top:1px solid #eee;">';
-                html += '<td style="padding:6px 8px;"><input type="checkbox" class="lot-item-check" data-uid="' + uid + '" data-lot="' + lot.lot_id + '" data-lotnr="' + lot.lot_number + '" data-pid="' + p.purchase_id + '" data-supplier="' + (p.supplier_name || '').replace(/"/g, '&quot;') + '" data-avail="' + p.available_kg + '" data-cost="' + p.cost_per_kg + '" onchange="onLotItemToggle(this)"></td>';
-                html += '<td style="padding:6px;font-size:11px;">' + p.purchase_id + '</td>';
-                html += '<td style="padding:6px;">' + (p.supplier_name || '') + '</td>';
-                html += '<td style="padding:6px;text-align:right;">' + p.available_kg.toLocaleString() + '</td>';
-                html += '<td style="padding:6px;text-align:right;">' + p.cost_per_kg.toLocaleString() + ' F</td>';
-                html += '<td style="padding:6px;text-align:right;"><input type="number" id="qty_' + uid + '" class="lot-qty-input" style="width:90px;padding:4px;font-size:12px;text-align:right;border:1px solid #ccc;border-radius:4px;" step="0.01" min="0" max="' + p.available_kg + '" value="' + p.available_kg + '" disabled oninput="recalcLotPicker()"></td>';
+                html += '<tr style="border-top:1px solid #f1f5f9;">';
+                html += '<td style="padding:7px 10px;"><input type="checkbox" class="lot-item-check" data-uid="' + uid + '" data-lot="' + lot.lot_id + '" data-lotnr="' + lot.lot_number + '" data-pid="' + p.purchase_id + '" data-supplier="' + (p.supplier_name || '').replace(/"/g, '&quot;') + '" data-avail="' + p.available_kg + '" data-cost="' + p.cost_per_kg + '" onchange="onLotItemToggle(this)"></td>';
+                html += '<td style="padding:7px 8px;font-size:11px;color:#64748b;">' + p.purchase_id + '</td>';
+                html += '<td style="padding:7px 8px;color:#1e293b;">' + (p.supplier_name || '') + '</td>';
+                html += '<td style="padding:7px 8px;text-align:right;font-weight:600;">' + p.available_kg.toLocaleString() + '</td>';
+                html += '<td style="padding:7px 8px;text-align:right;color:#2d9d99;font-weight:600;">' + p.cost_per_kg.toLocaleString() + ' F</td>';
+                html += '<td style="padding:7px 8px;text-align:right;"><input type="number" id="qty_' + uid + '" class="lot-qty-input" style="width:90px;padding:5px 7px;font-size:12px;text-align:right;border:1px solid #e2e8f0;border-radius:6px;background:#f8fafc;outline:none;" step="0.01" min="0" max="' + p.available_kg + '" value="' + p.available_kg + '" disabled oninput="recalcLotPicker()"></td>';
                 html += '</tr>';
             });
             html += '</table></div>';
@@ -2538,5 +2677,31 @@ if (isset($_GET['action'])) {
         });
     });
     </script>
+
+  <script>
+  (function(){
+    var t = localStorage.getItem('cp_theme');
+    if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+  </script>
+  <script>
+  window._translations = {};
+  function t(key) { return window._translations[key] || key; }
+  function applyTranslations() {
+    document.querySelectorAll('[data-t]').forEach(function(el) {
+      var key = el.getAttribute('data-t');
+      if (window._translations[key]) el.textContent = window._translations[key];
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var lang = localStorage.getItem('cp_lang') || 'en';
+    fetch('lang.php?lang=' + lang)
+      .then(function(r){ return r.json(); })
+      .then(function(data){ window._translations = data; applyTranslations(); })
+      .catch(function(){});
+  });
+  </script>
 </body>
 </html>
