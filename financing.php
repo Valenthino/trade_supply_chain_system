@@ -674,522 +674,791 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!-- Developed by Rameez Scripts — https://www.youtube.com/@rameezimdad -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Financing - Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Commodity Flow &mdash; Financing</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
-    <link rel="stylesheet" href="styles.css?v=5.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+        colors: {
+          brand: {
+            50:  '#f0f9f9',
+            100: '#d9f2f0',
+            200: '#b5e6e3',
+            300: '#82d3cf',
+            400: '#4db8b4',
+            500: '#2d9d99',
+            600: '#247f7c',
+            700: '#1d6462',
+            800: '#185150',
+            900: '#164342',
+          },
+          slate: { 850: '#172032' }
+        },
+        boxShadow: {
+          'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+          'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+        }
+      }
+    }
+  }
+  </script>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+
+  <!-- App Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- JS Libraries -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+  <style>
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    /* Skeleton loader */
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%; animation: shimmer 1.4s ease infinite; border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+    .skeleton-row { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #f1f5f9; }
+    .dark .skeleton-row { border-color: #1e293b; }
+    .skeleton-cell { height: 16px; border-radius: 4px; flex: 1; }
+
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+
+    /* Sidebar transitions */
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    /* Nav active state */
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: ''; position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    /* DataTables overrides */
+    .dataTables_wrapper { font-size: 13px; color: inherit; }
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate { padding: 12px 16px; font-size: 13px; }
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #e2e8f0; border-radius: 8px; padding: 6px 12px; font-size: 13px;
+      background: #f8fafc; outline: none; transition: border-color 200ms;
+    }
+    .dark .dataTables_wrapper .dataTables_filter input {
+      background: #1e293b; border-color: #334155; color: #e2e8f0;
+    }
+    .dataTables_wrapper .dataTables_filter input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    table.dataTable { border-collapse: collapse !important; width: 100% !important; }
+    table.dataTable thead th {
+      background: #f8fafc; font-weight: 600; font-size: 11px; text-transform: uppercase;
+      letter-spacing: 0.05em; color: #64748b; padding: 10px 14px; border-bottom: 2px solid #e2e8f0;
+    }
+    .dark table.dataTable thead th { background: #0f172a; color: #94a3b8; border-color: #334155; }
+    table.dataTable tbody td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .dark table.dataTable tbody td { border-color: #1e293b; color: #e2e8f0; }
+    table.dataTable tbody tr:hover { background: #f8fafc !important; }
+    .dark table.dataTable tbody tr:hover { background: rgba(45,157,153,0.06) !important; }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #2d9d99 !important; color: #fff !important; border-color: #2d9d99 !important; border-radius: 6px;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button { border-radius: 6px; }
+    .dt-buttons .dt-button {
+      background: #f8fafc !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important;
+      font-size: 12px !important; font-weight: 500 !important; padding: 6px 14px !important;
+      color: #475569 !important; transition: all 150ms !important;
+    }
+    .dark .dt-buttons .dt-button { background: #1e293b !important; border-color: #334155 !important; color: #94a3b8 !important; }
+    .dt-buttons .dt-button:hover { background: #f1f5f9 !important; border-color: #2d9d99 !important; color: #2d9d99 !important; }
+
+    /* Tab buttons */
+    .fin-tab-btn {
+      padding: 8px 16px; font-size: 13px; font-weight: 600; border-radius: 8px;
+      border: 1px solid transparent; cursor: pointer; transition: all 200ms;
+      background: transparent; color: #64748b; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .fin-tab-btn:hover { color: #2d9d99; background: rgba(45,157,153,0.06); }
+    .fin-tab-btn.active {
+      background: rgba(45,157,153,0.12); color: #2d9d99; border-color: rgba(45,157,153,0.2);
+    }
+    .dark .fin-tab-btn { color: #94a3b8; }
+    .dark .fin-tab-btn:hover { color: #4db8b4; background: rgba(45,157,153,0.1); }
+    .dark .fin-tab-btn.active {
+      background: rgba(45,157,153,0.15); color: #4db8b4; border-color: rgba(77,184,180,0.2);
+    }
+
+    /* Tab content */
+    .pricing-tab-content { display: none; }
+    .pricing-tab-content.active { display: block; }
+
+    /* Modal overlay */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(15,23,42,0.5); backdrop-filter: blur(4px);
+      justify-content: center; align-items: start; padding-top: 5vh; overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #fff; border-radius: 16px; width: 95%; max-width: 720px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-bottom: 5vh;
+      animation: slideUp 250ms ease-out;
+    }
+    .modal-card-wide {
+      background: #fff; border-radius: 16px; width: 95%; max-width: 860px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15); margin-bottom: 5vh;
+      animation: slideUp 250ms ease-out;
+    }
+    .dark .modal-card, .dark .modal-card-wide { background: #1e293b; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Searchable dropdown overrides for Tailwind context */
+    .searchable-dropdown { position: relative; }
+    .searchable-dropdown-input {
+      width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+      padding: 8px 36px 8px 12px; font-size: 14px; color: #1e293b; outline: none; transition: border-color 200ms;
+    }
+    .dark .searchable-dropdown-input { background: #334155; border-color: #475569; color: #e2e8f0; }
+    .searchable-dropdown-input:focus { border-color: #2d9d99; box-shadow: 0 0 0 2px rgba(45,157,153,0.15); }
+    .searchable-dropdown-arrow {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      color: #94a3b8; pointer-events: none; transition: transform 200ms;
+    }
+    .searchable-dropdown-arrow.open { transform: translateY(-50%) rotate(180deg); }
+    .searchable-dropdown-list {
+      position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 8px;
+      max-height: 200px; overflow-y: auto; box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin-top: 4px;
+    }
+    .dark .searchable-dropdown-list { background: #1e293b; border-color: #334155; }
+    .searchable-dropdown-item {
+      padding: 8px 12px; font-size: 13px; cursor: pointer; color: #334155;
+      transition: background 150ms;
+    }
+    .dark .searchable-dropdown-item { color: #e2e8f0; }
+    .searchable-dropdown-item:hover { background: #f0fdf4; }
+    .dark .searchable-dropdown-item:hover { background: rgba(45,157,153,0.1); }
+    .searchable-dropdown-item.selected { background: rgba(45,157,153,0.1); color: #2d9d99; font-weight: 600; }
+    .searchable-dropdown-item.no-results { color: #94a3b8; cursor: default; }
+
+    /* Computed field */
+    .computed-field {
+      padding: 8px 12px; background: #f1f5f9; border-radius: 8px; font-size: 14px;
+      font-weight: 600; color: #334155; border: 1px solid #e2e8f0;
+    }
+    .dark .computed-field { background: #0f172a; color: #e2e8f0; border-color: #334155; }
+
+    /* Radio group */
+    .radio-group { display: flex; gap: 12px; flex-wrap: wrap; padding-top: 4px; }
+    .radio-label {
+      display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+      color: #475569; cursor: pointer; font-weight: 500;
+    }
+    .dark .radio-label { color: #94a3b8; }
+    .radio-label input[type="radio"] { accent-color: #2d9d99; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-money-bill-transfer"></i> Financing</h1>
-                <div>Welcome, <?php echo htmlspecialchars($username); ?></div>
+<?php include 'mobile-menu.php'; ?>
+
+<div class="flex h-full overflow-hidden" id="appRoot">
+
+  <?php include 'sidebar.php'; ?>
+
+  <!-- MAIN CONTENT -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
+
+      <div class="flex items-center gap-2">
+        <i class="fas fa-coins text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white">Financing</h1>
+      </div>
+
+      <div class="ml-auto flex items-center gap-3">
+        <span class="hidden sm:inline-block text-xs text-slate-400 dark:text-slate-500">
+          Welcome, <?php echo htmlspecialchars($username); ?>
+        </span>
+      </div>
+    </header>
+
+    <!-- MAIN SCROLLABLE AREA -->
+    <main class="flex-1 overflow-y-auto p-5">
+
+      <!-- Tab Navigation -->
+      <div class="flex items-center gap-2 mb-4 flex-wrap">
+        <button class="fin-tab-btn active" id="supplierTabBtn" onclick="switchFinancingTab('supplier')">
+          <i class="fas fa-truck-field text-xs"></i> Supplier Financing
+        </button>
+        <?php if (!$supplierOnly): ?>
+        <button class="fin-tab-btn" id="customerTabBtn" onclick="switchFinancingTab('customer')">
+          <i class="fas fa-handshake text-xs"></i> Customer Financing
+        </button>
+        <button class="fin-tab-btn" id="bankTabBtn" onclick="switchFinancingTab('bank')">
+          <i class="fas fa-building-columns text-xs"></i> Bank Financing
+        </button>
+        <?php endif; ?>
+      </div>
+
+      <!-- ==================== TAB 1: SUPPLIER FINANCING ==================== -->
+      <div class="pricing-tab-content active" id="supplierTab">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+
+          <!-- Card header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-truck-field text-brand-500 text-sm"></i>
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white">Supplier Financing Records</h2>
             </div>
-
-            <!-- Tab Navigation -->
-            <div class="pricing-tabs">
-                <button class="pricing-tab-btn active" id="supplierTabBtn" onclick="switchFinancingTab('supplier')">
-                    <i class="fas fa-truck-field"></i> Supplier Financing
-                </button>
-                <?php if (!$supplierOnly): ?>
-                <button class="pricing-tab-btn" id="customerTabBtn" onclick="switchFinancingTab('customer')">
-                    <i class="fas fa-handshake"></i> Customer Financing
-                </button>
-                <button class="pricing-tab-btn" id="bankTabBtn" onclick="switchFinancingTab('bank')">
-                    <i class="fas fa-building-columns"></i> Bank Financing
-                </button>
-                <?php endif; ?>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadFinancing('supplier')">
+                <i class="fas fa-sync text-xs mr-1"></i> Refresh
+              </button>
+              <?php if ($canCreate): ?>
+              <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="openAddModal('Supplier')">
+                <i class="fas fa-plus text-xs mr-1"></i> Add Financing
+              </button>
+              <?php endif; ?>
             </div>
+          </div>
 
-            <!-- ==================== TAB 1: SUPPLIER FINANCING ==================== -->
-            <div class="pricing-tab-content active" id="supplierTab">
-                <div class="data-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-truck-field"></i> Supplier Financing Records</h2>
-                        <div class="section-header-actions">
-                            <button class="btn btn-primary" onclick="loadFinancing('supplier')">
-                                <i class="fas fa-sync"></i> Refresh
-                            </button>
-                            <?php if ($canCreate): ?>
-                            <button class="btn btn-success" onclick="openAddModal('Supplier')">
-                                <i class="fas fa-plus"></i> Add Financing
-                            </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <div class="filters-section" id="supFiltersSection" style="display: none;">
-                        <div class="filters-header">
-                            <h3><i class="fas fa-filter"></i> Filters</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="clearFilters('supplier')">
-                                <i class="fas fa-times-circle"></i> Clear All
-                            </button>
-                        </div>
-                        <div class="filters-grid">
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                                <input type="date" id="supFilterDateFrom" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                                <input type="date" id="supFilterDateTo" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-arrow-right-arrow-left"></i> Direction</label>
-                                <select id="supFilterDirection" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Incoming">Incoming</option>
-                                    <option value="Outgoing">Outgoing</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-info-circle"></i> Status</label>
-                                <select id="supFilterStatus" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Settled">Settled</option>
-                                    <option value="Overdue">Overdue</option>
-                                    <option value="Defaulted">Defaulted</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-leaf"></i> Season</label>
-                                <select id="supFilterSeason" class="filter-input">
-                                    <option value="">All Seasons</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="supSkeletonLoader">
-                        <div class="skeleton-table">
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        </div>
-                    </div>
-
-                    <div id="supTableContainer" style="display: none;">
-                        <div class="table-scroll-hint">
-                            <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                        </div>
-                        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                            <table id="supFinancingTable" class="display" style="width:100%"></table>
-                        </div>
-                    </div>
-                </div>
+          <!-- Filters -->
+          <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-700" id="supFiltersSection" style="display: none;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-filter text-brand-500 text-xs"></i>
+                <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Filters</h3>
+              </div>
+              <button class="text-xs text-slate-400 hover:text-rose-500 transition-colors" onclick="clearFilters('supplier')">
+                <i class="fas fa-times-circle mr-1"></i> Clear All
+              </button>
             </div>
-
-            <?php if (!$supplierOnly): ?>
-            <!-- ==================== TAB 2: CUSTOMER FINANCING ==================== -->
-            <div class="pricing-tab-content" id="customerTab">
-                <div class="data-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-handshake"></i> Customer Financing Records</h2>
-                        <div class="section-header-actions">
-                            <button class="btn btn-primary" onclick="loadFinancing('customer')">
-                                <i class="fas fa-sync"></i> Refresh
-                            </button>
-                            <?php if ($canCreate): ?>
-                            <button class="btn btn-success" onclick="openAddModal('Customer')">
-                                <i class="fas fa-plus"></i> Add Financing
-                            </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
-                    <div class="filters-section" id="custFiltersSection" style="display: none;">
-                        <div class="filters-header">
-                            <h3><i class="fas fa-filter"></i> Filters</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="clearFilters('customer')">
-                                <i class="fas fa-times-circle"></i> Clear All
-                            </button>
-                        </div>
-                        <div class="filters-grid">
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                                <input type="date" id="custFilterDateFrom" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                                <input type="date" id="custFilterDateTo" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-arrow-right-arrow-left"></i> Direction</label>
-                                <select id="custFilterDirection" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Incoming">Incoming</option>
-                                    <option value="Outgoing">Outgoing</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-info-circle"></i> Status</label>
-                                <select id="custFilterStatus" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Settled">Settled</option>
-                                    <option value="Overdue">Overdue</option>
-                                    <option value="Defaulted">Defaulted</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-leaf"></i> Season</label>
-                                <select id="custFilterSeason" class="filter-input">
-                                    <option value="">All Seasons</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="custSkeletonLoader" style="display: none;">
-                        <div class="skeleton-table">
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        </div>
-                    </div>
-
-                    <div id="custTableContainer" style="display: none;">
-                        <div class="table-scroll-hint">
-                            <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                        </div>
-                        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                            <table id="custFinancingTable" class="display" style="width:100%"></table>
-                        </div>
-                    </div>
-                </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+                <input type="date" id="supFilterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+                <input type="date" id="supFilterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Direction</label>
+                <select id="supFilterDirection" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Incoming">Incoming</option>
+                  <option value="Outgoing">Outgoing</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Status</label>
+                <select id="supFilterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Active">Active</option>
+                  <option value="Settled">Settled</option>
+                  <option value="Overdue">Overdue</option>
+                  <option value="Defaulted">Defaulted</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+                <select id="supFilterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All Seasons</option>
+                </select>
+              </div>
             </div>
+          </div>
 
-            <!-- ==================== TAB 3: BANK FINANCING ==================== -->
-            <div class="pricing-tab-content" id="bankTab">
-                <div class="data-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-building-columns"></i> Bank Financing Records</h2>
-                        <div class="section-header-actions">
-                            <button class="btn btn-primary" onclick="loadFinancing('bank')">
-                                <i class="fas fa-sync"></i> Refresh
-                            </button>
-                            <?php if ($canCreate): ?>
-                            <button class="btn btn-success" onclick="openAddModal('Bank')">
-                                <i class="fas fa-plus"></i> Add Financing
-                            </button>
-                            <?php endif; ?>
-                        </div>
-                    </div>
+          <!-- Skeleton Loader -->
+          <div id="supSkeletonLoader" class="p-4">
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+          </div>
 
-                    <div class="filters-section" id="bankFiltersSection" style="display: none;">
-                        <div class="filters-header">
-                            <h3><i class="fas fa-filter"></i> Filters</h3>
-                            <button class="btn btn-secondary btn-sm" onclick="clearFilters('bank')">
-                                <i class="fas fa-times-circle"></i> Clear All
-                            </button>
-                        </div>
-                        <div class="filters-grid">
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date From</label>
-                                <input type="date" id="bankFilterDateFrom" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-calendar-alt"></i> Date To</label>
-                                <input type="date" id="bankFilterDateTo" class="filter-input">
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-arrow-right-arrow-left"></i> Direction</label>
-                                <select id="bankFilterDirection" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Incoming">Incoming</option>
-                                    <option value="Outgoing">Outgoing</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-info-circle"></i> Status</label>
-                                <select id="bankFilterStatus" class="filter-input">
-                                    <option value="">All</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Settled">Settled</option>
-                                    <option value="Overdue">Overdue</option>
-                                    <option value="Defaulted">Defaulted</option>
-                                </select>
-                            </div>
-                            <div class="filter-group">
-                                <label><i class="fas fa-leaf"></i> Season</label>
-                                <select id="bankFilterSeason" class="filter-input">
-                                    <option value="">All Seasons</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="bankSkeletonLoader" style="display: none;">
-                        <div class="skeleton-table">
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                            <div class="skeleton-table-row"><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div><div class="skeleton skeleton-table-cell"></div></div>
-                        </div>
-                    </div>
-
-                    <div id="bankTableContainer" style="display: none;">
-                        <div class="table-scroll-hint">
-                            <i class="fas fa-arrows-alt-h"></i> Swipe left/right to see all columns
-                        </div>
-                        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                            <table id="bankFinancingTable" class="display" style="width:100%"></table>
-                        </div>
-                    </div>
-                </div>
+          <!-- Table container -->
+          <div id="supTableContainer" style="display: none;" class="p-2">
+            <div class="text-xs text-slate-400 dark:text-slate-500 text-center py-1 sm:hidden">
+              <i class="fas fa-arrows-alt-h mr-1"></i> Swipe left/right to see all columns
             </div>
-            <?php endif; ?>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+              <table id="supFinancingTable" class="display" style="width:100%"></table>
+            </div>
+          </div>
 
         </div>
-    </div>
+      </div>
 
-    <!-- ==================== ADD/EDIT MODAL ==================== -->
-    <?php if ($canCreate || $canUpdate): ?>
-    <div class="modal-overlay" id="financingModal">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle"><i class="fas fa-money-bill-transfer"></i> Add Financing</h3>
-                <button class="close-btn" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+      <?php if (!$supplierOnly): ?>
+      <!-- ==================== TAB 2: CUSTOMER FINANCING ==================== -->
+      <div class="pricing-tab-content" id="customerTab">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+
+          <!-- Card header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-handshake text-brand-500 text-sm"></i>
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white">Customer Financing Records</h2>
             </div>
-            <div class="modal-body">
-                <div id="financingIdInfo" class="form-id-info" style="display: none;">
-                    <strong><i class="fas fa-id-badge"></i> Financing ID:</strong> <span id="financingIdDisplay"></span>
-                </div>
-
-                <form id="financingForm">
-                    <input type="hidden" id="financingId" name="financing_id">
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-calendar-day"></i> Date *</label>
-                            <input type="date" id="financingDate" name="date" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-arrow-right-arrow-left"></i> Direction *</label>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="direction" value="Incoming" required> Incoming
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="direction" value="Outgoing"> Outgoing
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-users"></i> Counterpart Type *</label>
-                            <div class="radio-group">
-                                <label class="radio-label">
-                                    <input type="radio" name="counterpart_type" value="Customer" required onchange="switchCounterpartySource('Customer')"> Customer
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="counterpart_type" value="Supplier" onchange="switchCounterpartySource('Supplier')"> Supplier
-                                </label>
-                                <label class="radio-label">
-                                    <input type="radio" name="counterpart_type" value="Bank" onchange="switchCounterpartySource('Bank')"> Bank
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-handshake"></i> Counterparty *</label>
-                            <div class="searchable-dropdown" id="counterpartyDropdownWrapper">
-                                <input type="text" class="searchable-dropdown-input" id="counterpartySearch" placeholder="Select counterpart type first..." autocomplete="off" disabled>
-                                <input type="hidden" id="counterpartyId" name="counterparty_id" required>
-                                <span class="searchable-dropdown-arrow" id="counterpartyArrow"><i class="fas fa-chevron-down"></i></span>
-                                <div class="searchable-dropdown-list" id="counterpartyList" style="display:none;"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-money-bill-wave"></i> Carried Over Balance</label>
-                            <input type="text" inputmode="decimal" id="carriedOverBalance" name="carried_over_balance" class="money-input" value="0">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-dollar-sign"></i> Amount *</label>
-                            <input type="text" inputmode="decimal" id="amount" name="amount" class="money-input" required placeholder="0.00" oninput="calcExpectedVolume()">
-                        </div>
-
-                        <div class="form-group" id="currentMarketPriceGroup">
-                            <label><i class="fas fa-chart-line"></i> Current Market Price</label>
-                            <input type="number" id="currentMarketPrice" name="current_market_price" step="0.01" min="0" placeholder="0.00" oninput="calcExpectedVolume()">
-                        </div>
-
-                        <div class="form-group" id="expectedVolumeKgGroup">
-                            <label><i class="fas fa-weight-hanging"></i> Expected Volume (kg)</label>
-                            <input type="number" id="expectedVolumeKg" name="expected_volume_kg" step="0.01" min="0" placeholder="Auto: Amount ÷ Price">
-                        </div>
-
-                        <div class="form-group" id="interestPerKgGroup">
-                            <label><i class="fas fa-coins"></i> Interest per Kg (FCFA)</label>
-                            <input type="number" id="interestPerKg" name="interest_per_kg" step="0.01" min="0" value="0" placeholder="e.g. 5">
-                        </div>
-
-                        <div class="form-group" id="interestAmountGroup" style="display: none;">
-                            <label><i class="fas fa-calculator"></i> Interest Amount</label>
-                            <div class="computed-field" id="interestAmountDisplay">0</div>
-                        </div>
-                    </div>
-
-                    <!-- Bank-specific fields -->
-                    <div id="bankFieldsGroup" style="display:none;">
-                        <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                            <div class="form-group">
-                                <label><i class="fas fa-percentage"></i> Interest Rate (%)</label>
-                                <input type="number" id="interestRatePct" name="interest_rate_pct" step="0.01" min="0" placeholder="e.g. 8.5">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-calendar-check"></i> Monthly Payment</label>
-                                <input type="number" id="monthlyPayment" name="monthly_payment" step="0.01" min="0" placeholder="0.00">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-clock"></i> Term (months)</label>
-                                <input type="number" id="termMonths" name="term_months" min="1" max="360" placeholder="e.g. 12">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-calendar-plus"></i> Start Date</label>
-                                <input type="date" id="startDate" name="start_date">
-                            </div>
-                            <div class="form-group">
-                                <label><i class="fas fa-calendar-xmark"></i> Maturity Date</label>
-                                <input type="date" id="maturityDate" name="maturity_date">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fas fa-info-circle"></i> Status</label>
-                            <select id="financingStatus" name="status">
-                                <option value="Active">Active</option>
-                                <option value="Settled">Settled</option>
-                                <option value="Overdue">Overdue</option>
-                                <option value="Defaulted">Defaulted</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-hashtag"></i> Reference Number</label>
-                            <input type="text" id="referenceNumber" name="reference_number" placeholder="e.g. REF-001" maxlength="50">
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-leaf"></i> Season *</label>
-                            <?php echo renderSeasonDropdown('season', 'season'); ?>
-                        </div>
-
-                        <div class="form-group" id="computedFieldsGroup" style="display: none;">
-                            <label><i class="fas fa-box-open"></i> Volume Remaining (kg)</label>
-                            <div class="computed-field" id="volumeRemainingDisplay">0</div>
-                        </div>
-
-                        <div class="form-group" id="balanceDueGroup" style="display: none;">
-                            <label><i class="fas fa-calculator"></i> Balance Due</label>
-                            <div class="computed-field" id="balanceDueDisplay">0</div>
-                        </div>
-
-                        <div class="form-group" id="deliveredVolumeGroup" style="display: none;">
-                            <label><i class="fas fa-truck-loading"></i> Delivered Volume (kg)</label>
-                            <div class="computed-field" id="deliveredVolumeDisplay">0</div>
-                        </div>
-
-                        <div class="form-group" id="amountRepaidGroup" style="display: none;">
-                            <label><i class="fas fa-hand-holding-dollar"></i> Amount Repaid</label>
-                            <div class="computed-field" id="amountRepaidDisplay">0</div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fas fa-sticky-note"></i> Notes</label>
-                        <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..."></textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
-                            <i class="fas fa-times"></i> Cancel
-                        </button>
-                    </div>
-                </form>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadFinancing('customer')">
+                <i class="fas fa-sync text-xs mr-1"></i> Refresh
+              </button>
+              <?php if ($canCreate): ?>
+              <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="openAddModal('Customer')">
+                <i class="fas fa-plus text-xs mr-1"></i> Add Financing
+              </button>
+              <?php endif; ?>
             </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-700" id="custFiltersSection" style="display: none;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-filter text-brand-500 text-xs"></i>
+                <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Filters</h3>
+              </div>
+              <button class="text-xs text-slate-400 hover:text-rose-500 transition-colors" onclick="clearFilters('customer')">
+                <i class="fas fa-times-circle mr-1"></i> Clear All
+              </button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+                <input type="date" id="custFilterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+                <input type="date" id="custFilterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Direction</label>
+                <select id="custFilterDirection" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Incoming">Incoming</option>
+                  <option value="Outgoing">Outgoing</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Status</label>
+                <select id="custFilterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Active">Active</option>
+                  <option value="Settled">Settled</option>
+                  <option value="Overdue">Overdue</option>
+                  <option value="Defaulted">Defaulted</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+                <select id="custFilterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All Seasons</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skeleton Loader -->
+          <div id="custSkeletonLoader" style="display: none;" class="p-4">
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+          </div>
+
+          <!-- Table container -->
+          <div id="custTableContainer" style="display: none;" class="p-2">
+            <div class="text-xs text-slate-400 dark:text-slate-500 text-center py-1 sm:hidden">
+              <i class="fas fa-arrows-alt-h mr-1"></i> Swipe left/right to see all columns
+            </div>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+              <table id="custFinancingTable" class="display" style="width:100%"></table>
+            </div>
+          </div>
+
         </div>
-    </div>
-    <?php endif; ?>
+      </div>
 
-    <!-- ==================== LINKED PAYMENTS MODAL ==================== -->
-    <div class="modal-overlay" id="paymentsModal">
-        <div class="modal" onclick="event.stopPropagation()" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3 id="paymentsModalTitle"><i class="fas fa-money-check"></i> Linked Payments</h3>
-                <button class="close-btn" onclick="closePaymentsModal()"><i class="fas fa-times"></i></button>
+      <!-- ==================== TAB 3: BANK FINANCING ==================== -->
+      <div class="pricing-tab-content" id="bankTab">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+
+          <!-- Card header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-building-columns text-brand-500 text-sm"></i>
+              <h2 class="text-sm font-bold text-slate-800 dark:text-white">Bank Financing Records</h2>
             </div>
-            <div class="modal-body">
-                <div id="paymentsLoading" style="text-align:center; padding:20px;">
-                    <i class="fas fa-spinner fa-spin fa-2x"></i>
-                </div>
-                <div id="paymentsContent" style="display:none;">
-                    <div id="paymentsEmpty" style="display:none; text-align:center; padding:30px; color:var(--text-muted);">
-                        <i class="fas fa-receipt" style="font-size:48px; margin-bottom:10px;"></i>
-                        <p>No payments linked to this financing record</p>
-                    </div>
-                    <!-- running balance -->
-                    <div id="runningBalanceSection" style="display:none;">
-                        <div id="runningBalanceSummary"></div>
-                        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-                            <div id="runningBalanceTable"></div>
-                        </div>
-                    </div>
-                    <!-- original datatable kept below -->
-                    <div id="linkedPaymentsTableWrap" style="display:none; margin-top:18px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
-                            <span style="font-weight:600;font-size:14px;color:var(--text-primary);"><i class="fas fa-list" style="margin-right:6px;color:var(--navy-accent);"></i>Payment Details</span>
-                        </div>
-                        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
-                            <table id="linkedPaymentsTable" class="display" style="width:100%"></table>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button class="bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="loadFinancing('bank')">
+                <i class="fas fa-sync text-xs mr-1"></i> Refresh
+              </button>
+              <?php if ($canCreate): ?>
+              <button class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="openAddModal('Bank')">
+                <i class="fas fa-plus text-xs mr-1"></i> Add Financing
+              </button>
+              <?php endif; ?>
             </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="px-5 py-3 border-b border-slate-100 dark:border-slate-700" id="bankFiltersSection" style="display: none;">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-filter text-brand-500 text-xs"></i>
+                <h3 class="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide">Filters</h3>
+              </div>
+              <button class="text-xs text-slate-400 hover:text-rose-500 transition-colors" onclick="clearFilters('bank')">
+                <i class="fas fa-times-circle mr-1"></i> Clear All
+              </button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date From</label>
+                <input type="date" id="bankFilterDateFrom" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Date To</label>
+                <input type="date" id="bankFilterDateTo" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Direction</label>
+                <select id="bankFilterDirection" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Incoming">Incoming</option>
+                  <option value="Outgoing">Outgoing</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Status</label>
+                <select id="bankFilterStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All</option>
+                  <option value="Active">Active</option>
+                  <option value="Settled">Settled</option>
+                  <option value="Overdue">Overdue</option>
+                  <option value="Defaulted">Defaulted</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">Season</label>
+                <select id="bankFilterSeason" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+                  <option value="">All Seasons</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skeleton Loader -->
+          <div id="bankSkeletonLoader" style="display: none;" class="p-4">
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+            <div class="skeleton-row"><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div><div class="skeleton skeleton-cell"></div></div>
+          </div>
+
+          <!-- Table container -->
+          <div id="bankTableContainer" style="display: none;" class="p-2">
+            <div class="text-xs text-slate-400 dark:text-slate-500 text-center py-1 sm:hidden">
+              <i class="fas fa-arrows-alt-h mr-1"></i> Swipe left/right to see all columns
+            </div>
+            <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+              <table id="bankFinancingTable" class="display" style="width:100%"></table>
+            </div>
+          </div>
+
         </div>
+      </div>
+      <?php endif; ?>
+
+    </main>
+  </div>
+</div>
+
+<!-- ==================== ADD/EDIT MODAL ==================== -->
+<?php if ($canCreate || $canUpdate): ?>
+<div class="modal-overlay" id="financingModal">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <!-- Modal header -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+      <h3 id="modalTitle" class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <i class="fas fa-coins text-brand-500"></i> Add Financing
+      </h3>
+      <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" onclick="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
-    <script>
+    <!-- Modal body -->
+    <div class="px-5 py-4 overflow-y-auto" style="max-height: calc(90vh - 60px);">
+      <div id="financingIdInfo" class="mb-3 px-3 py-2 bg-brand-50 dark:bg-brand-900/20 rounded-lg text-sm text-brand-700 dark:text-brand-300" style="display: none;">
+        <strong><i class="fas fa-id-badge mr-1"></i> Financing ID:</strong> <span id="financingIdDisplay"></span>
+      </div>
+
+      <form id="financingForm">
+        <input type="hidden" id="financingId" name="financing_id">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calendar-day mr-1"></i> Date *</label>
+            <input type="date" id="financingDate" name="date" required class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-arrow-right-arrow-left mr-1"></i> Direction *</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="direction" value="Incoming" required> Incoming
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="direction" value="Outgoing"> Outgoing
+              </label>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-users mr-1"></i> Counterpart Type *</label>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="counterpart_type" value="Customer" required onchange="switchCounterpartySource('Customer')"> Customer
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="counterpart_type" value="Supplier" onchange="switchCounterpartySource('Supplier')"> Supplier
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="counterpart_type" value="Bank" onchange="switchCounterpartySource('Bank')"> Bank
+              </label>
+            </div>
+          </div>
+
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-handshake mr-1"></i> Counterparty *</label>
+            <div class="searchable-dropdown" id="counterpartyDropdownWrapper">
+              <input type="text" class="searchable-dropdown-input" id="counterpartySearch" placeholder="Select counterpart type first..." autocomplete="off" disabled>
+              <input type="hidden" id="counterpartyId" name="counterparty_id" required>
+              <span class="searchable-dropdown-arrow" id="counterpartyArrow"><i class="fas fa-chevron-down"></i></span>
+              <div class="searchable-dropdown-list" id="counterpartyList" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-money-bill-wave mr-1"></i> Carried Over Balance</label>
+            <input type="text" inputmode="decimal" id="carriedOverBalance" name="carried_over_balance" class="money-input w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors" value="0">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-dollar-sign mr-1"></i> Amount *</label>
+            <input type="text" inputmode="decimal" id="amount" name="amount" class="money-input w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors" required placeholder="0.00" oninput="calcExpectedVolume()">
+          </div>
+
+          <div id="currentMarketPriceGroup">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-chart-line mr-1"></i> Current Market Price</label>
+            <input type="number" id="currentMarketPrice" name="current_market_price" step="0.01" min="0" placeholder="0.00" oninput="calcExpectedVolume()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div id="expectedVolumeKgGroup">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-weight-hanging mr-1"></i> Expected Volume (kg)</label>
+            <input type="number" id="expectedVolumeKg" name="expected_volume_kg" step="0.01" min="0" placeholder="Auto: Amount / Price" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div id="interestPerKgGroup">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-coins mr-1"></i> Interest per Kg (FCFA)</label>
+            <input type="number" id="interestPerKg" name="interest_per_kg" step="0.01" min="0" value="0" placeholder="e.g. 5" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div id="interestAmountGroup" style="display: none;">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calculator mr-1"></i> Interest Amount</label>
+            <div class="computed-field" id="interestAmountDisplay">0</div>
+          </div>
+        </div>
+
+        <!-- Bank-specific fields -->
+        <div id="bankFieldsGroup" style="display:none;" class="mt-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-percentage mr-1"></i> Interest Rate (%)</label>
+              <input type="number" id="interestRatePct" name="interest_rate_pct" step="0.01" min="0" placeholder="e.g. 8.5" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calendar-check mr-1"></i> Monthly Payment</label>
+              <input type="number" id="monthlyPayment" name="monthly_payment" step="0.01" min="0" placeholder="0.00" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-clock mr-1"></i> Term (months)</label>
+              <input type="number" id="termMonths" name="term_months" min="1" max="360" placeholder="e.g. 12" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calendar-plus mr-1"></i> Start Date</label>
+              <input type="date" id="startDate" name="start_date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calendar-xmark mr-1"></i> Maturity Date</label>
+              <input type="date" id="maturityDate" name="maturity_date" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-info-circle mr-1"></i> Status</label>
+            <select id="financingStatus" name="status" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+              <option value="Active">Active</option>
+              <option value="Settled">Settled</option>
+              <option value="Overdue">Overdue</option>
+              <option value="Defaulted">Defaulted</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-hashtag mr-1"></i> Reference Number</label>
+            <input type="text" id="referenceNumber" name="reference_number" placeholder="e.g. REF-001" maxlength="50" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-leaf mr-1"></i> Season *</label>
+            <?php echo renderSeasonDropdown('season', 'season'); ?>
+          </div>
+
+          <div id="computedFieldsGroup" style="display: none;">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-box-open mr-1"></i> Volume Remaining (kg)</label>
+            <div class="computed-field" id="volumeRemainingDisplay">0</div>
+          </div>
+
+          <div id="balanceDueGroup" style="display: none;">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-calculator mr-1"></i> Balance Due</label>
+            <div class="computed-field" id="balanceDueDisplay">0</div>
+          </div>
+
+          <div id="deliveredVolumeGroup" style="display: none;">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-truck-loading mr-1"></i> Delivered Volume (kg)</label>
+            <div class="computed-field" id="deliveredVolumeDisplay">0</div>
+          </div>
+
+          <div id="amountRepaidGroup" style="display: none;">
+            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-hand-holding-dollar mr-1"></i> Amount Repaid</label>
+            <div class="computed-field" id="amountRepaidDisplay">0</div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1"><i class="fas fa-sticky-note mr-1"></i> Notes</label>
+          <textarea id="notes" name="notes" rows="2" placeholder="Optional notes..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-colors resize-none"></textarea>
+        </div>
+
+        <div class="flex items-center gap-3 mt-5 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <button type="submit" class="bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+            <i class="fas fa-save mr-1"></i> Save
+          </button>
+          <button type="button" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors" onclick="closeModal()">
+            <i class="fas fa-times mr-1"></i> Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<?php endif; ?>
+
+<!-- ==================== LINKED PAYMENTS MODAL ==================== -->
+<div class="modal-overlay" id="paymentsModal">
+  <div class="modal-card-wide" onclick="event.stopPropagation()">
+    <!-- Modal header -->
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-700">
+      <h3 id="paymentsModalTitle" class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-2">
+        <i class="fas fa-money-check text-brand-500"></i> Linked Payments
+      </h3>
+      <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors" onclick="closePaymentsModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="px-5 py-4 overflow-y-auto" style="max-height: calc(90vh - 60px);">
+      <div id="paymentsLoading" class="text-center py-10">
+        <i class="fas fa-spinner fa-spin fa-2x text-brand-500"></i>
+      </div>
+      <div id="paymentsContent" style="display:none;">
+        <div id="paymentsEmpty" style="display:none;" class="text-center py-10 text-slate-400 dark:text-slate-500">
+          <i class="fas fa-receipt text-4xl mb-3"></i>
+          <p class="text-sm">No payments linked to this financing record</p>
+        </div>
+        <!-- running balance -->
+        <div id="runningBalanceSection" style="display:none;">
+          <div id="runningBalanceSummary"></div>
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <div id="runningBalanceTable"></div>
+          </div>
+        </div>
+        <!-- original datatable kept below -->
+        <div id="linkedPaymentsTableWrap" style="display:none; margin-top:18px;">
+          <div class="flex justify-between items-center py-2">
+            <span class="text-sm font-semibold text-slate-800 dark:text-white"><i class="fas fa-list mr-1 text-brand-500"></i>Payment Details</span>
+          </div>
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table id="linkedPaymentsTable" class="display" style="width:100%"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
     // ==================== GLOBAL VARIABLES ====================
     var canUpdate = <?php echo $canUpdate ? 'true' : 'false'; ?>;
     var canDelete = <?php echo $canDelete ? 'true' : 'false'; ?>;
@@ -2225,5 +2494,35 @@ if (isset($_GET['action'])) {
         });
     }
     </script>
+
+<!-- Theme initializer -->
+<script>
+(function(){
+  var t = localStorage.getItem('cp_theme');
+  if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+</script>
+
+<!-- i18n loader -->
+<script>
+window._translations = {};
+function t(key) { return window._translations[key] || key; }
+function applyTranslations() {
+  document.querySelectorAll('[data-t]').forEach(function(el) {
+    var key = el.getAttribute('data-t');
+    if (window._translations[key]) el.textContent = window._translations[key];
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var lang = localStorage.getItem('cp_lang') || 'en';
+  fetch('lang.php?lang=' + lang)
+    .then(function(r){ return r.json(); })
+    .then(function(data){ window._translations = data; applyTranslations(); })
+    .catch(function(){});
+});
+</script>
+
 </body>
 </html>
