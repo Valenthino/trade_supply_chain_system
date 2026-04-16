@@ -127,563 +127,268 @@ $settings_submenu_active = in_array($current_page, $settings_data_pages);
 // profit analysis submenu active
 $profit_submenu_active = ($current_page === 'profit-analysis');
 
+// Get active season for sidebar display
+if (!isset($activeSeason)) {
+    $activeSeason = getActiveSeason();
+}
+
 // Get user's custom theme
 $user_theme = getUserTheme($user_id);
 
 // Output custom theme CSS
 echo generateUserThemeCSS($user_id);
 ?>
+
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-        <div class="sidebar-title">
-            <i class="fas fa-tachometer-alt"></i>
-            <span class="sidebar-title-text">Dashboard</span>
-        </div>
-        <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
-            <i class="fas fa-chevron-left" id="sidebarToggleIcon"></i>
-        </button>
+<aside id="sidebar" class="w-60 flex-shrink-0 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden z-40">
+
+  <!-- Logo -->
+  <div class="flex items-center gap-3 px-4 h-14 border-b border-slate-200 dark:border-slate-700 flex-shrink-0">
+    <div class="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center flex-shrink-0">
+      <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+        <path d="M6 20 C4 14, 8 6, 16 5 C22 4, 25 9, 23 15 C21 21, 14 24, 9 22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="6" cy="20" r="2.5" fill="white"/>
+      </svg>
     </div>
-    <div class="sidebar-logo-section">
-        <img src="<?php echo htmlspecialchars($image_src); ?>" alt="Profile" class="sidebar-logo" onerror="this.src='<?php echo $default_logo; ?>'">
+    <div class="logo-text flex flex-col min-w-0">
+      <span class="text-sm font-bold text-slate-800 dark:text-white leading-tight whitespace-nowrap">CashewPro</span>
+      <span class="text-[10px] font-semibold text-brand-500 uppercase tracking-wider leading-tight" id="sidebarSeason"><?php echo htmlspecialchars($activeSeason ?? 'No Season'); ?></span>
     </div>
-    <div class="sidebar-menu-section">
-        <div class="sidebar-menu-title" data-section="operations" onclick="toggleSidebarSection(this)"><span>Operations</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <!-- Dashboard - visible to all roles -->
-            <li data-tooltip="Dashboard">
-                <a href="dashboard.php" class="<?php echo $current_page === 'dashboard' ? 'active' : ''; ?>">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+    <button id="sidebarCollapseBtn" class="ml-auto text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 w-6 h-6 flex items-center justify-center rounded flex-shrink-0" data-t="tooltip-collapse">
+      <i class="fas fa-chevron-left text-xs transition-transform" id="collapseIcon"></i>
+    </button>
+  </div>
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Procurement Officer', 'Warehouse Clerk', 'Finance Officer'])): ?>
-            <!-- Purchases -->
-            <li data-tooltip="Purchases">
-                <a href="purchases.php" class="<?php echo $current_page === 'purchases' ? 'active' : ''; ?>">
-                    <i class="fas fa-cart-shopping"></i>
-                    <span>Purchases</span>
-                </a>
-            </li>
-            <?php endif; ?>
+  <!-- User -->
+  <div class="px-3 py-3 border-b border-slate-100 dark:border-slate-700 flex-shrink-0">
+    <div class="flex items-center gap-3 bg-slate-50 dark:bg-slate-750 rounded-xl px-3 py-2">
+      <div class="relative flex-shrink-0">
+        <img src="<?php echo htmlspecialchars($image_src); ?>" class="w-8 h-8 rounded-full" alt="User" onerror="this.src='<?php echo $default_logo; ?>'"/>
+        <span class="absolute bottom-0 right-0 w-2 h-2 bg-emerald-400 rounded-full border-2 border-white dark:border-slate-800"></span>
+      </div>
+      <div class="sidebar-label min-w-0">
+        <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate" id="sidebarUsername"><?php echo htmlspecialchars($_SESSION['username'] ?? 'User'); ?></p>
+        <p class="text-[10px] text-slate-400 truncate" id="sidebarRole"><?php echo htmlspecialchars($_SESSION['role'] ?? ''); ?></p>
+      </div>
+    </div>
+  </div>
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Finance Officer'])): ?>
-            <!-- Sales -->
-            <li data-tooltip="Sales">
-                <a href="sales.php" class="<?php echo $current_page === 'sales' ? 'active' : ''; ?>">
-                    <i class="fas fa-coins"></i>
-                    <span>Sales</span>
-                </a>
-            </li>
-            <?php endif; ?>
+  <!-- Navigation -->
+  <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-4">
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Warehouse Clerk', 'Fleet Manager', 'Procurement Officer'])): ?>
-            <!-- Deliveries Out -->
-            <li data-tooltip="Deliveries">
-                <a href="deliveries.php" class="<?php echo $current_page === 'deliveries' ? 'active' : ''; ?>">
-                    <i class="fas fa-truck-fast"></i>
-                    <span>Deliveries Out</span>
-                </a>
-            </li>
-            <?php endif; ?>
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-ops">Operations</p>
+      <ul class="space-y-0.5">
+        <li><a href="dashboard.php" class="nav-link <?php echo $current_page === 'dashboard' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-table-columns w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-dashboard">Dashboard</span>
+        </a></li>
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer', 'Sales Officer'])): ?>
-            <!-- Payments -->
-            <li data-tooltip="Payments">
-                <a href="payments.php" class="<?php echo $current_page === 'payments' ? 'active' : ''; ?>">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Payments</span>
-                </a>
-            </li>
-            <?php endif; ?>
-        </ul>
-
-        <div class="sidebar-menu-title" data-section="master-data" onclick="toggleSidebarSection(this)"><span>Master Data</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <?php if (in_array($role, ['Admin', 'Manager', 'Procurement Officer', 'Finance Officer', 'Warehouse Clerk'])): ?>
-            <!-- Supplier Master -->
-            <li data-tooltip="Suppliers">
-                <a href="suppliers.php" class="<?php echo $current_page === 'suppliers' ? 'active' : ''; ?>">
-                    <i class="fas fa-truck-field"></i>
-                    <span>Supplier Master</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer'])): ?>
-            <!-- Supplier Ranking — score-based shortlist for financing decisions -->
-            <li data-tooltip="Supplier Ranking">
-                <a href="supplier-ranking.php" class="<?php echo $current_page === 'supplier-ranking' ? 'active' : ''; ?>">
-                    <i class="fas fa-ranking-star"></i>
-                    <span>Supplier Ranking</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Finance Officer'])): ?>
-            <!-- Customer Master -->
-            <li data-tooltip="Customers">
-                <a href="customers.php" class="<?php echo $current_page === 'customers' ? 'active' : ''; ?>">
-                    <i class="fas fa-handshake"></i>
-                    <span>Customer Master</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Procurement Officer', 'Finance Officer'])): ?>
-            <!-- Pricing Master -->
-            <li data-tooltip="Pricing">
-                <a href="pricing.php" class="<?php echo $current_page === 'pricing' ? 'active' : ''; ?>">
-                    <i class="fas fa-tags"></i>
-                    <span>Pricing Master</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
-            <!-- Bank Master — restricted: bank debts are finance-only -->
-            <li data-tooltip="Banks">
-                <a href="banks.php" class="<?php echo $current_page === 'banks' ? 'active' : ''; ?>">
-                    <i class="fas fa-building-columns"></i>
-                    <span>Bank Master</span>
-                </a>
-            </li>
-            <?php endif; ?>
-        </ul>
-
-        <div class="sidebar-menu-title" data-section="finance" onclick="toggleSidebarSection(this)"><span>Finance</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
-            <!-- Financing — restricted: bank debts + supplier advances are finance-only -->
-            <li data-tooltip="Financing">
-                <a href="financing.php" class="<?php echo $current_page === 'financing' ? 'active' : ''; ?>">
-                    <i class="fas fa-money-bill-transfer"></i>
-                    <span>Financing</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer', 'Warehouse Clerk'])): ?>
-            <!-- Expenses -->
-            <li data-tooltip="Expenses">
-                <a href="expenses.php" class="<?php echo $current_page === 'expenses' ? 'active' : ''; ?>">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <span>Expenses</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
-            <!-- Profit Analysis (submenu) — restricted: profit visibility is finance-only -->
-            <li class="has-submenu" data-tooltip="Profit Analysis">
-                <a href="#" class="submenu-toggle <?php echo $profit_submenu_active ? 'active' : ''; ?>" data-submenu="profit-submenu">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Profit Analysis</span>
-                    <i class="fas fa-chevron-down submenu-arrow"></i>
-                </a>
-                <ul class="sidebar-submenu" id="profit-submenu">
-                    <li data-tooltip="Profit & Loss">
-                        <a href="profit-analysis.php?tab=pnl" class="<?php echo ($current_page === 'profit-analysis' && isset($_GET['tab']) && $_GET['tab'] === 'pnl') ? 'active' : ''; ?>">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                            <span>Profit & Loss</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Cash Flow">
-                        <a href="profit-analysis.php?tab=cashflow" class="<?php echo ($current_page === 'profit-analysis' && isset($_GET['tab']) && $_GET['tab'] === 'cashflow') ? 'active' : ''; ?>">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>Cash Flow</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Simulation">
-                        <a href="profit-analysis.php?tab=simulation" class="<?php echo ($current_page === 'profit-analysis' && isset($_GET['tab']) && $_GET['tab'] === 'simulation') ? 'active' : ''; ?>">
-                            <i class="fas fa-flask"></i>
-                            <span>Simulation</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <?php endif; ?>
-        </ul>
-
-        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Sales Officer'])): ?>
-        <div class="sidebar-menu-title" data-section="ai-analytics" onclick="toggleSidebarSection(this)"><span>AI Analytics</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <li data-tooltip="AI Reports">
-                <a href="ai-reports.php" class="<?php echo $current_page === 'ai-reports' ? 'active' : ''; ?>">
-                    <i class="fas fa-brain"></i>
-                    <span>AI Reports</span>
-                </a>
-            </li>
-        </ul>
+        <?php if (in_array($role, ['Admin', 'Manager', 'Procurement Officer', 'Warehouse Clerk', 'Finance Officer'])): ?>
+        <li><a href="purchases.php" class="nav-link <?php echo $current_page === 'purchases' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-cart-shopping w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-purchases">Purchases</span>
+          <span class="sidebar-label ml-auto bg-brand-100 dark:bg-brand-900 text-brand-600 dark:text-brand-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="navBadgePurchases">—</span>
+        </a></li>
         <?php endif; ?>
 
-        <div class="sidebar-menu-title" data-section="logistics" onclick="toggleSidebarSection(this)"><span>Logistics</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <?php if (in_array($role, ['Admin', 'Manager', 'Fleet Manager', 'Procurement Officer'])): ?>
-            <!-- Fleet & Drivers -->
-            <li data-tooltip="Fleet">
-                <a href="fleet.php" class="<?php echo $current_page === 'fleet' ? 'active' : ''; ?>">
-                    <i class="fas fa-truck-moving"></i>
-                    <span>Fleet & Drivers</span>
-                </a>
-            </li>
-            <?php endif; ?>
+        <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Finance Officer'])): ?>
+        <li><a href="sales.php" class="nav-link <?php echo $current_page === 'sales' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-chart-line w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-sales">Sales</span>
+        </a></li>
+        <?php endif; ?>
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Warehouse Clerk', 'Fleet Manager', 'Procurement Officer'])): ?>
-            <!-- Bags Log -->
-            <li data-tooltip="Bags Log">
-                <a href="bags-log.php" class="<?php echo $current_page === 'bags-log' ? 'active' : ''; ?>">
-                    <i class="fas fa-boxes-packing"></i>
-                    <span>Bags Log</span>
-                </a>
-            </li>
-            <?php endif; ?>
+        <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Warehouse Clerk', 'Fleet Manager', 'Procurement Officer'])): ?>
+        <li><a href="deliveries.php" class="nav-link <?php echo $current_page === 'deliveries' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-truck-fast w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-deliveries">Deliveries</span>
+          <span class="sidebar-label ml-auto bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full" id="navBadgeDeliveries">—</span>
+        </a></li>
+        <?php endif; ?>
 
-            <?php if (in_array($role, ['Admin', 'Manager', 'Warehouse Clerk', 'Procurement Officer'])): ?>
-            <!-- Inventory / Stock Ledger -->
-            <li data-tooltip="Inventory">
-                <a href="inventory.php" class="<?php echo $current_page === 'inventory' ? 'active' : ''; ?>">
-                    <i class="fas fa-boxes-stacked"></i>
-                    <span>Inventory</span>
-                </a>
-            </li>
-            <?php endif; ?>
-        </ul>
-
-        <div class="sidebar-menu-title" data-section="administration" onclick="toggleSidebarSection(this)"><span>Administration</span><i class="fas fa-chevron-down section-chevron"></i></div>
-        <ul class="sidebar-menu">
-            <?php if ($role === 'Admin'): ?>
-            <!-- Users - Admin only -->
-            <li data-tooltip="Users">
-                <a href="users.php" class="<?php echo $current_page === 'users' ? 'active' : ''; ?>">
-                    <i class="fas fa-users-cog"></i>
-                    <span>User Management</span>
-                </a>
-            </li>
-            <?php endif; ?>
-
-            <?php if (in_array($role, ['Admin', 'Manager'])): ?>
-            <!-- Settings Data (Parent with Submenu) - Admin + Manager -->
-            <li class="has-submenu" data-tooltip="Settings">
-                <a href="#" class="submenu-toggle <?php echo $settings_submenu_active ? 'active' : ''; ?>" data-submenu="settings-data-submenu">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                    <i class="fas fa-chevron-down submenu-arrow"></i>
-                </a>
-                <ul class="sidebar-submenu" id="settings-data-submenu">
-                    <li data-tooltip="Locations">
-                        <a href="settings-data.php?type=locations" class="<?php echo $current_page === 'settings-locations' ? 'active' : ''; ?>">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Locations</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Contract Types">
-                        <a href="settings-data.php?type=contract-types" class="<?php echo $current_page === 'settings-contract-types' ? 'active' : ''; ?>">
-                            <i class="fas fa-file-contract"></i>
-                            <span>Contract Types</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Supplier Types">
-                        <a href="settings-data.php?type=supplier-types" class="<?php echo $current_page === 'settings-supplier-types' ? 'active' : ''; ?>">
-                            <i class="fas fa-truck"></i>
-                            <span>Supplier Types</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Warehouses">
-                        <a href="settings-data.php?type=warehouses" class="<?php echo $current_page === 'settings-warehouses' ? 'active' : ''; ?>">
-                            <i class="fas fa-warehouse"></i>
-                            <span>Warehouses</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Expense Categories">
-                        <a href="settings-data.php?type=expense-categories" class="<?php echo $current_page === 'settings-expense-categories' ? 'active' : ''; ?>">
-                            <i class="fas fa-receipt"></i>
-                            <span>Expense Categories</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Bag Types">
-                        <a href="settings-data.php?type=bag-types" class="<?php echo $current_page === 'settings-bag-types' ? 'active' : ''; ?>">
-                            <i class="fas fa-box"></i>
-                            <span>Bag Types</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Paperwork Types">
-                        <a href="settings-data.php?type=paperwork-types" class="<?php echo $current_page === 'settings-paperwork-types' ? 'active' : ''; ?>">
-                            <i class="fas fa-scroll"></i>
-                            <span>Paperwork Types</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Seasons">
-                        <a href="settings-data.php?type=seasons" class="<?php echo $current_page === 'settings-seasons' ? 'active' : ''; ?>">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span>Seasons</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <?php endif; ?>
-
-            <!-- My Account (Parent with Submenu) -->
-            <li class="has-submenu" data-tooltip="My Account">
-                <a href="#" class="submenu-toggle <?php echo $account_submenu_active ? 'active' : ''; ?>" data-submenu="account-submenu">
-                    <i class="fas fa-user-circle"></i>
-                    <span>My Account</span>
-                    <i class="fas fa-chevron-down submenu-arrow"></i>
-                </a>
-                <ul class="sidebar-submenu" id="account-submenu">
-                    <li data-tooltip="My Profile">
-                        <a href="account.php" class="<?php echo $current_page === 'account' ? 'active' : ''; ?>">
-                            <i class="fas fa-user"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="System">
-                        <a href="settings.php" class="<?php echo $current_page === 'system-settings' ? 'active' : ''; ?>">
-                            <i class="fas fa-server"></i>
-                            <span>System</span>
-                        </a>
-                    </li>
-                    <li data-tooltip="Activity Logs">
-                        <a href="logs.php" class="<?php echo $current_page === 'logs' ? 'active' : ''; ?>">
-                            <i class="fas fa-history"></i>
-                            <span>Activity Logs</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer', 'Sales Officer'])): ?>
+        <li><a href="payments.php" class="nav-link <?php echo $current_page === 'payments' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-credit-card w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-payments">Payments</span>
+        </a></li>
+        <?php endif; ?>
+      </ul>
     </div>
-    <div class="sidebar-theme">
-        <button onclick="toggleTheme()">
-            <i class="fas fa-moon" id="themeIcon"></i>
-            <span id="themeText">Dark Mode</span>
-        </button>
-    </div>
-    <div class="sidebar-logout">
-        <button onclick="window.location.href='logout.php'">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </button>
-    </div>
-</div>
 
-<!-- Notification Panel (positioned via JS into .header) -->
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-master">Master Data</p>
+      <ul class="space-y-0.5">
+        <?php if (in_array($role, ['Admin', 'Manager', 'Procurement Officer', 'Finance Officer', 'Warehouse Clerk'])): ?>
+        <li><a href="suppliers.php" class="nav-link <?php echo $current_page === 'suppliers' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-people-group w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-suppliers">Suppliers</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer'])): ?>
+        <li><a href="supplier-ranking.php" class="nav-link <?php echo $current_page === 'supplier-ranking' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-ranking-star w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap">Supplier Ranking</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Finance Officer'])): ?>
+        <li><a href="customers.php" class="nav-link <?php echo $current_page === 'customers' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-users w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-customers">Customers</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Sales Officer', 'Procurement Officer', 'Finance Officer'])): ?>
+        <li><a href="pricing.php" class="nav-link <?php echo $current_page === 'pricing' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-tag w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-pricing">Price Grid</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
+        <li><a href="banks.php" class="nav-link <?php echo $current_page === 'banks' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-building-columns w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-banks">Banks</span>
+        </a></li>
+        <?php endif; ?>
+      </ul>
+    </div>
+
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-finance">Finance</p>
+      <ul class="space-y-0.5">
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
+        <li><a href="financing.php" class="nav-link <?php echo $current_page === 'financing' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-layer-group w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-financing">Financing</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Procurement Officer', 'Warehouse Clerk'])): ?>
+        <li><a href="expenses.php" class="nav-link <?php echo $current_page === 'expenses' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-circle-dollar-to-slot w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-expenses">Expenses</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer'])): ?>
+        <li><a href="profit-analysis.php" class="nav-link <?php echo $current_page === 'profit-analysis' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-chart-pie w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-pl">P&L Analysis</span>
+        </a></li>
+        <?php endif; ?>
+      </ul>
+    </div>
+
+    <?php if (in_array($role, ['Admin', 'Manager', 'Finance Officer', 'Sales Officer'])): ?>
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-ai">AI & Analytics</p>
+      <ul class="space-y-0.5">
+        <li><a href="ai-reports.php" class="nav-link <?php echo $current_page === 'ai-reports' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-brain w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-ai">AI Reports</span>
+          <span class="sidebar-label ml-auto bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400 text-[10px] font-bold px-1.5 py-0.5 rounded-full" data-t="badge-new">New</span>
+        </a></li>
+      </ul>
+    </div>
+    <?php endif; ?>
+
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-logistics">Logistics</p>
+      <ul class="space-y-0.5">
+        <?php if (in_array($role, ['Admin', 'Manager', 'Fleet Manager', 'Procurement Officer'])): ?>
+        <li><a href="fleet.php" class="nav-link <?php echo $current_page === 'fleet' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-truck w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-fleet">Fleet & Drivers</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Warehouse Clerk', 'Fleet Manager', 'Procurement Officer'])): ?>
+        <li><a href="bags-log.php" class="nav-link <?php echo $current_page === 'bags-log' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-boxes-packing w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-bags">Bag Journal</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager', 'Warehouse Clerk', 'Procurement Officer'])): ?>
+        <li><a href="inventory.php" class="nav-link <?php echo $current_page === 'inventory' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-boxes-stacked w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-inventory">Inventory</span>
+        </a></li>
+        <?php endif; ?>
+      </ul>
+    </div>
+
+    <div>
+      <p class="sidebar-section-label sidebar-label text-[10px] uppercase tracking-widest font-semibold text-slate-400 dark:text-slate-500 px-3 mb-1" data-t="nav-section-admin">Administration</p>
+      <ul class="space-y-0.5">
+        <?php if ($role === 'Admin'): ?>
+        <li><a href="users.php" class="nav-link <?php echo $current_page === 'users' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-shield-halved w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-users">Users</span>
+        </a></li>
+        <?php endif; ?>
+
+        <?php if (in_array($role, ['Admin', 'Manager'])): ?>
+        <li><a href="settings.php" class="nav-link <?php echo $current_page === 'system-settings' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-gear w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap" data-t="nav-settings">Settings</span>
+        </a></li>
+        <?php endif; ?>
+
+        <li><a href="account.php" class="nav-link <?php echo $current_page === 'account' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-user-circle w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap">My Profile</span>
+        </a></li>
+
+        <li><a href="logs.php" class="nav-link <?php echo $current_page === 'logs' ? 'active' : ''; ?> relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+          <i class="nav-icon fas fa-history w-4 text-slate-400 dark:text-slate-500 text-sm"></i>
+          <span class="sidebar-label whitespace-nowrap">Activity Logs</span>
+        </a></li>
+      </ul>
+    </div>
+
+  </nav>
+
+  <!-- Sidebar footer -->
+  <div class="border-t border-slate-200 dark:border-slate-700 p-3 flex-shrink-0 space-y-0.5">
+    <!-- Language toggle -->
+    <button id="langToggleBtn" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left">
+      <i class="fas fa-globe w-4 text-sm"></i>
+      <span class="sidebar-label whitespace-nowrap" id="langLabel">Fran&ccedil;ais</span>
+    </button>
+    <!-- Theme toggle -->
+    <button id="themeToggleBtn" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left">
+      <i class="fas fa-moon w-4 text-sm" id="themeIcon"></i>
+      <span class="sidebar-label whitespace-nowrap" id="themeLabel">Dark Mode</span>
+    </button>
+    <a href="logout.php" class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors">
+      <i class="fas fa-right-from-bracket w-4 text-sm"></i>
+      <span class="sidebar-label whitespace-nowrap" data-t="nav-logout">Sign Out</span>
+    </a>
+  </div>
+</aside>
+
+<!-- Notification Panel -->
 <div id="notifBellWrap" style="display:none;position:relative;margin-right:16px;">
     <div id="notifBell" style="cursor:pointer;" onclick="toggleNotifPanel()">
-        <i class="fas fa-bell" style="font-size:18px;color:var(--text-muted);"></i>
+        <i class="fas fa-bell" style="font-size:18px;"></i>
         <span id="notifBadge" style="display:none;position:absolute;top:-6px;right:-8px;background:#e74c3c;color:#fff;border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;text-align:center;line-height:18px;">0</span>
     </div>
-    <div id="notifPanel" style="display:none;position:absolute;top:calc(100% + 8px);right:-10px;width:360px;max-height:400px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:9999;overflow:hidden;">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
-            <strong style="font-size:14px;color:var(--text-primary);">Notifications</strong>
-            <a href="#" onclick="markAllRead();return false;" style="font-size:12px;color:var(--navy-accent);text-decoration:none;">Mark all read</a>
+    <div id="notifPanel" style="display:none;position:absolute;top:calc(100% + 8px);right:-10px;width:360px;max-height:400px;background:var(--bg-card,#fff);border:1px solid rgba(0,0,0,0.1);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:9999;overflow:hidden;">
+        <div style="padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.08);display:flex;justify-content:space-between;align-items:center;">
+            <strong style="font-size:14px;">Notifications</strong>
+            <a href="#" onclick="markAllRead();return false;" style="font-size:12px;color:#2d9d99;text-decoration:none;">Mark all read</a>
         </div>
         <div id="notifList" style="overflow-y:auto;max-height:340px;"></div>
     </div>
 </div>
 
-<style>
-.notif-item:hover { background: var(--bg-secondary, #f8f9fa); }
-@media (max-width: 480px) {
-    #notifPanel { width: 300px !important; right: -40px !important; }
-}
-</style>
-
-<!-- Theme Toggle JavaScript -->
-<script>
-/**
- * Theme Toggle Functionality
- * Handles light/dark mode switching with localStorage persistence
- * Also respects user's saved theme preference from database
- */
-function initTheme() {
-    const savedTheme = localStorage.getItem('theme');
-    const userThemeMode = '<?php echo $user_theme['theme_mode']; ?>';
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-    // Priority: localStorage > database setting > system preference
-    let isDark = false;
-    if (savedTheme) {
-        isDark = savedTheme === 'dark';
-    } else if (userThemeMode) {
-        isDark = userThemeMode === 'dark';
-        // Save to localStorage so it persists
-        localStorage.setItem('theme', userThemeMode);
-    } else {
-        isDark = prefersDark;
-    }
-
-    if (isDark) {
-        document.body.classList.add('dark-mode');
-        updateThemeButton(true);
-    } else {
-        document.body.classList.remove('dark-mode');
-        updateThemeButton(false);
-    }
-}
-
-function toggleTheme() {
-    const isDark = document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    updateThemeButton(isDark);
-}
-
-function updateThemeButton(isDark) {
-    const icon = document.getElementById('themeIcon');
-    const text = document.getElementById('themeText');
-
-    if (icon && text) {
-        if (isDark) {
-            icon.className = 'fas fa-sun';
-            text.textContent = 'Light Mode';
-        } else {
-            icon.className = 'fas fa-moon';
-            text.textContent = 'Dark Mode';
-        }
-    }
-}
-
-// Initialize theme on page load
-initTheme();
-
-/**
- * Sidebar Collapse Functionality
- * Handles sidebar expand/collapse with localStorage persistence
- */
-function initSidebar() {
-    const savedState = localStorage.getItem('sidebarCollapsed');
-    if (savedState === 'true') {
-        document.getElementById('sidebar').classList.add('collapsed');
-        updateSidebarIcon(true);
-    }
-}
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const isCollapsed = sidebar.classList.toggle('collapsed');
-    localStorage.setItem('sidebarCollapsed', isCollapsed);
-    updateSidebarIcon(isCollapsed);
-}
-
-function updateSidebarIcon(isCollapsed) {
-    const icon = document.getElementById('sidebarToggleIcon');
-    if (icon) {
-        icon.className = isCollapsed ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
-    }
-}
-
-// per-section collapse inside the sidebar — remembers state per section in localStorage
-function toggleSidebarSection(el) {
-    // ignore when sidebar is globally collapsed (icons-only mode)
-    if (document.getElementById('sidebar').classList.contains('collapsed')) return;
-    var key = 'sbSec:' + (el.dataset.section || el.textContent.trim());
-    var ul = el.nextElementSibling;
-    while (ul && ul.tagName !== 'UL') ul = ul.nextElementSibling;
-    if (!ul) return;
-    var nowHidden = !el.classList.contains('section-hidden');
-    el.classList.toggle('section-hidden', nowHidden);
-    ul.classList.toggle('section-hidden', nowHidden);
-    localStorage.setItem(key, nowHidden ? '1' : '0');
-}
-
-function restoreSidebarSections() {
-    document.querySelectorAll('.sidebar-menu-title[data-section]').forEach(function(el){
-        var key = 'sbSec:' + el.dataset.section;
-        if (localStorage.getItem(key) === '1') {
-            var ul = el.nextElementSibling;
-            while (ul && ul.tagName !== 'UL') ul = ul.nextElementSibling;
-            el.classList.add('section-hidden');
-            if (ul) ul.classList.add('section-hidden');
-        }
-    });
-}
-
-// Initialize sidebar on page load
-initSidebar();
-restoreSidebarSections();
-
-// Listen for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-    if (!localStorage.getItem('theme')) {
-        if (e.matches) {
-            document.body.classList.add('dark-mode');
-            updateThemeButton(true);
-        } else {
-            document.body.classList.remove('dark-mode');
-            updateThemeButton(false);
-        }
-    }
-});
-</script>
-
-<!-- Sidebar Submenu JavaScript -->
-<script>
-/**
- * Sidebar Submenu Toggle Functionality
- * Handles expanding/collapsing submenu items
- */
-document.addEventListener('DOMContentLoaded', function() {
-    const submenuToggles = document.querySelectorAll('.submenu-toggle');
-
-    submenuToggles.forEach(function(toggle) {
-        toggle.addEventListener('click', function(e) {
-            e.preventDefault();
-
-            const submenuId = this.getAttribute('data-submenu');
-            const submenu = document.getElementById(submenuId);
-
-            if (!submenu) return;
-
-            // Toggle open class on parent link
-            this.classList.toggle('open');
-
-            // Toggle open class on submenu
-            submenu.classList.toggle('open');
-
-            // Close other submenus (optional - for accordion behavior)
-            // Uncomment below to allow only one submenu open at a time
-            /*
-            submenuToggles.forEach(function(otherToggle) {
-                if (otherToggle !== toggle) {
-                    otherToggle.classList.remove('open');
-                    const otherSubmenuId = otherToggle.getAttribute('data-submenu');
-                    const otherSubmenu = document.getElementById(otherSubmenuId);
-                    if (otherSubmenu) {
-                        otherSubmenu.classList.remove('open');
-                    }
-                }
-            });
-            */
-        });
-    });
-
-    // Auto-open submenu if current page is a submenu item
-    <?php if ($account_submenu_active): ?>
-    const accountToggle = document.querySelector('[data-submenu="account-submenu"]');
-    const accountSubmenu = document.getElementById('account-submenu');
-    if (accountToggle && accountSubmenu) {
-        accountToggle.classList.add('open');
-        accountSubmenu.classList.add('open');
-    }
-    <?php endif; ?>
-
-    <?php if ($settings_submenu_active): ?>
-    const settingsToggle = document.querySelector('[data-submenu="settings-data-submenu"]');
-    const settingsSubmenu = document.getElementById('settings-data-submenu');
-    if (settingsToggle && settingsSubmenu) {
-        settingsToggle.classList.add('open');
-        settingsSubmenu.classList.add('open');
-    }
-    <?php endif; ?>
-});
-</script>
-
 <!-- Money input auto-formatter -->
 <script>
-// live thousand-separator for .money-input fields
 (function() {
-    // format number string with commas
     function fmtMoney(raw) {
         raw = raw.replace(/[^0-9.]/g, '');
         var parts = raw.split('.');
@@ -691,7 +396,6 @@ document.addEventListener('DOMContentLoaded', function() {
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         return parts.join('.');
     }
-
     document.addEventListener('input', function(e) {
         if (!e.target.classList.contains('money-input')) return;
         var el = e.target;
@@ -704,22 +408,16 @@ document.addEventListener('DOMContentLoaded', function() {
         var newLen = el.value.length;
         el.setSelectionRange(cur + (newLen - oldLen), cur + (newLen - oldLen));
     });
-
-    // strip commas before form submit so backend gets clean numbers
     document.addEventListener('submit', function(e) {
         if (!e.target || e.target.tagName !== 'FORM') return;
         e.target.querySelectorAll('.money-input').forEach(function(el) {
             el.value = el.value.replace(/,/g, '');
         });
     }, true);
-
-    // global helper: get numeric value from money-input (strips commas)
     window.moneyVal = function(id) {
         var el = document.getElementById(id);
         return el ? parseFloat(el.value.replace(/,/g, '')) || 0 : 0;
     };
-
-    // global helper: set money-input value with formatting
     window.setMoneyVal = function(id, val) {
         var el = document.getElementById(id);
         if (!el) return;
@@ -732,25 +430,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Notification System -->
 <script>
 (function() {
-    // inject bell into .header on DOM ready
-    function injectBell() {
-        var header = document.querySelector('.main-content > .header');
-        var bellWrap = document.getElementById('notifBellWrap');
-        if (!header || !bellWrap) return;
-
-        // find the welcome div (last child div in header)
-        var welcomeDiv = header.querySelector('div');
-        if (welcomeDiv) {
-            // wrap welcome text + bell in a flex container
-            var container = document.createElement('div');
-            container.style.cssText = 'display:flex;align-items:center;position:relative;';
-            bellWrap.style.display = 'block';
-            header.insertBefore(container, welcomeDiv);
-            container.appendChild(bellWrap);
-            container.appendChild(welcomeDiv);
-        }
-    }
-
     function loadNotifications() {
         $.getJSON('sidebar.php?notif_action=getUnread', function(res) {
             if (!res.success) return;
@@ -766,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             if (res.data.length === 0) {
-                list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--text-muted);"><i class="fas fa-check-circle" style="font-size:24px;"></i><p style="margin-top:8px;">All caught up!</p></div>';
+                list.innerHTML = '<div style="padding:30px;text-align:center;color:#94a3b8;"><i class="fas fa-check-circle" style="font-size:24px;"></i><p style="margin-top:8px;">All caught up!</p></div>';
                 return;
             }
 
@@ -776,25 +455,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 var colorMap = {info:'#0074D9', warning:'#f39c12', danger:'#e74c3c', success:'#27ae60'};
                 var icon = iconMap[n.type] || 'fa-bell';
                 var color = colorMap[n.type] || '#666';
-                var ago = timeAgo(n.created_at);
+                var ago = _notifTimeAgo(n.created_at);
 
-                html += '<div class="notif-item" style="padding:10px 16px;border-bottom:1px solid var(--border-color);cursor:pointer;display:flex;gap:10px;align-items:flex-start;" onclick="openNotif(' + n.id + ', \'' + (n.link || '') + '\')">';
+                html += '<div class="notif-item" style="padding:10px 16px;border-bottom:1px solid rgba(0,0,0,0.06);cursor:pointer;display:flex;gap:10px;align-items:flex-start;" onclick="openNotif(' + n.id + ', \'' + (n.link || '') + '\')">';
                 html += '<i class="fas ' + icon + '" style="color:' + color + ';margin-top:3px;"></i>';
-                html += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text-primary);">' + escHtml(n.title) + '</div>';
-                html += '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">' + escHtml(n.message) + '</div>';
-                html += '<div style="font-size:11px;color:var(--text-muted);margin-top:4px;">' + ago + '</div></div></div>';
+                html += '<div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;">' + _escHtml(n.title) + '</div>';
+                html += '<div style="font-size:12px;color:#94a3b8;margin-top:2px;">' + _escHtml(n.message) + '</div>';
+                html += '<div style="font-size:11px;color:#94a3b8;margin-top:4px;">' + ago + '</div></div></div>';
             });
             list.innerHTML = html;
         });
     }
 
-    function escHtml(s) {
+    function _escHtml(s) {
         var d = document.createElement('div');
         d.textContent = s;
         return d.innerHTML;
     }
 
-    function timeAgo(dateStr) {
+    function _notifTimeAgo(dateStr) {
         var d = new Date(dateStr);
         var now = new Date();
         var diff = Math.floor((now - d) / 1000);
@@ -804,7 +483,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return Math.floor(diff/86400) + 'd ago';
     }
 
-    // expose globally
     window.toggleNotifPanel = function() {
         var panel = document.getElementById('notifPanel');
         if (!panel) return;
@@ -823,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function() {
         $.post('sidebar.php?notif_action=markAllRead', {}, function() { loadNotifications(); });
     };
 
-    // close on outside click
     document.addEventListener('click', function(e) {
         var bell = document.getElementById('notifBell');
         var panel = document.getElementById('notifPanel');
@@ -832,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // poll badge every 60s
     setInterval(function() {
         $.getJSON('sidebar.php?notif_action=getUnread', function(res) {
             if (!res.success) return;
@@ -843,9 +519,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 60000);
 
-    // init
     $(document).ready(function() {
-        injectBell();
         setTimeout(loadNotifications, 1000);
     });
 })();

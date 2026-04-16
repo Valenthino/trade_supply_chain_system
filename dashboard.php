@@ -313,763 +313,1295 @@ if (isset($_GET['action'])) {
     }
 }
 ?>
-<!--
-  Developed by Rameez Scripts
-  WhatsApp: https://wa.me/923224083545 (For Custom Projects)
-  YouTube: https://www.youtube.com/@rameezimdad (Subscribe for more!)
--->
+<?php
+// KPI visibility per role
+$showSales = in_array($role, ['Admin','Manager','Finance Officer']);
+$showProfit = in_array($role, ['Admin','Manager','Finance Officer']);
+$showFinancing = in_array($role, ['Admin','Manager','Finance Officer']);
+$showSupplierDebt = in_array($role, ['Admin','Manager','Finance Officer','Procurement Officer']);
+$showCashOnHand = in_array($role, ['Admin','Manager','Finance Officer']);
+$activeSeason = getActiveSeason();
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>Dashboard - Cashew Business Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=4.0">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — CashewPro</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50:  '#f0f9f9',
+              100: '#d9f2f0',
+              200: '#b5e6e3',
+              300: '#82d3cf',
+              400: '#4db8b4',
+              500: '#2d9d99',
+              600: '#247f7c',
+              700: '#1d6462',
+              800: '#185150',
+              900: '#164342',
+            },
+            slate: { 850: '#172032' }
+          },
+          boxShadow: {
+            'card': '0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.04)',
+            'card-hover': '0 4px 12px 0 rgba(0,0,0,0.08)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+    @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+    .skeleton {
+      background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 6px;
+    }
+    .dark .skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #273349 50%, #1e293b 75%);
+      background-size: 400px 100%;
+    }
+
+    .nav-link.active { background: rgba(45,157,153,0.12); color: #2d9d99; }
+    .dark .nav-link.active { background: rgba(45,157,153,0.15); color: #4db8b4; }
+    .nav-link.active .nav-icon { color: #2d9d99; }
+    .dark .nav-link.active .nav-icon { color: #4db8b4; }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 15%; bottom: 15%;
+      width: 3px; background: #2d9d99; border-radius: 0 3px 3px 0;
+    }
+
+    .kpi-stripe { height: 3px; border-radius: 3px 3px 0 0; }
+    tbody tr { transition: background 120ms; }
+
+    #sidebar { transition: width 280ms cubic-bezier(.16,1,.3,1); }
+    .sidebar-label { transition: opacity 200ms, width 200ms; }
+    .app-collapsed #sidebar { width: 64px; }
+    .app-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+    .app-collapsed .sidebar-section-label { opacity: 0; }
+    .app-collapsed .logo-text { opacity: 0; width: 0; overflow: hidden; }
+
+    .pulse-dot { animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+    .chartjs-tooltip { pointer-events: none; }
+    .tabular { font-variant-numeric: tabular-nums lining-nums; }
+    .truncate-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
 </head>
-<body>
-    <?php include 'mobile-menu.php'; ?>
 
-    <div class="app-container">
-        <?php include 'sidebar.php'; ?>
+<body class="h-full bg-slate-50 text-slate-800 font-sans antialiased dark:bg-slate-900 dark:text-slate-200">
 
-        <div class="main-content">
-            <div class="header">
-                <h1><i class="fas fa-chart-line"></i> Dashboard</h1>
-                <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-                    <span style="font-size:13px;color:var(--text-muted);"><?php echo date('l, d M Y'); ?></span>
-                    <span style="background:var(--navy-accent);color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600;"><?php echo htmlspecialchars(getActiveSeason()); ?></span>
-                </div>
-            </div>
+<div class="flex h-full overflow-hidden" id="appRoot">
 
-            <!-- ===================== TIME FILTERS ===================== -->
-            <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
-                <div class="time-filter-tabs" id="timeFilterTabs">
-                    <button onclick="switchPeriod('today', this)">Today</button>
-                    <button onclick="switchPeriod('week', this)">Week</button>
-                    <button onclick="switchPeriod('month', this)">Month</button>
-                    <button onclick="switchPeriod('quarter', this)">Quarter</button>
-                    <button class="active" onclick="switchPeriod('year', this)">Year</button>
-                </div>
-            </div>
+  <?php include 'sidebar.php'; ?>
 
-            <!-- ===================== ROW 1: KPI STAT CARDS ===================== -->
-            <?php
-            // KPI visibility per role — bank debts / sales revenue / profit are finance-only
-            $showSales = in_array($role, ['Admin','Manager','Finance Officer']);
-            $showProfit = in_array($role, ['Admin','Manager','Finance Officer']);
-            $showFinancing = in_array($role, ['Admin','Manager','Finance Officer']);
-            $showSupplierDebt = in_array($role, ['Admin','Manager','Finance Officer','Procurement Officer']);
-            $showCashOnHand = in_array($role, ['Admin','Manager','Finance Officer']);
-            ?>
-            <!-- PRIMARY KPIs -->
-            <div class="dashboard-primary-kpi" id="kpiCardsRow">
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#001f3f,#003366);"><i class="fas fa-warehouse"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiStock"><div class="skeleton" style="height:32px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Total Stock on Hand</div>
-                    <div class="kpi-card-sub" id="kpiStockSub"><div class="skeleton" style="height:14px;width:70px;"></div></div>
-                    <div class="kpi-card-accent kpi-accent-navy"></div>
-                </div>
+  <!-- MAIN -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
-                <?php if ($showSales): ?>
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#0074D9,#005bb5);"><i class="fas fa-chart-line"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiSales"><div class="skeleton" style="height:32px;width:140px;"></div></div>
-                    <div class="kpi-card-label">Revenue</div>
-                    <div class="kpi-card-sub" id="kpiSalesSub"><div class="skeleton" style="height:14px;width:70px;"></div></div>
-                    <div class="kpi-card-accent kpi-accent-blue"></div>
-                </div>
-                <?php endif; ?>
+    <!-- HEADER -->
+    <header class="h-14 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center gap-4 px-5 flex-shrink-0">
+      <button id="mobileSidebarBtn" class="lg:hidden text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
+        <i class="fas fa-bars text-sm"></i>
+      </button>
 
-                <?php if ($showProfit): ?>
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#34a853,#2d8f47);"><i class="fas fa-coins"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiProfit"><div class="skeleton" style="height:32px;width:140px;"></div></div>
-                    <div class="kpi-card-label">Season Net Profit</div>
-                    <div class="kpi-card-sub" id="kpiProfitSub">Confirmed sales</div>
-                    <div class="kpi-card-accent kpi-accent-green"></div>
-                </div>
-                <?php endif; ?>
-            </div>
+      <div class="flex items-center gap-2">
+        <i class="fas fa-chart-line text-brand-500 text-sm"></i>
+        <h1 class="text-base font-bold text-slate-800 dark:text-white" data-t="header-title">Dashboard</h1>
+        <span class="hidden sm:inline-block text-xs text-slate-400 dark:text-slate-500 font-normal ml-1" id="headerDate"></span>
+      </div>
 
-            <!-- SECONDARY KPIs: Financing -->
-            <?php if ($showFinancing || $showSupplierDebt || $showCashOnHand): ?>
-            <div class="dashboard-kpi-grid" style="margin-bottom:20px;">
-                <?php if ($showFinancing): ?>
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#fbbc04,#e0a800);"><i class="fas fa-building-columns"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiBankDebt"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Bank Debt</div>
-                    <div class="kpi-card-sub" id="kpiBankDebtSub"><div class="skeleton" style="height:14px;width:70px;"></div></div>
-                    <div class="kpi-card-accent kpi-accent-orange"></div>
-                </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#9b59b6,#8e44ad);"><i class="fas fa-handshake-angle"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiCustAdv"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Customer Advances</div>
-                    <div class="kpi-card-sub" id="kpiCustAdvSub"><div class="skeleton" style="height:14px;width:70px;"></div></div>
-                    <div class="kpi-card-accent" style="background:linear-gradient(90deg,#9b59b6,#8e44ad);"></div>
-                </div>
-
-                <div class="kpi-card" id="kpiCoverageCard">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" id="kpiCoverageIcon" style="background:linear-gradient(135deg,#7f8c8d,#636e72);"><i class="fas fa-shield-halved"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiCoverage"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Customer Advance Coverage</div>
-                    <div class="kpi-card-sub" id="kpiCoverageSub"><div class="skeleton" style="height:14px;width:100px;"></div></div>
-                    <div class="kpi-card-accent" id="kpiCoverageAccent" style="background:#7f8c8d;"></div>
-                </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#e67e22,#d35400);"><i class="fas fa-hand-holding-dollar"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiSupFinOwed"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Suppliers Owe Us</div>
-                    <div class="kpi-card-sub" id="kpiSupFinOwedSub"><div class="skeleton" style="height:14px;width:70px;"></div></div>
-                    <div class="kpi-card-accent" style="background:linear-gradient(90deg,#e67e22,#d35400);"></div>
-                </div>
-
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#00b894,#00a381);"><i class="fas fa-truck-field"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiExpectedVol"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Expected Volume</div>
-                    <div class="kpi-card-sub" id="kpiExpectedVolSub">From financed suppliers</div>
-                    <div class="kpi-card-accent" style="background:linear-gradient(90deg,#00b894,#00a381);"></div>
-                </div>
-                <?php endif; ?>
-
-                <?php if ($showSupplierDebt): ?>
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#ea4335,#c5362b);"><i class="fas fa-hand-holding-dollar"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiSupplierDebt"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Supplier Debt</div>
-                    <div class="kpi-card-sub">Owed to suppliers</div>
-                    <div class="kpi-card-accent kpi-accent-red"></div>
-                </div>
-                <?php endif; ?>
-
-                <?php if ($showCashOnHand): ?>
-                <div class="kpi-card">
-                    <div class="kpi-card-top">
-                        <div class="kpi-card-icon" style="background:linear-gradient(135deg,#6f42c1,#5a32a3);"><i class="fas fa-vault"></i></div>
-                    </div>
-                    <div class="kpi-card-value" id="kpiFinancingPower"><div class="skeleton" style="height:30px;width:120px;"></div></div>
-                    <div class="kpi-card-label">Cash on Hand</div>
-                    <div class="kpi-card-sub">Financing power</div>
-                    <div class="kpi-card-accent" style="background:linear-gradient(90deg,#6f42c1,#5a32a3);"></div>
-                </div>
-                <?php endif; ?>
-            </div>
-            <?php endif; ?>
-
-            <!-- ===================== ROW 2: CATEGORY CARDS + NOTIFICATIONS ===================== -->
-            <div class="overview-row-2">
-                <div class="category-cards-wrapper" id="categoryCardsRow">
-                    <div class="category-card" onclick="window.location='purchases.php'">
-                        <div class="category-card-icon icon-blue">
-                            <i class="fas fa-cart-shopping"></i>
-                            <span class="badge-count badge-count-blue" id="badgePurchases">-</span>
-                        </div>
-                        <div class="category-card-count" id="countPurchases"><div class="skeleton" style="height:20px;width:30px;margin:0 auto;"></div></div>
-                        <div class="category-card-label">Purchases</div>
-                    </div>
-                    <div class="category-card" onclick="window.location='deliveries.php'">
-                        <div class="category-card-icon icon-green">
-                            <i class="fas fa-truck-fast"></i>
-                            <span class="badge-count badge-count-orange" id="badgeDeliveries">-</span>
-                        </div>
-                        <div class="category-card-count" id="countDeliveries"><div class="skeleton" style="height:20px;width:30px;margin:0 auto;"></div></div>
-                        <div class="category-card-label">Deliveries</div>
-                    </div>
-                    <div class="category-card" onclick="window.location='payments.php'">
-                        <div class="category-card-icon icon-purple">
-                            <i class="fas fa-credit-card"></i>
-                        </div>
-                        <div class="category-card-count" id="countPayments"><div class="skeleton" style="height:20px;width:30px;margin:0 auto;"></div></div>
-                        <div class="category-card-label">Payments</div>
-                    </div>
-                    <div class="category-card" onclick="window.location='suppliers.php'">
-                        <div class="category-card-icon icon-teal">
-                            <i class="fas fa-people-group"></i>
-                        </div>
-                        <div class="category-card-count" id="countSuppliers"><div class="skeleton" style="height:20px;width:30px;margin:0 auto;"></div></div>
-                        <div class="category-card-label">Total Suppliers</div>
-                    </div>
-                    <div class="category-card" onclick="window.location='customers.php'">
-                        <div class="category-card-icon icon-orange">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <div class="category-card-count" id="countCustomers"><div class="skeleton" style="height:20px;width:30px;margin:0 auto;"></div></div>
-                        <div class="category-card-label">Total Customers</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ===================== CHARTS ROW ===================== -->
-            <div class="dashboard-charts-row">
-                <?php if ($showSales): ?>
-                <div class="prices-chart-card" style="margin:0;">
-                    <h3 style="margin:0 0 12px;"><i class="fas fa-chart-bar"></i> Monthly P&L Breakdown</h3>
-                    <div style="position:relative;height:320px;">
-                        <canvas id="salesPurchasesChart"></canvas>
-                    </div>
-                </div>
-                <?php endif; ?>
-
-                <div class="prices-chart-card" style="margin:0;">
-                    <div class="prices-chart-header">
-                        <h3 style="margin:0;"><i class="fas fa-chart-area"></i> Avg Purchase Price (F/kg)</h3>
-                        <div class="price-trend-tabs" id="priceTrendTabs">
-                            <button type="button" class="ptt-btn active" data-grain="daily">Daily</button>
-                            <button type="button" class="ptt-btn" data-grain="weekly">Weekly</button>
-                            <button type="button" class="ptt-btn" data-grain="monthly">Monthly</button>
-                        </div>
-                    </div>
-                    <div style="position:relative;height:300px;margin-top:12px;">
-                        <canvas id="pricesEvolutionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ===================== ROW 4: STOCK EVOLUTION + EXPENSES + REVENUE ===================== -->
-            <div class="overview-bottom-row">
-                <div class="overview-chart-card">
-                    <h3><i class="fas fa-warehouse"></i> Stock Evolution</h3>
-                    <div style="position:relative;height:250px;">
-                        <canvas id="stockEvolutionChart"></canvas>
-                    </div>
-                </div>
-                <?php if ($showFinancing): ?>
-                <div class="overview-chart-card">
-                    <h3><i class="fas fa-chart-bar"></i> Expenses by Category</h3>
-                    <div style="position:relative;height:250px;">
-                        <canvas id="expCategoryChart"></canvas>
-                    </div>
-                </div>
-                <?php endif; ?>
-                <?php if ($showSales): ?>
-                <div class="revenue-highlight" id="revenueCard">
-                    <div>
-                        <div class="revenue-highlight-label">Total Revenue</div>
-                        <div class="revenue-highlight-value" id="revenueValue"><div class="skeleton" style="height:36px;width:160px;background:rgba(255,255,255,0.15);"></div></div>
-                        <div class="revenue-highlight-sub" id="revenueSub">
-                            Quarter <i class="fas fa-arrow-trend-up"></i>
-                        </div>
-                    </div>
-                    <div class="revenue-sparkline-container">
-                        <canvas id="revenueSparkline"></canvas>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
-
-            <!-- ===================== AI INSIGHTS WIDGET — finance roles only (uses revenue/profit) ===================== -->
-            <?php if ($showProfit): ?>
-            <div class="prices-chart-card" style="border-left:4px solid var(--navy-accent);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <h3 style="margin:0;"><i class="fas fa-brain" style="color:var(--navy-accent);"></i> AI Business Insights</h3>
-                    <button class="btn btn-primary btn-sm" onclick="generateAIInsights()" id="aiInsightBtn">
-                        <i class="fas fa-wand-magic-sparkles"></i> Generate
-                    </button>
-                </div>
-                <div id="aiInsightsContent" style="min-height:60px;">
-                    <div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">
-                        <i class="fas fa-brain" style="font-size:24px;opacity:0.3;display:block;margin-bottom:8px;"></i>
-                        Click "Generate" for AI-powered business insights
-                    </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
+      <div class="ml-auto flex items-center gap-3">
+        <!-- Period tabs -->
+        <div class="hidden md:flex items-center gap-0.5 bg-slate-100 dark:bg-slate-700 rounded-lg p-1" id="timeFilterTabs">
+          <button onclick="switchPeriod('today', this)" class="period-tab px-3 py-1 rounded-md text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" data-t="period-today">Today</button>
+          <button onclick="switchPeriod('week', this)" class="period-tab px-3 py-1 rounded-md text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" data-t="period-week">Week</button>
+          <button onclick="switchPeriod('month', this)" class="period-tab px-3 py-1 rounded-md text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" data-t="period-month">Month</button>
+          <button onclick="switchPeriod('quarter', this)" class="period-tab px-3 py-1 rounded-md text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors" data-t="period-quarter">Quarter</button>
+          <button onclick="switchPeriod('year', this)" class="period-tab active px-3 py-1 rounded-md text-xs font-semibold bg-white dark:bg-slate-600 text-slate-700 dark:text-white shadow-sm transition-colors" data-t="period-year">Year</button>
         </div>
-    </div>
 
-    <script>
-        var fmt = function(n) { return Number(n).toLocaleString(); };
+        <!-- ADD NEW button -->
+        <div class="relative" id="addNewDropdown">
+          <button onclick="toggleAddNew()" class="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg shadow-sm transition-colors">
+            <i class="fas fa-plus text-xs"></i>
+            <span data-t="btn-add-new">Add New</span>
+            <i class="fas fa-chevron-down text-[10px] opacity-70"></i>
+          </button>
+          <div id="addNewMenu" class="hidden absolute right-0 top-full mt-1 w-52 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-1.5 z-50">
+            <div class="px-3 py-1.5 text-[10px] uppercase font-semibold text-slate-400 tracking-wider" data-t="menu-create-new">Create New</div>
+            <a href="purchases.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center"><i class="fas fa-cart-plus text-blue-600 dark:text-blue-400 text-xs"></i></span>
+              <span data-t="menu-purchase">Purchase</span>
+            </a>
+            <a href="sales.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center"><i class="fas fa-chart-line text-emerald-600 dark:text-emerald-400 text-xs"></i></span>
+              <span data-t="menu-sale">Sale</span>
+            </a>
+            <a href="deliveries.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center"><i class="fas fa-truck text-amber-600 dark:text-amber-400 text-xs"></i></span>
+              <span data-t="menu-delivery">Delivery</span>
+            </a>
+            <a href="payments.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center"><i class="fas fa-money-check text-violet-600 dark:text-violet-400 text-xs"></i></span>
+              <span data-t="menu-payment">Payment</span>
+            </a>
+            <a href="expenses.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center"><i class="fas fa-receipt text-rose-600 dark:text-rose-400 text-xs"></i></span>
+              <span data-t="menu-expense">Expense</span>
+            </a>
+            <a href="suppliers.php?action=new" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+              <span class="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-700 flex items-center justify-center"><i class="fas fa-person text-slate-600 dark:text-slate-400 text-xs"></i></span>
+              <span data-t="menu-supplier">Supplier</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
 
-        // Color palette
-        var COLORS = {
-            navy: '#001f3f', accent: '#0074D9', success: '#34a853',
-            warning: '#fbbc04', danger: '#ea4335', blue: '#0074D9',
-            orange: '#fd7e14', purple: '#6f42c1', teal: '#20c997',
-            pink: '#e83e8c'
-        };
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto p-5 space-y-5">
 
-        // ===================== DASHBOARD OVERVIEW (ALL ROLES) =====================
-        var currentPeriod = 'year';
-        var overviewCharts = {};
+      <!-- PRIMARY KPIs -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="primaryKpiRow">
 
-        function switchPeriod(period, btn) {
-            currentPeriod = period;
-            var tabs = document.querySelectorAll('#timeFilterTabs button');
-            tabs.forEach(function(tab) { tab.classList.remove('active'); });
-            btn.classList.add('active');
-            loadDashboardOverview(period);
-        }
+        <!-- Stock -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
+          <div class="h-0.5 bg-brand-500"></div>
+          <div class="p-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide" data-t="kpi-stock-label">Total Stock</p>
+                <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white tabular" id="kpiStock"><span class="skeleton inline-block h-7 w-28 rounded"></span></p>
+              </div>
+              <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/20 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-warehouse text-brand-500 text-sm"></i>
+              </div>
+            </div>
+            <p class="mt-1.5 text-xs text-slate-500" id="kpiStockSub"><span class="skeleton inline-block h-3 w-20 rounded"></span></p>
+            <div class="mt-3 h-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-brand-400 rounded-full" id="kpiStockBar" style="width:0%"></div></div>
+          </div>
+        </div>
 
-        function destroyChart(key) {
-            if (overviewCharts[key]) {
-                overviewCharts[key].destroy();
-                overviewCharts[key] = null;
+        <!-- Revenue -->
+        <?php if ($showSales): ?>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden" id="kpiSalesCard">
+          <div class="h-0.5 bg-blue-500"></div>
+          <div class="p-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide" data-t="kpi-revenue-label">Revenue</p>
+                <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white tabular" id="kpiSales"><span class="skeleton inline-block h-7 w-28 rounded"></span></p>
+              </div>
+              <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-chart-line text-blue-500 text-sm"></i>
+              </div>
+            </div>
+            <p class="mt-1.5 text-xs text-slate-500" id="kpiSalesSub"><span class="skeleton inline-block h-3 w-24 rounded"></span></p>
+            <div class="mt-3 h-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-blue-400 rounded-full" id="kpiSalesBar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Profit -->
+        <?php if ($showProfit): ?>
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden" id="kpiProfitCard">
+          <div class="h-0.5 bg-emerald-500"></div>
+          <div class="p-4">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide" data-t="kpi-profit-label">Net Profit</p>
+                <p class="mt-2 text-2xl font-bold text-slate-800 dark:text-white tabular" id="kpiProfit"><span class="skeleton inline-block h-7 w-28 rounded"></span></p>
+              </div>
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-coins text-emerald-500 text-sm"></i>
+              </div>
+            </div>
+            <p class="mt-1.5 text-xs text-slate-500" data-t="kpi-profit-sub">Confirmed sales</p>
+            <div class="mt-3 h-1 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden"><div class="h-full bg-emerald-400 rounded-full" id="kpiProfitBar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <?php endif; ?>
+
+      </div>
+
+      <!-- SECONDARY KPIs -->
+      <?php if ($showFinancing || $showSupplierDebt || $showCashOnHand): ?>
+      <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-7 gap-3" id="secondaryKpiRow">
+
+        <?php if ($showFinancing): ?>
+        <!-- Bank Debt -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiBankDebtCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-building-columns text-amber-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-bank-debt">Bank Debt</p>
+          </div>
+          <p class="text-sm font-bold tabular text-amber-500" id="kpiBankDebt"><span class="skeleton inline-block h-4 w-20 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" id="kpiBankDebtSub"><span class="skeleton inline-block h-3 w-16 rounded"></span></p>
+        </div>
+
+        <!-- Customer Advances -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiCustAdvCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-handshake-angle text-violet-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-cust-adv">Customer Advances</p>
+          </div>
+          <p class="text-sm font-bold tabular text-violet-500" id="kpiCustAdv"><span class="skeleton inline-block h-4 w-20 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" id="kpiCustAdvSub"><span class="skeleton inline-block h-3 w-16 rounded"></span></p>
+        </div>
+
+        <!-- Coverage -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiCoverageCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center flex-shrink-0" id="kpiCoverageIconWrap">
+              <i class="fas fa-shield-halved text-slate-500 text-xs" id="kpiCoverageIconEl"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-coverage">Coverage</p>
+          </div>
+          <p class="text-sm font-bold tabular" id="kpiCoverage"><span class="skeleton inline-block h-4 w-16 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" id="kpiCoverageSub"><span class="skeleton inline-block h-3 w-20 rounded"></span></p>
+        </div>
+
+        <!-- Suppliers Owe Us -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiSupFinCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-hand-holding-dollar text-orange-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-sup-owed">Suppliers Owe Us</p>
+          </div>
+          <p class="text-sm font-bold tabular text-orange-500" id="kpiSupFinOwed"><span class="skeleton inline-block h-4 w-20 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5 leading-snug" id="kpiSupFinOwedSub"><span class="skeleton inline-block h-3 w-14 rounded"></span></p>
+        </div>
+
+        <!-- Expected Volume -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiExpVolCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-truck-field text-teal-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-exp-vol">Expected Volume</p>
+          </div>
+          <p class="text-sm font-bold tabular text-teal-500" id="kpiExpectedVol"><span class="skeleton inline-block h-4 w-14 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5" data-t="kpi-exp-vol-sub">Financed suppliers</p>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($showSupplierDebt): ?>
+        <!-- Supplier Debt -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiSupDebtCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-circle-exclamation text-rose-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-sup-debt">Supplier Debt</p>
+          </div>
+          <p class="text-sm font-bold tabular text-rose-500" id="kpiSupplierDebt"><span class="skeleton inline-block h-4 w-18 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5" data-t="kpi-sup-debt-sub">Owed to suppliers</p>
+        </div>
+        <?php endif; ?>
+
+        <?php if ($showCashOnHand): ?>
+        <!-- Cash on Hand -->
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 col-span-1" id="kpiCashCard">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div class="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
+              <i class="fas fa-vault text-indigo-500 text-xs"></i>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 leading-tight" data-t="kpi-cash">Cash on Hand</p>
+          </div>
+          <p class="text-sm font-bold tabular" id="kpiFinancingPower"><span class="skeleton inline-block h-4 w-20 rounded"></span></p>
+          <p class="text-[10px] text-slate-400 mt-0.5" data-t="kpi-cash-sub">Financing capacity</p>
+        </div>
+        <?php endif; ?>
+
+      </div>
+      <?php endif; ?>
+
+      <!-- ACTIVITY COUNTERS -->
+      <div class="grid grid-cols-5 gap-3">
+        <a href="purchases.php" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 flex flex-col items-center gap-2 hover:shadow-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="relative">
+            <div class="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+              <i class="fas fa-cart-shopping text-blue-500"></i>
+            </div>
+            <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-brand-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1" id="badgePurchases">—</span>
+          </div>
+          <p class="text-xl font-bold text-slate-800 dark:text-white tabular" id="countPurchases"><span class="skeleton inline-block h-5 w-6 rounded"></span></p>
+          <p class="text-[11px] font-medium text-slate-500" data-t="count-purchases">Purchases</p>
+        </a>
+        <a href="deliveries.php" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 flex flex-col items-center gap-2 hover:shadow-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="relative">
+            <div class="w-11 h-11 rounded-xl bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center">
+              <i class="fas fa-truck-fast text-teal-500"></i>
+            </div>
+            <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1" id="badgeDeliveries">—</span>
+          </div>
+          <p class="text-xl font-bold text-slate-800 dark:text-white tabular" id="countDeliveries"><span class="skeleton inline-block h-5 w-6 rounded"></span></p>
+          <p class="text-[11px] font-medium text-slate-500" data-t="count-deliveries">Deliveries</p>
+        </a>
+        <a href="payments.php" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 flex flex-col items-center gap-2 hover:shadow-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="w-11 h-11 rounded-xl bg-violet-50 dark:bg-violet-900/20 flex items-center justify-center">
+            <i class="fas fa-credit-card text-violet-500"></i>
+          </div>
+          <p class="text-xl font-bold text-slate-800 dark:text-white tabular" id="countPayments"><span class="skeleton inline-block h-5 w-6 rounded"></span></p>
+          <p class="text-[11px] font-medium text-slate-500" data-t="count-payments">Payments</p>
+        </a>
+        <a href="suppliers.php" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 flex flex-col items-center gap-2 hover:shadow-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="w-11 h-11 rounded-xl bg-sky-50 dark:bg-sky-900/20 flex items-center justify-center">
+            <i class="fas fa-people-group text-sky-500"></i>
+          </div>
+          <p class="text-xl font-bold text-slate-800 dark:text-white tabular" id="countSuppliers"><span class="skeleton inline-block h-5 w-6 rounded"></span></p>
+          <p class="text-[11px] font-medium text-slate-500" data-t="count-suppliers">Suppliers</p>
+        </a>
+        <a href="customers.php" class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-4 flex flex-col items-center gap-2 hover:shadow-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="w-11 h-11 rounded-xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center">
+            <i class="fas fa-users text-rose-500"></i>
+          </div>
+          <p class="text-xl font-bold text-slate-800 dark:text-white tabular" id="countCustomers"><span class="skeleton inline-block h-5 w-6 rounded"></span></p>
+          <p class="text-[11px] font-medium text-slate-500" data-t="count-customers">Customers</p>
+        </a>
+      </div>
+
+      <!-- CHARTS ROW -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+        <!-- P&L Chart -->
+        <?php if ($showSales): ?>
+        <div class="lg:col-span-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="chart-pl-title">Monthly P&L</h3>
+              <p class="text-xs text-slate-400 mt-0.5" data-t="chart-pl-sub">Revenue · Costs · Profit</p>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-400">
+              <span class="flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-brand-400"></span><span data-t="legend-revenue">Revenue</span></span>
+              <span class="flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-rose-400"></span><span data-t="legend-costs">Costs</span></span>
+              <span class="flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-emerald-400"></span><span data-t="legend-profit">Profit</span></span>
+            </div>
+          </div>
+          <div class="relative h-56"><canvas id="salesPurchasesChart"></canvas></div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Price trend -->
+        <div class="<?php echo $showSales ? 'lg:col-span-2' : 'lg:col-span-5'; ?> bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="chart-price-title">Avg. Purchase Price</h3>
+              <p class="text-xs text-slate-400 mt-0.5" data-t="chart-price-sub">Weighted F/kg</p>
+            </div>
+            <div class="flex gap-0.5 bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5" id="priceTrendTabs">
+              <button class="ptt-btn active px-2.5 py-1 rounded-md text-[11px] font-semibold bg-white dark:bg-slate-600 text-slate-700 dark:text-white shadow-sm" data-grain="daily" data-t="grain-day">Day</button>
+              <button class="ptt-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-500 dark:text-slate-400" data-grain="weekly" data-t="grain-week">Wk.</button>
+              <button class="ptt-btn px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-500 dark:text-slate-400" data-grain="monthly" data-t="grain-month">Mo.</button>
+            </div>
+          </div>
+          <div class="relative h-56"><canvas id="pricesEvolutionChart"></canvas></div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+        <!-- Stock evolution -->
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="chart-stock-title">Stock Evolution</h3>
+              <p class="text-xs text-slate-400 mt-0.5" data-t="chart-stock-sub">Monthly cumulative (kg)</p>
+            </div>
+            <span class="text-xs font-semibold tabular text-brand-500" id="currentStockLabel">—</span>
+          </div>
+          <div class="relative h-44"><canvas id="stockEvolutionChart"></canvas></div>
+        </div>
+
+        <!-- Expenses by category -->
+        <?php if ($showFinancing): ?>
+        <div class="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="chart-exp-title">Expenses by Category</h3>
+              <p class="text-xs text-slate-400 mt-0.5" data-t="chart-exp-sub">Season breakdown</p>
+            </div>
+          </div>
+          <div class="relative h-44"><canvas id="expCategoryChart"></canvas></div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Revenue highlight -->
+        <?php if ($showSales): ?>
+        <div class="lg:col-span-1 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-card p-5 flex flex-col justify-between">
+          <div>
+            <p class="text-[10px] uppercase font-bold tracking-widest text-brand-400 mb-2" data-t="card-total-revenue">Total Revenue</p>
+            <p class="text-2xl font-extrabold text-white tabular" id="revenueValue"><span class="inline-block h-7 w-24 rounded bg-white/10"></span></p>
+            <p class="text-[11px] text-slate-400 mt-1" data-t="card-this-quarter">This quarter</p>
+            <a href="sales.php" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-brand-400 hover:text-brand-300 mt-3 transition-colors">
+              <span data-t="link-view-details">View details</span> <i class="fas fa-arrow-right text-[9px]"></i>
+            </a>
+          </div>
+          <div class="h-14 mt-4"><canvas id="revenueSparkline"></canvas></div>
+        </div>
+        <?php endif; ?>
+
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700">
+          <div>
+            <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="section-activity">Recent Activity</h3>
+            <p class="text-xs text-slate-400 mt-0.5" data-t="section-activity-sub">Latest recorded actions</p>
+          </div>
+          <a href="logs.php" class="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors" data-t="link-view-all">View all →</a>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-slate-100 dark:border-slate-700">
+                <th class="text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide px-5 py-3 w-10" data-t="th-type">Type</th>
+                <th class="text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide px-3 py-3" data-t="th-action">Action</th>
+                <th class="text-left text-[11px] font-semibold text-slate-400 uppercase tracking-wide px-3 py-3 hidden sm:table-cell" data-t="th-details">Details</th>
+                <th class="text-right text-[11px] font-semibold text-slate-400 uppercase tracking-wide px-5 py-3 whitespace-nowrap" data-t="th-when">When</th>
+              </tr>
+            </thead>
+            <tbody id="recentActivityBody">
+              <tr class="border-b border-slate-50 dark:border-slate-700/50">
+                <td class="px-5 py-3"><span class="skeleton inline-block w-7 h-7 rounded-lg"></span></td>
+                <td class="px-3 py-3"><span class="skeleton inline-block h-3.5 w-32 rounded"></span></td>
+                <td class="px-3 py-3 hidden sm:table-cell"><span class="skeleton inline-block h-3 w-48 rounded"></span></td>
+                <td class="px-5 py-3 text-right"><span class="skeleton inline-block h-3 w-12 rounded"></span></td>
+              </tr>
+              <tr class="border-b border-slate-50 dark:border-slate-700/50">
+                <td class="px-5 py-3"><span class="skeleton inline-block w-7 h-7 rounded-lg"></span></td>
+                <td class="px-3 py-3"><span class="skeleton inline-block h-3.5 w-40 rounded"></span></td>
+                <td class="px-3 py-3 hidden sm:table-cell"><span class="skeleton inline-block h-3 w-56 rounded"></span></td>
+                <td class="px-5 py-3 text-right"><span class="skeleton inline-block h-3 w-10 rounded"></span></td>
+              </tr>
+              <tr>
+                <td class="px-5 py-3"><span class="skeleton inline-block w-7 h-7 rounded-lg"></span></td>
+                <td class="px-3 py-3"><span class="skeleton inline-block h-3.5 w-36 rounded"></span></td>
+                <td class="px-3 py-3 hidden sm:table-cell"><span class="skeleton inline-block h-3 w-44 rounded"></span></td>
+                <td class="px-5 py-3 text-right"><span class="skeleton inline-block h-3 w-14 rounded"></span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AI INSIGHTS -->
+      <?php if ($showProfit): ?>
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-card p-5" id="aiInsightsSection">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-violet-50 dark:bg-violet-900/30 flex items-center justify-center">
+              <i class="fas fa-brain text-violet-500 text-sm"></i>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-slate-800 dark:text-white" data-t="ai-title">AI Insights</h3>
+              <p class="text-xs text-slate-400" data-t="ai-sub">Automated analysis of your activity</p>
+            </div>
+          </div>
+          <button onclick="generateAIInsights()" id="aiInsightBtn" class="flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors">
+            <i class="fas fa-wand-magic-sparkles text-xs"></i> <span data-t="ai-btn-generate">Generate</span>
+          </button>
+        </div>
+        <div id="aiInsightsContent" class="text-sm text-slate-500 dark:text-slate-400 text-center py-6">
+          <i class="fas fa-brain text-3xl text-slate-200 dark:text-slate-700 block mb-2"></i>
+          <span data-t="ai-placeholder">Click "Generate" to get AI insights</span>
+        </div>
+      </div>
+      <?php endif; ?>
+
+    </main>
+  </div>
+</div>
+
+
+<script>
+/* i18n Translation System */
+const TRANSLATIONS = {
+  en: {
+    'sidebarSeason':       '<?php echo htmlspecialchars($activeSeason ?: "No Season"); ?>',
+    'sidebarRole':         '<?php echo htmlspecialchars($_SESSION["role"] ?? ""); ?>',
+    'nav-section-ops':     'Operations',
+    'nav-dashboard':       'Dashboard',
+    'nav-purchases':       'Purchases',
+    'nav-sales':           'Sales',
+    'nav-deliveries':      'Deliveries',
+    'nav-payments':        'Payments',
+    'nav-section-master':  'Master Data',
+    'nav-suppliers':       'Suppliers',
+    'nav-customers':       'Customers',
+    'nav-pricing':         'Price Grid',
+    'nav-banks':           'Banks',
+    'nav-section-finance': 'Finance',
+    'nav-financing':       'Financing',
+    'nav-expenses':        'Expenses',
+    'nav-pl':              'P&L Analysis',
+    'nav-section-ai':      'AI & Analytics',
+    'nav-ai':              'AI Reports',
+    'badge-new':           'New',
+    'nav-section-logistics':'Logistics',
+    'nav-fleet':           'Fleet & Drivers',
+    'nav-bags':            'Bag Journal',
+    'nav-inventory':       'Inventory',
+    'nav-section-admin':   'Administration',
+    'nav-users':           'Users',
+    'nav-settings':        'Settings',
+    'nav-logout':          'Sign Out',
+    'tooltip-collapse':    'Collapse',
+    'header-title':        'Dashboard',
+    'period-today':        'Today',
+    'period-week':         'Week',
+    'period-month':        'Month',
+    'period-quarter':      'Quarter',
+    'period-year':         'Year',
+    'btn-add-new':         'Add New',
+    'menu-create-new':     'Create New',
+    'menu-purchase':       'Purchase',
+    'menu-sale':           'Sale',
+    'menu-delivery':       'Delivery',
+    'menu-payment':        'Payment',
+    'menu-expense':        'Expense',
+    'menu-supplier':       'Supplier',
+    'kpi-stock-label':     'Total Stock',
+    'kpi-revenue-label':   'Revenue',
+    'kpi-profit-label':    'Net Profit',
+    'kpi-profit-sub':      'Confirmed sales',
+    'kpi-bank-debt':       'Bank Debt',
+    'kpi-cust-adv':        'Customer Advances',
+    'kpi-coverage':        'Coverage',
+    'kpi-sup-owed':        'Suppliers Owe Us',
+    'kpi-exp-vol':         'Expected Volume',
+    'kpi-exp-vol-sub':     'Financed suppliers',
+    'kpi-sup-debt':        'Supplier Debt',
+    'kpi-sup-debt-sub':    'Owed to suppliers',
+    'kpi-cash':            'Cash on Hand',
+    'kpi-cash-sub':        'Financing capacity',
+    'count-purchases':     'Purchases',
+    'count-deliveries':    'Deliveries',
+    'count-payments':      'Payments',
+    'count-suppliers':     'Suppliers',
+    'count-customers':     'Customers',
+    'chart-pl-title':      'Monthly P&L',
+    'chart-pl-sub':        'Revenue \u00b7 Costs \u00b7 Profit',
+    'legend-revenue':      'Revenue',
+    'legend-costs':        'Costs',
+    'legend-profit':       'Profit',
+    'chart-price-title':   'Avg. Purchase Price',
+    'chart-price-sub':     'Weighted F/kg',
+    'grain-day':           'Day',
+    'grain-week':          'Wk.',
+    'grain-month':         'Mo.',
+    'chart-stock-title':   'Stock Evolution',
+    'chart-stock-sub':     'Monthly cumulative (kg)',
+    'chart-exp-title':     'Expenses by Category',
+    'chart-exp-sub':       'Season breakdown',
+    'card-total-revenue':  'Total Revenue',
+    'card-this-quarter':   'This quarter',
+    'link-view-details':   'View details',
+    'section-activity':    'Recent Activity',
+    'section-activity-sub':'Latest recorded actions',
+    'link-view-all':       'View all \u2192',
+    'th-type':             'Type',
+    'th-action':           'Action',
+    'th-details':          'Details',
+    'th-when':             'When',
+    'no-activity':         'No recent activity',
+    'ai-title':            'AI Insights',
+    'ai-sub':              'Automated analysis of your activity',
+    'ai-btn-generate':     'Generate',
+    'ai-placeholder':      'Click "Generate" to get AI insights',
+    'theme-dark':          'Dark Mode',
+    'theme-light':         'Light Mode',
+    'lang-switch':         'Fran\u00e7ais',
+    'coverage-full':       'Full coverage',
+    'coverage-partial':    'Partial coverage',
+    'coverage-low':        'Low coverage',
+    'coverage-none':       'No stock',
+    'vs-last-month':       'vs last month',
+    'tonnes-sold':         'T sold',
+    'active-loans':        'active loan(s)',
+    'active-to-deliver':   'active \u00b7 {0} to deliver',
+    'agreements':          'agreement(s)',
+    'time-ago-s':          '{0}s',
+    'time-ago-m':          '{0}m',
+    'time-ago-h':          '{0}h',
+    'time-ago-d':          '{0}d',
+    'ai-loading':          'Analyzing...',
+    'ai-error-conn':       'Connection error',
+    'ai-full-reports':     'Full reports \u2192',
+  },
+  fr: {
+    'sidebarSeason':       '<?php echo htmlspecialchars($activeSeason ? "Saison " . $activeSeason : "Pas de saison"); ?>',
+    'sidebarRole':         '<?php echo htmlspecialchars($_SESSION["role"] ?? ""); ?>',
+    'nav-section-ops':     'Op\u00e9rations',
+    'nav-dashboard':       'Dashboard',
+    'nav-purchases':       'Achats',
+    'nav-sales':           'Ventes',
+    'nav-deliveries':      'Livraisons',
+    'nav-payments':        'Paiements',
+    'nav-section-master':  'Donn\u00e9es Ma\u00eetres',
+    'nav-suppliers':       'Fournisseurs',
+    'nav-customers':       'Clients',
+    'nav-pricing':         'Grille Prix',
+    'nav-banks':           'Banques',
+    'nav-section-finance': 'Finance',
+    'nav-financing':       'Financement',
+    'nav-expenses':        'D\u00e9penses',
+    'nav-pl':              'Analyse P&L',
+    'nav-section-ai':      'IA & Analytique',
+    'nav-ai':              'Rapports IA',
+    'badge-new':           'Nouveau',
+    'nav-section-logistics':'Logistique',
+    'nav-fleet':           'Flotte & Chauffeurs',
+    'nav-bags':            'Journal Sacs',
+    'nav-inventory':       'Inventaire',
+    'nav-section-admin':   'Administration',
+    'nav-users':           'Utilisateurs',
+    'nav-settings':        'Param\u00e8tres',
+    'nav-logout':          'D\u00e9connexion',
+    'tooltip-collapse':    'R\u00e9duire',
+    'header-title':        'Tableau de bord',
+    'period-today':        "Aujourd'hui",
+    'period-week':         'Semaine',
+    'period-month':        'Mois',
+    'period-quarter':      'Trimestre',
+    'period-year':         'Ann\u00e9e',
+    'btn-add-new':         'Ajouter',
+    'menu-create-new':     'Cr\u00e9er nouveau',
+    'menu-purchase':       'Achat',
+    'menu-sale':           'Vente',
+    'menu-delivery':       'Livraison',
+    'menu-payment':        'Paiement',
+    'menu-expense':        'D\u00e9pense',
+    'menu-supplier':       'Fournisseur',
+    'kpi-stock-label':     'Stock Total',
+    'kpi-revenue-label':   "Chiffre d'Affaires",
+    'kpi-profit-label':    'B\u00e9n\u00e9fice Net',
+    'kpi-profit-sub':      'Ventes confirm\u00e9es',
+    'kpi-bank-debt':       'Dette Bancaire',
+    'kpi-cust-adv':        'Avances Clients',
+    'kpi-coverage':        'Couverture',
+    'kpi-sup-owed':        'Fournisseurs Nous Doivent',
+    'kpi-exp-vol':         'Volume Pr\u00e9vu',
+    'kpi-exp-vol-sub':     'Fournisseurs financ\u00e9s',
+    'kpi-sup-debt':        'Dette Fournisseurs',
+    'kpi-sup-debt-sub':    'D\u00fb aux fournisseurs',
+    'kpi-cash':            'Tr\u00e9sorerie',
+    'kpi-cash-sub':        'Capacit\u00e9 financement',
+    'count-purchases':     'Achats',
+    'count-deliveries':    'Livraisons',
+    'count-payments':      'Paiements',
+    'count-suppliers':     'Fournisseurs',
+    'count-customers':     'Clients',
+    'chart-pl-title':      'P&L Mensuel',
+    'chart-pl-sub':        'Revenus \u00b7 Co\u00fbts \u00b7 B\u00e9n\u00e9fice',
+    'legend-revenue':      'Revenus',
+    'legend-costs':        'Co\u00fbts',
+    'legend-profit':       'B\u00e9n\u00e9fice',
+    'chart-price-title':   'Prix Achat Moy.',
+    'chart-price-sub':     'F/kg pond\u00e9r\u00e9',
+    'grain-day':           'Jour',
+    'grain-week':          'Sem.',
+    'grain-month':         'Mois',
+    'chart-stock-title':   '\u00c9volution du Stock',
+    'chart-stock-sub':     'Cumul mensuel en kg',
+    'chart-exp-title':     'D\u00e9penses par Cat\u00e9gorie',
+    'chart-exp-sub':       'R\u00e9partition saisonni\u00e8re',
+    'card-total-revenue':  'Revenu Total',
+    'card-this-quarter':   'Ce trimestre',
+    'link-view-details':   'Voir d\u00e9tails',
+    'section-activity':    'Activit\u00e9 R\u00e9cente',
+    'section-activity-sub':'Derni\u00e8res actions enregistr\u00e9es',
+    'link-view-all':       'Voir tout \u2192',
+    'th-type':             'Type',
+    'th-action':           'Action',
+    'th-details':          'D\u00e9tails',
+    'th-when':             'Quand',
+    'no-activity':         'Aucune activit\u00e9 r\u00e9cente',
+    'ai-title':            'Insights IA',
+    'ai-sub':              'Analyse automatique de votre activit\u00e9',
+    'ai-btn-generate':     'G\u00e9n\u00e9rer',
+    'ai-placeholder':      'Cliquez sur "G\u00e9n\u00e9rer" pour obtenir des insights IA',
+    'theme-dark':          'Mode sombre',
+    'theme-light':         'Mode clair',
+    'lang-switch':         'English',
+    'coverage-full':       'Couverture totale',
+    'coverage-partial':    'Couverture partielle',
+    'coverage-low':        'Faible couverture',
+    'coverage-none':       'Pas de stock',
+    'vs-last-month':       'vs mois dernier',
+    'tonnes-sold':         'T vendues',
+    'active-loans':        'pr\u00eat(s) actif(s)',
+    'active-to-deliver':   'actif \u00b7 {0} \u00e0 livrer',
+    'agreements':          'accord(s)',
+    'time-ago-s':          '{0}s',
+    'time-ago-m':          '{0}m',
+    'time-ago-h':          '{0}h',
+    'time-ago-d':          '{0}j',
+    'ai-loading':          'Analyse...',
+    'ai-error-conn':       'Erreur de connexion',
+    'ai-full-reports':     'Rapports complets \u2192',
+  }
+};
+
+var _store = {}; try { _store = window.localStorage; } catch(e) { _store = { getItem: function(){return null;}, setItem: function(){} }; }
+var currentLang = _store.getItem('cp_lang') || 'en';
+
+function t(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || (TRANSLATIONS['en'][key]) || key;
+}
+
+function applyTranslations() {
+  document.querySelectorAll('[data-t]').forEach(function(el) {
+    var key = el.getAttribute('data-t');
+    el.textContent = t(key);
+  });
+  var seasonEl = document.getElementById('sidebarSeason');
+  if (seasonEl) seasonEl.textContent = t('sidebarSeason');
+  var roleEl = document.getElementById('sidebarRole');
+  if (roleEl) roleEl.textContent = t('sidebarRole');
+  var langLabel = document.getElementById('langLabel');
+  if (langLabel) langLabel.textContent = t('lang-switch');
+  var isDarkNow = document.documentElement.classList.contains('dark');
+  var themeLabel = document.getElementById('themeLabel');
+  if (themeLabel) themeLabel.textContent = isDarkNow ? t('theme-light') : t('theme-dark');
+  var locale = currentLang === 'fr' ? 'fr-FR' : 'en-US';
+  var hd = document.getElementById('headerDate');
+  if (hd) hd.textContent = new Date().toLocaleDateString(locale, { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+}
+
+/* Language toggle */
+var langBtn = document.getElementById('langToggleBtn');
+if (langBtn) {
+  langBtn.addEventListener('click', function() {
+    currentLang = (currentLang === 'en') ? 'fr' : 'en';
+    _store.setItem('cp_lang', currentLang);
+    document.documentElement.lang = currentLang;
+    applyTranslations();
+  });
+}
+
+/* Helpers */
+function getLocale() { return currentLang === 'fr' ? 'fr-FR' : 'en-US'; }
+var fmt  = function(n) { return Number(n).toLocaleString(getLocale()); };
+var fmtK = function(n) { n = Math.abs(n); if (n >= 1e9) return (n/1e9).toFixed(1)+'G'; if (n >= 1e6) return (n/1e6).toFixed(1)+'M'; if (n >= 1e3) return (n/1e3).toFixed(0)+'k'; return n.toString(); };
+
+/* Theme */
+(function() {
+  var html = document.documentElement;
+  var btn  = document.getElementById('themeToggleBtn');
+  var icon = document.getElementById('themeIcon');
+  var dark = _store.getItem('cp_theme') === 'dark' || (_store.getItem('cp_theme') === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  var apply = function() {
+    html.classList.toggle('dark', dark);
+    _store.setItem('cp_theme', dark ? 'dark' : 'light');
+    if (icon) icon.className = dark ? 'fas fa-sun w-4 text-sm' : 'fas fa-moon w-4 text-sm';
+    var lbl = document.getElementById('themeLabel');
+    if (lbl) lbl.textContent = dark ? t('theme-light') : t('theme-dark');
+  };
+  apply();
+  if (btn) btn.addEventListener('click', function() { dark = !dark; apply(); });
+})();
+
+/* Sidebar collapse */
+var appRoot = document.getElementById('appRoot');
+var collapseBtn = document.getElementById('sidebarCollapseBtn');
+if (collapseBtn) {
+  collapseBtn.addEventListener('click', function() {
+    appRoot.classList.toggle('app-collapsed');
+    var ic = document.getElementById('collapseIcon');
+    if (ic) ic.style.transform = appRoot.classList.contains('app-collapsed') ? 'rotate(180deg)' : '';
+  });
+}
+
+/* Period tabs */
+var currentPeriod = 'year';
+function switchPeriod(period, btn) {
+  currentPeriod = period;
+  document.querySelectorAll('.period-tab').forEach(function(t) {
+    t.classList.remove('bg-white','dark:bg-slate-600','text-slate-700','dark:text-white','shadow-sm','font-semibold');
+    t.classList.add('text-slate-500','dark:text-slate-400');
+  });
+  btn.classList.add('bg-white','dark:bg-slate-600','text-slate-700','dark:text-white','shadow-sm','font-semibold');
+  loadDashboardOverview(period);
+}
+
+/* Add New dropdown */
+function toggleAddNew() {
+  document.getElementById('addNewMenu').classList.toggle('hidden');
+}
+document.addEventListener('click', function(e) {
+  var dd = document.getElementById('addNewDropdown');
+  if (dd && !dd.contains(e.target)) {
+    document.getElementById('addNewMenu').classList.add('hidden');
+  }
+});
+
+/* Price trend tab wiring */
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest && e.target.closest('#priceTrendTabs .ptt-btn');
+  if (!btn) return;
+  document.querySelectorAll('#priceTrendTabs .ptt-btn').forEach(function(b) {
+    b.classList.remove('bg-white','dark:bg-slate-600','text-slate-700','dark:text-white','shadow-sm','font-semibold');
+    b.classList.add('text-slate-500','dark:text-slate-400','font-medium');
+  });
+  btn.classList.add('bg-white','dark:bg-slate-600','text-slate-700','dark:text-white','shadow-sm','font-semibold');
+  btn.classList.remove('text-slate-500','dark:text-slate-400','font-medium');
+  renderPriceTrendChart(btn.getAttribute('data-grain'));
+});
+
+/* timeAgo */
+function timeAgo(d) {
+  var s = Math.floor((Date.now() - new Date(d)) / 1000);
+  if (s < 60)  return t('time-ago-s').replace('{0}', s);
+  if (s < 3600) return t('time-ago-m').replace('{0}', Math.floor(s/60));
+  if (s < 86400) return t('time-ago-h').replace('{0}', Math.floor(s/3600));
+  return t('time-ago-d').replace('{0}', Math.floor(s/86400));
+}
+
+function getActivityStyle(action) {
+  if (/creat|insert|add|purchase|achat|vente|sale/i.test(action)) return { bg:'bg-emerald-50 dark:bg-emerald-900/20', color:'text-emerald-500', icon:'fa-plus' };
+  if (/updat|edit|modif/i.test(action)) return { bg:'bg-blue-50 dark:bg-blue-900/20', color:'text-blue-500', icon:'fa-pen' };
+  if (/delet|remov/i.test(action)) return { bg:'bg-rose-50 dark:bg-rose-900/20', color:'text-rose-500', icon:'fa-trash' };
+  if (/login|sign|connect/i.test(action)) return { bg:'bg-amber-50 dark:bg-amber-900/20', color:'text-amber-500', icon:'fa-right-to-bracket' };
+  if (/deliver|livr/i.test(action)) return { bg:'bg-teal-50 dark:bg-teal-900/20', color:'text-teal-500', icon:'fa-truck' };
+  if (/pay|paiement/i.test(action)) return { bg:'bg-violet-50 dark:bg-violet-900/20', color:'text-violet-500', icon:'fa-credit-card' };
+  return { bg:'bg-slate-100 dark:bg-slate-700', color:'text-slate-500', icon:'fa-bell' };
+}
+
+/* Chart defaults */
+var isDark = function() { return document.documentElement.classList.contains('dark'); };
+var gridColor  = function() { return isDark() ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)'; };
+var tickColor  = function() { return isDark() ? '#64748b' : '#94a3b8'; };
+var tooltipBg  = function() { return isDark() ? '#1e293b' : '#fff'; };
+var tooltipTxt = function() { return isDark() ? '#e2e8f0' : '#1e293b'; };
+
+var overviewCharts = {};
+function dc(key) { if (overviewCharts[key]) { overviewCharts[key].destroy(); overviewCharts[key] = null; } }
+
+/* Price trend chart */
+window._priceTrendData = { daily:[], weekly:[], monthly:[] };
+window._currentGrain = 'daily';
+function renderPriceTrendChart(grain) {
+  grain = grain || 'daily';
+  window._currentGrain = grain;
+  var rows = window._priceTrendData[grain] || [];
+  dc('pricesEvolution');
+  var canvas = document.getElementById('pricesEvolutionChart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  if (!rows.length) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = '#888';
+    ctx.textAlign = 'center';
+    ctx.fillText('No purchase data for this period', canvas.width / 2, canvas.height / 2);
+    return;
+  }
+  var labels = rows.map(function(r) { return r.period; });
+  var prices = rows.map(function(r) { return parseFloat(r.avg_price); });
+  var volumes = rows.map(function(r) { return parseFloat(r.volume_kg); });
+  var counts  = rows.map(function(r) { return parseInt(r.cnt, 10); });
+  var grad = ctx.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, 'rgba(45,157,153,0.25)');
+  grad.addColorStop(1, 'rgba(45,157,153,0)');
+  var unit = grain === 'daily' ? 'day' : (grain === 'weekly' ? 'week' : 'month');
+  var priceLbl = currentLang === 'fr' ? 'Prix F/kg' : 'Price F/kg';
+  overviewCharts['pricesEvolution'] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: priceLbl,
+        data: prices,
+        borderColor: '#2d9d99',
+        backgroundColor: grad,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 2.5,
+        pointBackgroundColor: '#2d9d99',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          type: 'time',
+          time: { unit: unit, tooltipFormat: grain === 'monthly' ? 'MMM yyyy' : 'MMM d, yyyy', displayFormats: { day: 'd MMM', week: 'd MMM', month: 'MMM yy' } },
+          grid: { display: false },
+          ticks: { color: tickColor(), font: { size: 11 }, maxTicksLimit: 7 }
+        },
+        y: { beginAtZero: false, grid: { color: gridColor() }, ticks: { color: tickColor(), font: { size: 11 }, callback: function(v) { return v + ' F'; } } }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: tooltipBg(), titleColor: tooltipTxt(), bodyColor: tickColor(), borderColor: 'rgba(0,0,0,0.06)', borderWidth: 1, padding: 10, cornerRadius: 8,
+          callbacks: {
+            label: function(c) {
+              var i = c.dataIndex;
+              var l = getLocale();
+              return [
+                (currentLang === 'fr' ? 'Prix' : 'Price') + ': ' + Number(prices[i]).toLocaleString(l) + ' F/kg',
+                'Volume: ' + Number(volumes[i]).toLocaleString(l) + ' kg',
+                (currentLang === 'fr' ? 'Achats' : 'Purchases') + ': ' + counts[i]
+              ];
             }
+          }
         }
+      }
+    }
+  });
+}
 
-        // ── Prices Evolution: render the smooth single-line chart at chosen granularity ──
-        window._currentGrain = 'daily';
-        function renderPriceTrendChart(grain) {
-            var rows = (window._priceTrendData && window._priceTrendData[grain]) || [];
-            window._currentGrain = grain;
+/* AI Insights */
+function generateAIInsights() {
+  var btn = document.getElementById('aiInsightBtn');
+  var content = document.getElementById('aiInsightsContent');
+  if (!btn || !content) return;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin text-xs"></i> ' + t('ai-loading');
+  content.innerHTML = '<div class="space-y-2"><div class="skeleton h-4 w-3/4 rounded"></div><div class="skeleton h-4 w-4/5 rounded"></div><div class="skeleton h-4 w-2/3 rounded"></div></div>';
 
-            // sync toggle button states
-            var btns = document.querySelectorAll('#priceTrendTabs .ptt-btn');
-            btns.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-grain') === grain); });
+  $.getJSON('?action=getAIInsights').done(function(r) {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-wand-magic-sparkles text-xs"></i> ' + t('ai-btn-generate');
+    if (r.success) {
+      var text = r.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/^\- /gm, '&bull; ').replace(/^\* /gm, '&bull; ').replace(/\n/g, '<br>');
+      var now = new Date().toLocaleTimeString(getLocale());
+      content.innerHTML = '<div class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">' + text + '</div><p class="text-[11px] text-slate-400 mt-3"><i class="fas fa-clock mr-1"></i>' + now + ' &middot; <a href="ai-reports.php" class="text-brand-500 hover:underline">' + t('ai-full-reports') + '</a></p>';
+    } else {
+      content.innerHTML = '<p class="text-rose-500 text-sm"><i class="fas fa-exclamation-triangle mr-1"></i>' + r.message + '</p>';
+    }
+  }).fail(function() {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-wand-magic-sparkles text-xs"></i> ' + t('ai-btn-generate');
+    content.innerHTML = '<p class="text-rose-500 text-sm">' + t('ai-error-conn') + '</p>';
+  });
+}
 
-            destroyChart('pricesEvolution');
-            var canvas = document.getElementById('pricesEvolutionChart');
-            if (!canvas) return;
-            var ctx = canvas.getContext('2d');
+/* loadDashboardOverview */
+function loadDashboardOverview(period) {
+  $.getJSON('?action=getDashboardOverview&period=' + (period || 'year') + '&_=' + Date.now()).done(function(r) {
+    if (!r.success) { console.error('Dashboard API error:', r.message); return; }
+    var d = r.data;
+    var el;
 
-            if (!rows.length) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.font = '13px sans-serif';
-                ctx.fillStyle = '#888';
-                ctx.textAlign = 'center';
-                ctx.fillText('No purchase data for this period', canvas.width / 2, canvas.height / 2);
-                return;
-            }
+    /* Stock */
+    document.getElementById('kpiStock').textContent = fmt(d.stock.total) + ' kg';
+    var evoUp = d.stock.evolution >= 0;
+    document.getElementById('kpiStockSub').innerHTML =
+      '<span class="' + (evoUp ? 'text-emerald-500' : 'text-rose-500') + '"><i class="fas fa-arrow-' + (evoUp ? 'up' : 'down') + ' text-[9px]"></i> ' + Math.abs(d.stock.evolution) + '% ' + t('vs-last-month') + '</span>';
+    document.getElementById('kpiStockBar').style.width = Math.min(100, Math.abs(d.stock.evolution) * 2) + '%';
+    el = document.getElementById('currentStockLabel');
+    if (el) el.textContent = fmt(d.stock.total) + ' kg';
 
-            var labels = rows.map(function(r) { return r.period; });
-            var prices = rows.map(function(r) { return parseFloat(r.avg_price); });
-            var volumes = rows.map(function(r) { return parseFloat(r.volume_kg); });
-            var counts  = rows.map(function(r) { return parseInt(r.cnt, 10); });
+    /* Revenue */
+    if ((el = document.getElementById('kpiSales'))) {
+      el.textContent = fmt(Math.round(d.sales.revenue)) + ' F';
+      var se = d.sales.evolution >= 0;
+      document.getElementById('kpiSalesSub').innerHTML =
+        (d.sales.volume / 1000).toFixed(1) + ' ' + t('tonnes-sold') + ' <span class="' + (se ? 'text-emerald-500' : 'text-rose-500') + ' ml-1"><i class="fas fa-arrow-' + (se ? 'up' : 'down') + ' text-[9px]"></i> ' + Math.abs(d.sales.evolution) + '%</span>';
+    }
 
-            var grad = ctx.createLinearGradient(0, 0, 0, 300);
-            grad.addColorStop(0, 'rgba(0, 116, 217, 0.28)');
-            grad.addColorStop(1, 'rgba(0, 116, 217, 0)');
+    /* Profit */
+    if ((el = document.getElementById('kpiProfit'))) {
+      var pv = Math.round(d.sales.profit);
+      el.textContent = fmt(pv) + ' F';
+      el.classList.toggle('text-emerald-500', pv >= 0);
+      el.classList.toggle('text-rose-500', pv < 0);
+    }
 
-            // pick a sensible x-axis time unit per granularity
-            var unit = grain === 'daily' ? 'day' : (grain === 'weekly' ? 'week' : 'month');
-            var fmtTip = grain === 'monthly' ? 'MMM yyyy' : 'MMM d, yyyy';
+    /* Bank Debt */
+    if ((el = document.getElementById('kpiBankDebt'))) {
+      el.textContent = fmt(Math.round(d.bankDebt.total)) + ' F';
+      document.getElementById('kpiBankDebtSub').textContent = d.bankDebt.count + ' ' + t('active-loans');
+    }
 
-            overviewCharts['pricesEvolution'] = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Avg Price (F/kg)',
-                        data: prices,
-                        borderColor: COLORS.accent,
-                        backgroundColor: grad,
-                        borderWidth: 2.5,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 3,
-                        pointHoverRadius: 6,
-                        pointBackgroundColor: COLORS.accent,
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 1.5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: { unit: unit, tooltipFormat: fmtTip, displayFormats: { day: 'MMM d', week: 'MMM d', month: 'MMM yyyy' } },
-                            grid: { display: false },
-                            ticks: { maxRotation: 0, autoSkip: true, maxTicksLimit: 8 }
-                        },
-                        y: {
-                            beginAtZero: false,
-                            title: { display: true, text: 'F/kg' },
-                            grid: { color: 'rgba(0,0,0,0.05)' }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(ctx) {
-                                    var i = ctx.dataIndex;
-                                    var lines = [
-                                        'Avg: ' + Number(prices[i]).toLocaleString('en-US', {maximumFractionDigits: 0}) + ' F/kg',
-                                        'Volume: ' + Number(volumes[i]).toLocaleString('en-US') + ' kg',
-                                        'Purchases: ' + counts[i]
-                                    ];
-                                    return lines;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
+    /* Customer Advances */
+    if ((el = document.getElementById('kpiCustAdv'))) {
+      el.textContent = fmt(Math.round(d.custAdvances.total)) + ' F';
+      var vol = d.custAdvances.volume_remaining;
+      var volStr = vol >= 1000 ? (vol / 1000).toFixed(1) + 'T' : fmt(Math.round(vol)) + 'kg';
+      document.getElementById('kpiCustAdvSub').innerHTML = t('active-to-deliver').replace('{0}', '<strong>' + volStr + '</strong>');
+    }
 
-        // toggle wiring — delegate so it survives re-renders
-        document.addEventListener('click', function(e) {
-            var btn = e.target.closest && e.target.closest('#priceTrendTabs .ptt-btn');
-            if (!btn) return;
-            var grain = btn.getAttribute('data-grain');
-            if (grain) renderPriceTrendChart(grain);
+    /* Coverage */
+    if ((el = document.getElementById('kpiCoverage'))) {
+      var cov = d.advanceCoverage || {};
+      var ratio = cov.ratio;
+      var color, label, iconWrapBg;
+      if (ratio === null || ratio === undefined) { color = 'text-slate-500'; label = t('coverage-none'); el.textContent = '\u2014'; iconWrapBg = 'bg-slate-100 dark:bg-slate-700'; }
+      else if (ratio >= 1.00) { color = 'text-emerald-500'; label = t('coverage-full'); el.textContent = ratio.toFixed(3); iconWrapBg = 'bg-emerald-100 dark:bg-emerald-900/30'; }
+      else if (ratio >= 0.80) { color = 'text-amber-500'; label = t('coverage-partial'); el.textContent = ratio.toFixed(3); iconWrapBg = 'bg-amber-100 dark:bg-amber-900/30'; }
+      else { color = 'text-rose-500'; label = t('coverage-low'); el.textContent = ratio.toFixed(3); iconWrapBg = 'bg-rose-100 dark:bg-rose-900/30'; }
+      el.className = 'text-sm font-bold tabular ' + color;
+      document.getElementById('kpiCoverageIconWrap').className = 'w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ' + iconWrapBg;
+      document.getElementById('kpiCoverageSub').innerHTML = '<strong>' + label + '</strong>';
+    }
+
+    /* Supplier Financing */
+    if ((el = document.getElementById('kpiSupFinOwed'))) {
+      el.textContent = fmt(Math.round(d.supplierFinancing.owed)) + ' F';
+      document.getElementById('kpiSupFinOwedSub').textContent = d.supplierFinancing.count + ' ' + t('agreements');
+    }
+
+    /* Expected Volume */
+    if ((el = document.getElementById('kpiExpectedVol'))) {
+      var vk = d.supplierFinancing.volume_remaining;
+      el.textContent = vk >= 1000 ? (vk / 1000).toFixed(1) + ' T' : fmt(Math.round(vk)) + ' kg';
+    }
+
+    /* Supplier Debt */
+    if ((el = document.getElementById('kpiSupplierDebt'))) {
+      el.textContent = fmt(Math.round(d.supplierDebt)) + ' F';
+      el.classList.toggle('text-rose-500', d.supplierDebt > 0);
+    }
+
+    /* Cash on Hand */
+    if ((el = document.getElementById('kpiFinancingPower'))) {
+      var fp = Math.round(d.financingPower);
+      el.textContent = fmt(fp) + ' F';
+      el.className = 'text-sm font-bold tabular ' + (fp >= 0 ? 'text-emerald-500' : 'text-rose-500');
+    }
+
+    /* Nav badges */
+    if ((el = document.getElementById('navBadgePurchases'))) el.textContent = d.counts.purchases;
+    if ((el = document.getElementById('navBadgeDeliveries'))) el.textContent = d.counts.pendingDeliveries;
+
+    /* Counts */
+    document.getElementById('countPurchases').textContent = d.counts.purchases;
+    document.getElementById('badgePurchases').textContent = d.counts.purchases;
+    document.getElementById('countDeliveries').textContent = d.counts.deliveries;
+    document.getElementById('badgeDeliveries').textContent = d.counts.pendingDeliveries;
+    document.getElementById('countPayments').textContent = d.counts.payments;
+    document.getElementById('countSuppliers').textContent = d.counts.suppliers;
+    document.getElementById('countCustomers').textContent = d.counts.customers;
+
+    /* Recent Activity */
+    var tbody = document.getElementById('recentActivityBody');
+    if (d.recentLogs && d.recentLogs.length) {
+      tbody.innerHTML = d.recentLogs.map(function(log) {
+        var s = getActivityStyle(log.action);
+        return '<tr class="border-b border-slate-50 dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-750 transition-colors">' +
+          '<td class="px-5 py-3"><div class="w-7 h-7 rounded-lg ' + s.bg + ' flex items-center justify-center flex-shrink-0"><i class="fas ' + s.icon + ' ' + s.color + ' text-xs"></i></div></td>' +
+          '<td class="px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">' + log.action + '</td>' +
+          '<td class="px-3 py-3 text-xs text-slate-400 hidden sm:table-cell max-w-xs truncate">' + (log.details || '\u2014') + '</td>' +
+          '<td class="px-5 py-3 text-right text-[11px] text-slate-400 whitespace-nowrap">' + timeAgo(log.timestamp) + '</td></tr>';
+      }).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400"><i class="fas fa-inbox text-2xl block mb-2 text-slate-300"></i>' + t('no-activity') + '</td></tr>';
+    }
+
+    /* Price trend */
+    window._priceTrendData = d.priceTrend || { daily: [], weekly: [], monthly: [] };
+    renderPriceTrendChart(window._currentGrain);
+
+    /* Stock Evolution Chart */
+    try {
+      dc('stockEvolution');
+      var seCanvas = document.getElementById('stockEvolutionChart');
+      if (seCanvas && d.monthlyStock.length > 0) {
+        var seCtx = seCanvas.getContext('2d');
+        var seGrad = seCtx.createLinearGradient(0, 0, 0, 200);
+        seGrad.addColorStop(0, 'rgba(45,157,153,0.2)');
+        seGrad.addColorStop(1, 'rgba(45,157,153,0)');
+        overviewCharts['stockEvolution'] = new Chart(seCtx, {
+          type: 'line',
+          data: {
+            labels: d.monthlyStock.map(function(m) { return m.month; }),
+            datasets: [{
+              label: 'Stock kg',
+              data: d.monthlyStock.map(function(m) { return m.stock; }),
+              borderColor: '#2d9d99',
+              backgroundColor: seGrad,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 2,
+              pointBackgroundColor: '#2d9d99',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { backgroundColor: tooltipBg(), titleColor: tooltipTxt(), bodyColor: tickColor(), borderColor: 'rgba(0,0,0,0.06)', borderWidth: 1, padding: 10, cornerRadius: 8 } },
+            scales: { y: { beginAtZero: true, grid: { color: gridColor() }, ticks: { color: tickColor(), font: { size: 11 }, callback: function(v) { return fmtK(v); } } }, x: { grid: { display: false }, ticks: { color: tickColor(), font: { size: 11 } } } }
+          }
         });
+      }
+    } catch(e) { console.error('Stock chart error:', e); }
 
-        function timeAgo(dateStr) {
-            var now = new Date();
-            var d = new Date(dateStr);
-            var diff = Math.floor((now - d) / 1000);
-            if (diff < 60) return diff + 's ago';
-            if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
-            return Math.floor(diff / 86400) + 'd ago';
+    /* Expenses by Category Chart */
+    try {
+      var ecCanvas = document.getElementById('expCategoryChart');
+      if (ecCanvas) {
+        dc('expCategory');
+        if (d.expenseByCategory.length > 0) {
+          var ecColors = ['#2d9d99', '#60a5fa', '#f59e0b', '#10b981', '#8b5cf6', '#f97316'];
+          overviewCharts['expCategory'] = new Chart(ecCanvas, {
+            type: 'bar',
+            data: {
+              labels: d.expenseByCategory.map(function(c) { return c.category; }),
+              datasets: [{
+                label: currentLang === 'fr' ? 'Montant (F)' : 'Amount (F)',
+                data: d.expenseByCategory.map(function(c) { return parseFloat(c.total); }),
+                backgroundColor: d.expenseByCategory.map(function(c, i) { return ecColors[i % ecColors.length] + 'cc'; }),
+                borderRadius: 5,
+                borderSkipped: false
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { backgroundColor: tooltipBg(), titleColor: tooltipTxt(), bodyColor: tickColor(), borderColor: 'rgba(0,0,0,0.06)', borderWidth: 1, padding: 10, cornerRadius: 8 } },
+              scales: { y: { beginAtZero: true, grid: { color: gridColor() }, ticks: { color: tickColor(), font: { size: 11 }, callback: function(v) { return fmtK(v); } } }, x: { grid: { display: false }, ticks: { color: tickColor(), font: { size: 11 } } } }
+            }
+          });
         }
+      }
+    } catch(e) { console.error('Expenses chart error:', e); }
 
-        function getNotifIcon(action) {
-            if (action.indexOf('Created') !== -1 || action.indexOf('INSERT') !== -1) return { cls: 'notif-icon-green', icon: 'fa-plus' };
-            if (action.indexOf('Updated') !== -1 || action.indexOf('UPDATE') !== -1) return { cls: 'notif-icon-blue', icon: 'fa-pen' };
-            if (action.indexOf('Deleted') !== -1 || action.indexOf('DELETE') !== -1) return { cls: 'notif-icon-red', icon: 'fa-trash' };
-            if (action.indexOf('Login') !== -1) return { cls: 'notif-icon-yellow', icon: 'fa-sign-in-alt' };
-            return { cls: 'notif-icon-blue', icon: 'fa-bell' };
+    /* Revenue Highlight + Sparkline */
+    try {
+      if (document.getElementById('revenueValue'))
+        document.getElementById('revenueValue').textContent = fmt(Math.round(d.totalRevenue)) + ' F';
+
+      var rsCanvas = document.getElementById('revenueSparkline');
+      dc('revenueSparkline');
+      if (d.monthlyRevenue.length > 0 && rsCanvas) {
+        var rsCtx = rsCanvas.getContext('2d');
+        var rsGrad = rsCtx.createLinearGradient(0, 0, 0, 60);
+        rsGrad.addColorStop(0, 'rgba(255,255,255,0.3)');
+        rsGrad.addColorStop(1, 'rgba(255,255,255,0.02)');
+        overviewCharts['revenueSparkline'] = new Chart(rsCtx, {
+          type: 'line',
+          data: {
+            labels: d.monthlyRevenue.map(function(m) { return m.month; }),
+            datasets: [{
+              data: d.monthlyRevenue.map(function(m) { return parseFloat(m.revenue); }),
+              borderColor: 'rgba(255,255,255,0.8)',
+              backgroundColor: rsGrad,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 0,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 800 },
+            scales: { x: { display: false }, y: { display: false } },
+            plugins: { legend: { display: false }, tooltip: { enabled: false } }
+          }
+        });
+      }
+    } catch(e) { console.error('Revenue chart error:', e); }
+
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+    console.error('Dashboard AJAX failed:', textStatus, errorThrown);
+  });
+}
+
+/* Sales/P&L chart */
+var spChart = null;
+
+function loadSalesPurchasesChart() {
+  $.getJSON('?action=getSalesPurchasesChart&period=monthly', function(res) {
+    if (!res.success) return;
+    renderPlChart(res.data);
+  });
+}
+
+function renderPlChart(data) {
+  var canvas = document.getElementById('salesPurchasesChart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  if (spChart) spChart.destroy();
+  var revLbl  = t('legend-revenue');
+  var costLbl = t('legend-costs');
+  var profLbl = t('legend-profit');
+  spChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(function(r) { return r.period; }),
+      datasets: [
+        { label: revLbl,  data: data.map(function(r) { return r.revenue; }), backgroundColor: 'rgba(45,157,153,0.7)',  borderRadius: 4, borderSkipped: false },
+        { label: costLbl, data: data.map(function(r) { return r.costs; }),   backgroundColor: 'rgba(244,63,94,0.65)', borderRadius: 4, borderSkipped: false },
+        { label: profLbl, data: data.map(function(r) { return r.profit; }),  backgroundColor: data.map(function(r) { return r.profit >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(244,63,94,0.5)'; }), borderRadius: 4, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: tooltipBg(), titleColor: tooltipTxt(), bodyColor: tickColor(), borderColor: 'rgba(0,0,0,0.06)', borderWidth: 1, padding: 10, cornerRadius: 8,
+          callbacks: { label: function(c) { return c.dataset.label + ': ' + Number(c.parsed.y).toLocaleString(getLocale()) + ' F'; } }
         }
+      },
+      scales: {
+        y: { beginAtZero: true, grid: { color: gridColor() }, ticks: { color: tickColor(), font: { size: 11 }, callback: function(v) { return fmtK(v) + ' F'; } } },
+        x: { grid: { display: false }, ticks: { color: tickColor(), font: { size: 11 } } }
+      }
+    }
+  });
+}
 
-        function generateAIInsights() {
-            var btn = document.getElementById('aiInsightBtn');
-            var content = document.getElementById('aiInsightsContent');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
-            content.innerHTML = '<div class="skeleton" style="height:16px;width:90%;margin-bottom:8px;"></div><div class="skeleton" style="height:16px;width:75%;margin-bottom:8px;"></div><div class="skeleton" style="height:16px;width:80%;"></div>';
+/* Bootstrap */
+applyTranslations();
+loadDashboardOverview('year');
+setTimeout(loadSalesPurchasesChart, 400);
+</script>
 
-            $.getJSON('?action=getAIInsights').done(function(r) {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate';
-                if (r.success) {
-                    var text = r.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/^\- /gm, '&bull; ').replace(/^\* /gm, '&bull; ').replace(/\n/g, '<br>');
-                    content.innerHTML = '<div style="font-size:13px;line-height:1.7;color:var(--text-primary);">' + text + '</div>' +
-                        '<div style="font-size:11px;color:var(--text-muted);margin-top:10px;"><i class="fas fa-clock"></i> ' + new Date().toLocaleTimeString() + ' | <a href="ai-reports.php" style="color:var(--navy-accent);">View Full Reports</a></div>';
-                } else {
-                    content.innerHTML = '<div style="color:var(--danger);font-size:13px;"><i class="fas fa-exclamation-triangle"></i> ' + r.message + '</div>';
-                }
-            }).fail(function() {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> Generate';
-                content.innerHTML = '<div style="color:var(--danger);font-size:13px;">Connection error</div>';
-            });
-        }
-
-        function loadDashboardOverview(period) {
-            $.getJSON('?action=getDashboardOverview&period=' + (period || 'year') + '&_=' + Date.now()).done(function(r) {
-                if (!r.success) { console.error('Dashboard API error:', r.message); return; }
-                var d = r.data;
-
-                // KPI Cards — guarded: elements only exist if role has access
-                var el;
-                document.getElementById('kpiStock').textContent = fmt(d.stock.total) + ' kg';
-                var evoClass = d.stock.evolution >= 0 ? 'evolution-up' : 'evolution-down';
-                var evoIcon = d.stock.evolution >= 0 ? '<i class="fas fa-arrow-up" style="font-size:10px;"></i>' : '<i class="fas fa-arrow-down" style="font-size:10px;"></i>';
-                document.getElementById('kpiStockSub').innerHTML = '<span class="' + evoClass + '">' + evoIcon + ' ' + Math.abs(d.stock.evolution) + '% vs last month</span>';
-
-                if ((el = document.getElementById('kpiSales'))) {
-                    el.textContent = fmt(Math.round(d.sales.revenue)) + ' F';
-                    var tons = (d.sales.volume / 1000).toFixed(1);
-                    var salesEvoClass = d.sales.evolution >= 0 ? 'evolution-up' : 'evolution-down';
-                    var salesEvoIcon = d.sales.evolution >= 0 ? '<i class="fas fa-arrow-up" style="font-size:10px;"></i>' : '<i class="fas fa-arrow-down" style="font-size:10px;"></i>';
-                    document.getElementById('kpiSalesSub').innerHTML = tons + ' Tons sold <span class="' + salesEvoClass + '" style="margin-left:6px;">' + salesEvoIcon + ' ' + Math.abs(d.sales.evolution) + '%</span>';
-                }
-
-                if ((el = document.getElementById('kpiProfit'))) {
-                    var profitVal = Math.round(d.sales.profit);
-                    el.textContent = fmt(profitVal) + ' F';
-                    el.style.color = profitVal >= 0 ? 'var(--success)' : 'var(--danger)';
-                }
-
-                if ((el = document.getElementById('kpiBankDebt'))) {
-                    el.textContent = fmt(Math.round(d.bankDebt.total)) + ' F';
-                    el.style.color = d.bankDebt.total > 0 ? '#e0a800' : 'var(--success)';
-                    document.getElementById('kpiBankDebtSub').textContent = d.bankDebt.count + ' active loan' + (d.bankDebt.count !== 1 ? 's' : '') + ' · Repay in cash';
-                }
-
-                if ((el = document.getElementById('kpiCustAdv'))) {
-                    el.textContent = fmt(Math.round(d.custAdvances.total)) + ' F';
-                    el.style.color = d.custAdvances.total > 0 ? '#9b59b6' : 'var(--success)';
-                    var volRem = d.custAdvances.volume_remaining;
-                    var volTxt = volRem >= 1000 ? (volRem / 1000).toFixed(1) + ' T' : fmt(Math.round(volRem)) + ' kg';
-                    document.getElementById('kpiCustAdvSub').innerHTML = d.custAdvances.count + ' active · <strong>' + volTxt + '</strong> to deliver';
-                }
-
-                // Customer Advance Coverage — customer advances / stock value
-                if ((el = document.getElementById('kpiCoverage'))) {
-                    var cov = d.advanceCoverage || {};
-                    var ratio = cov.ratio;
-                    var color, grad, label;
-                    if (ratio === null || ratio === undefined) {
-                        color = '#7f8c8d'; grad = 'linear-gradient(135deg,#7f8c8d,#636e72)'; label = 'No stock';
-                        el.textContent = '—';
-                    } else if (ratio >= 1.00) {
-                        color = '#1a9c6b'; grad = 'linear-gradient(135deg,#1a9c6b,#0d7a4f)'; label = 'Fully covered';
-                        el.textContent = ratio.toFixed(3);
-                    } else if (ratio >= 0.80) {
-                        color = '#f39c12'; grad = 'linear-gradient(135deg,#f39c12,#d4820b)'; label = 'Partial cover';
-                        el.textContent = ratio.toFixed(3);
-                    } else {
-                        color = '#e74c3c'; grad = 'linear-gradient(135deg,#e74c3c,#b8341a)'; label = 'Low coverage';
-                        el.textContent = ratio.toFixed(3);
-                    }
-                    el.style.color = color;
-                    document.getElementById('kpiCoverageIcon').style.background = grad;
-                    document.getElementById('kpiCoverageAccent').style.background = color;
-                    document.getElementById('kpiCoverageSub').innerHTML = '<strong>' + label + '</strong> · ' + fmt(Math.round(cov.advances)) + ' / ' + fmt(Math.round(cov.unsold_value)) + ' F';
-                }
-
-                if ((el = document.getElementById('kpiSupFinOwed'))) {
-                    el.textContent = fmt(Math.round(d.supplierFinancing.owed)) + ' F';
-                    el.style.color = d.supplierFinancing.owed > 0 ? '#e67e22' : 'var(--text-muted)';
-                    document.getElementById('kpiSupFinOwedSub').textContent = d.supplierFinancing.count + ' active agreement' + (d.supplierFinancing.count !== 1 ? 's' : '');
-                }
-
-                if ((el = document.getElementById('kpiExpectedVol'))) {
-                    var volKg = d.supplierFinancing.volume_remaining;
-                    if (volKg >= 1000) {
-                        el.textContent = (volKg / 1000).toFixed(1) + ' T';
-                    } else {
-                        el.textContent = fmt(Math.round(volKg)) + ' kg';
-                    }
-                    el.style.color = volKg > 0 ? '#00b894' : 'var(--text-muted)';
-                }
-
-                if ((el = document.getElementById('kpiSupplierDebt'))) {
-                    el.textContent = fmt(Math.round(d.supplierDebt)) + ' F';
-                    el.style.color = d.supplierDebt > 0 ? 'var(--danger)' : 'var(--success)';
-                }
-
-                if ((el = document.getElementById('kpiFinancingPower'))) {
-                    el.textContent = fmt(Math.round(d.financingPower)) + ' F';
-                    el.style.color = d.financingPower >= 0 ? 'var(--success)' : 'var(--danger)';
-                }
-
-                // Category counts
-                document.getElementById('countPurchases').textContent = d.counts.purchases;
-                document.getElementById('badgePurchases').textContent = d.counts.purchases;
-                document.getElementById('countDeliveries').textContent = d.counts.deliveries;
-                document.getElementById('badgeDeliveries').textContent = d.counts.pendingDeliveries;
-                document.getElementById('countPayments').textContent = d.counts.payments;
-                document.getElementById('countSuppliers').textContent = d.counts.suppliers;
-                document.getElementById('countCustomers').textContent = d.counts.customers;
-
-                // Prices Evolution Chart — single smooth line, weighted avg purchase price, daily/weekly/monthly toggle
-                try {
-                    window._priceTrendData = d.priceTrend || { daily: [], weekly: [], monthly: [] };
-                    renderPriceTrendChart(window._currentGrain || 'daily');
-                } catch(e) { console.error('Prices chart error:', e); }
-
-                // Stock Evolution Chart
-                try {
-                    destroyChart('stockEvolution');
-                    var seCanvas = document.getElementById('stockEvolutionChart');
-                    if (seCanvas && d.monthlyStock.length > 0) {
-                        var seCtx = seCanvas.getContext('2d');
-                        var seGrad = seCtx.createLinearGradient(0, 0, 0, 250);
-                        seGrad.addColorStop(0, 'rgba(0, 31, 63, 0.3)');
-                        seGrad.addColorStop(1, 'rgba(0, 31, 63, 0)');
-                        overviewCharts['stockEvolution'] = new Chart(seCtx, {
-                            type: 'line',
-                            data: {
-                                labels: d.monthlyStock.map(function(m) { return m.month; }),
-                                datasets: [{
-                                    label: 'Stock (kg)',
-                                    data: d.monthlyStock.map(function(m) { return m.stock; }),
-                                    borderColor: COLORS.navy,
-                                    backgroundColor: seGrad,
-                                    fill: true,
-                                    tension: 0.4,
-                                    pointRadius: 3,
-                                    pointBackgroundColor: COLORS.navy
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: { y: { beginAtZero: true }, x: { grid: { display: false } } },
-                                plugins: { legend: { display: false } }
-                            }
-                        });
-                    }
-                } catch(e) { console.error('Stock chart error:', e); }
-
-                // Expenses by Category Chart
-                try {
-                    var ecCanvas = document.getElementById('expCategoryChart');
-                    if (ecCanvas) {
-                        destroyChart('expCategory');
-                        if (d.expenseByCategory.length > 0) {
-                            var ecColors = [COLORS.accent, COLORS.danger, COLORS.warning, COLORS.success, COLORS.purple, COLORS.teal, COLORS.orange, COLORS.pink];
-                            overviewCharts['expCategory'] = new Chart(ecCanvas, {
-                                type: 'bar',
-                                data: {
-                                    labels: d.expenseByCategory.map(function(c) { return c.category; }),
-                                    datasets: [{
-                                        label: 'Amount (F)',
-                                        data: d.expenseByCategory.map(function(c) { return parseFloat(c.total); }),
-                                        backgroundColor: d.expenseByCategory.map(function(c, i) { return ecColors[i % ecColors.length]; }),
-                                        borderRadius: 6,
-                                        borderSkipped: false
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    scales: { y: { beginAtZero: true }, x: { grid: { display: false } } },
-                                    plugins: { legend: { display: false } }
-                                }
-                            });
-                        }
-                    }
-                } catch(e) { console.error('Expenses chart error:', e); }
-
-                // Revenue Highlight + Sparkline
-                try {
-                    if (document.getElementById('revenueValue'))
-                        document.getElementById('revenueValue').textContent = fmt(Math.round(d.totalRevenue)) + ' F';
-
-                    var rsCanvas = document.getElementById('revenueSparkline');
-                    destroyChart('revenueSparkline');
-                    if (d.monthlyRevenue.length > 0 && rsCanvas) {
-                        var rsCtx = rsCanvas.getContext('2d');
-                        var rsGrad = rsCtx.createLinearGradient(0, 0, 0, 80);
-                        rsGrad.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
-                        rsGrad.addColorStop(1, 'rgba(255, 255, 255, 0.02)');
-                        overviewCharts['revenueSparkline'] = new Chart(rsCtx, {
-                            type: 'line',
-                            data: {
-                                labels: d.monthlyRevenue.map(function(m) { return m.month; }),
-                                datasets: [{
-                                    data: d.monthlyRevenue.map(function(m) { return parseFloat(m.revenue); }),
-                                    borderColor: 'rgba(255,255,255,0.8)',
-                                    backgroundColor: rsGrad,
-                                    fill: true,
-                                    tension: 0.4,
-                                    pointRadius: 0,
-                                    borderWidth: 2
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: { x: { display: false }, y: { display: false } },
-                                plugins: { legend: { display: false }, tooltip: { enabled: false } }
-                            }
-                        });
-                    }
-                } catch(e) { console.error('Revenue chart error:', e); }
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error('Dashboard AJAX failed:', textStatus, errorThrown);
-                console.error('Response:', jqXHR.responseText);
-            });
-        }
-
-        // Sales vs Purchases chart
-        var spChart = null;
-
-        function loadSalesPurchasesChart(period) {
-            period = period || 'monthly';
-
-            $.getJSON('?action=getSalesPurchasesChart&period=' + period, function(res) {
-                if (!res.success) return;
-                var d = res.data;
-                var canvas = document.getElementById('salesPurchasesChart');
-                if (!canvas) return;
-
-                var ctx = canvas.getContext('2d');
-                if (spChart) spChart.destroy();
-
-                spChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: d.map(function(r) { return r.period; }),
-                        datasets: [
-                            {
-                                label: 'Revenue',
-                                data: d.map(function(r) { return r.revenue; }),
-                                backgroundColor: '#0074D9',
-                                borderRadius: 4
-                            },
-                            {
-                                label: 'Costs',
-                                data: d.map(function(r) { return r.costs; }),
-                                backgroundColor: '#e74c3c',
-                                borderRadius: 4
-                            },
-                            {
-                                label: 'Profit',
-                                data: d.map(function(r) { return r.profit; }),
-                                backgroundColor: d.map(function(r) { return r.profit >= 0 ? '#27ae60' : '#ff6b6b'; }),
-                                borderRadius: 4
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { intersect: false, mode: 'index' },
-                        plugins: {
-                            legend: { position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(ctx) {
-                                        return ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString() + ' F';
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(val) {
-                                        if (Math.abs(val) >= 1000000) return (val / 1000000).toFixed(1) + 'M';
-                                        if (Math.abs(val) >= 1000) return (val / 1000).toFixed(0) + 'K';
-                                        return val;
-                                    }
-                                }
-                            },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-            });
-        }
-
-        // Load overview on page load
-        loadDashboardOverview('year');
-
-        // Load sales vs purchases chart after slight delay
-        setTimeout(function() { loadSalesPurchasesChart('monthly'); }, 800);
-
-    </script>
 </body>
 </html>
